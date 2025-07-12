@@ -1,11 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+
+interface Announcement {
+  id: string;
+  title: string;
+  date: string;
+  type: 'important' | 'normal' | 'pickup';
+  description: string;
+}
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   const slides = [
     {
@@ -38,6 +50,90 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  // 初期データの設定（CMSから取得する前のフォールバック）
+  useEffect(() => {
+    // CMSからお知らせデータを取得
+    const fetchAnnouncements = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('/api/announcements');
+        if (response.ok) {
+          const cmsAnnouncements = await response.json();
+          // CMSデータをフロントエンド用の形式に変換
+          const formattedAnnouncements = cmsAnnouncements.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            date: new Date(item.date).toLocaleDateString('ja-JP', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            type: item.type || 'normal'
+          }));
+          setAnnouncements(formattedAnnouncements);
+        } else {
+          // CMSからの取得に失敗した場合は静的データを使用
+          console.warn('Failed to fetch announcements from CMS, using static data');
+          setAnnouncements(staticAnnouncements);
+        }
+      } catch (error) {
+        // エラーが発生した場合は静的データを使用
+        console.warn('Error fetching announcements from CMS:', error);
+        setAnnouncements(staticAnnouncements);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    const staticAnnouncements: Announcement[] = [
+      {
+        id: '1',
+        title: 'サーバーメンテナンスのお知らせ',
+        description: '7月15日（火）午前2時～午前6時の間、サーバーメンテナンスを実施いたします。',
+        date: '2025年7月13日',
+        type: 'important'
+      },
+      {
+        id: '2',
+        title: '夏季イベント開催中！',
+        description: '夏祭りイベントを開催しています。期間限定アイテムをゲットしよう！',
+        date: '2025年7月10日',
+        type: 'pickup'
+      },
+      {
+        id: '3',
+        title: '新しいエリアがオープンしました',
+        description: '新しい建築エリアが追加されました。ぜひ遊びに来てください！',
+        date: '2025年7月8日',
+        type: 'normal'
+      },
+      {
+        id: '4',
+        title: 'ルール更新のお知らせ',
+        description: 'サーバールールの一部を更新いたしました。詳細をご確認ください。',
+        date: '2025年7月5日',
+        type: 'normal'
+      },
+      {
+        id: '5',
+        title: 'アップデート実施のお知らせ',
+        description: '新機能の追加に伴うアップデートを実施いたします。',
+        date: '2025年7月3日',
+        type: 'important'
+      },
+      {
+        id: '6',
+        title: 'コミュニティイベント参加者募集',
+        description: '建築コンテストの参加者を募集中です。豪華賞品をご用意！',
+        date: '2025年7月1日',
+        type: 'pickup'
+      }
+    ];
+
+    fetchAnnouncements();
+  }, []);
+
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
   };
@@ -45,52 +141,6 @@ export default function Home() {
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
   };
-
-  // お知らせデータ
-  const announcements = [
-    {
-      id: 1,
-      type: 'important',
-      title: 'サーバーメンテナンスのお知らせ',
-      content: '7月15日（火）午前2時～午前6時の間、サーバーメンテナンスを実施いたします。',
-      date: '2025年7月13日'
-    },
-    {
-      id: 2,
-      type: 'pickup',
-      title: '夏季イベント開催中！',
-      content: '夏祭りイベントを開催しています。期間限定アイテムをゲットしよう！',
-      date: '2025年7月10日'
-    },
-    {
-      id: 3,
-      type: 'normal',
-      title: '新しいエリアがオープンしました',
-      content: '新しい建築エリアが追加されました。ぜひ遊びに来てください！',
-      date: '2025年7月8日'
-    },
-    {
-      id: 4,
-      type: 'normal',
-      title: 'ルール更新のお知らせ',
-      content: 'サーバールールの一部を更新いたしました。詳細をご確認ください。',
-      date: '2025年7月5日'
-    },
-    {
-      id: 5,
-      type: 'important',
-      title: 'アップデート実施のお知らせ',
-      content: '新機能の追加に伴うアップデートを実施いたします。',
-      date: '2025年7月3日'
-    },
-    {
-      id: 6,
-      type: 'pickup',
-      title: 'コミュニティイベント参加者募集',
-      content: '建築コンテストの参加者を募集中です。豪華賞品をご用意！',
-      date: '2025年7月1日'
-    }
-  ];
 
   // フィルタリング機能
   const filteredAnnouncements = announcements.filter(announcement => {
@@ -100,6 +150,33 @@ export default function Home() {
     if (activeTab === 'pickup') return announcement.type === 'pickup';
     return true;
   });
+
+  // 手動更新機能
+  const refreshAnnouncements = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch('/api/announcements');
+      if (response.ok) {
+        const cmsAnnouncements = await response.json();
+        const formattedAnnouncements = cmsAnnouncements.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          date: new Date(item.date).toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          type: item.type || 'normal'
+        }));
+        setAnnouncements(formattedAnnouncements);
+      }
+    } catch (error) {
+      console.warn('Error refreshing announcements:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // タグの色を取得する関数
   const getTagStyle = (type: string) => {
@@ -131,221 +208,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* ヘッダー */}
-      <header className="bg-white border-b border-gray-200">
-        {/* メインヘッダー */}
-        <div className="bg-white">
-          <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
-            <div className="flex items-center h-16">
-              {/* ロゴ - 左側 */}
-              <div className="flex items-center">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 mr-3 flex items-center justify-center">
-                    <Image
-                      src="/server-icon.png"
-                      alt="いねさばアイコン"
-                      width={32}
-                      height={32}
-                      className="rounded-sm"
-                    />
-                  </div>
-                  <div className="flex items-baseline space-x-2">
-                    <h1 className="text-2xl font-black text-gray-900">いねさば</h1>
-                    <p className="text-lg text-gray-600">IneServer</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* スペーサー */}
-              <div className="flex-1"></div>
-
-              {/* トップバーナビゲーション - 右側 */}
-              <nav className="flex items-center space-x-2">
-                <div className="flex space-x-2">
-                  <a 
-                    href="https://minecraft.jp/servers/67de4f4ce22bc84120000007" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    minecraft.jp
-                    <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                  <a href="#" className="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    メンテナンス情報
-                  </a>
-                  <a href="#" className="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    アイテム市場状況
-                  </a>
-                  <a 
-                    href="https://map.1necat.net" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 border border-gray-300 rounded text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    平面/俯瞰マップ
-                    <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
-                </div>
-                
-                {/* セパレーター */}
-                <div className="h-8 w-px bg-gray-300 mx-3"></div>
-                
-                {/* ガイドボタン - 特別なスタイル */}
-                <a href="#" className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg text-sm text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2 transform hover:scale-105">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                  ガイド
-                </a>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* ナビゲーション */}
-        <div className="bg-green-700">
-          <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
-            <nav className="flex relative">
-              <div className="flex-1 relative group">
-                <a href="#" className="block text-white hover:text-green-200 px-6 py-4 text-lg font-medium text-center relative">
-                  生活・くらし
-                  <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-green-600"></div>
-                </a>
-                
-                {/* ドロップダウンメニュー */}
-                <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="p-4">
-                    <div className="mb-4">
-                      <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        サーバールール
-                      </h4>
-                      <ul className="ml-4 space-y-1">
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 中心地の土地利用について</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 許可MOD一覧</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 流通禁止アイテム</a></li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        保護
-                      </h4>
-                      <ul className="ml-4 space-y-1">
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 土地の保護</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- ブロック保護</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1 relative group">
-                <a href="#" className="block text-white hover:text-green-200 px-6 py-4 text-lg font-medium text-center relative">
-                  経済
-                  <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-green-600"></div>
-                </a>
-                
-                {/* ドロップダウンメニュー */}
-                <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="p-4">
-                    <div className="mb-4">
-                      <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        ineを貯める
-                      </h4>
-                      <ul className="ml-4 space-y-1">
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 就職</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- アイテム市場取引</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- お店を作る・お店で買う</a></li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                        <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-                        ineを使う
-                      </h4>
-                      <ul className="ml-4 space-y-1">
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- アイテム市場取引</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- 土地の購入</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- コマンドの購入</a></li>
-                        <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1">- お店を作る・お店で買う</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1 relative group">
-                <a href="#" className="block text-white hover:text-green-200 px-6 py-4 text-lg font-medium text-center relative">
-                  娯楽
-                  <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-green-600"></div>
-                </a>
-                
-                {/* ドロップダウンメニュー */}
-                <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="p-4">
-                    <ul className="space-y-2">
-                      <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1 flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>アリーナ</a></li>
-                      <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1 flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>追加アイテム一覧</a></li>
-                      <li><a href="#" className="text-gray-600 hover:text-green-600 text-sm block py-1 flex items-center"><span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>隠しアイテム</a></li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1 relative group">
-                <a href="#" className="block text-white hover:text-green-200 px-6 py-4 text-lg font-medium text-center relative">
-                  観光
-                  <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-green-600"></div>
-                </a>
-                
-                {/* ドロップダウンメニュー */}
-                <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="p-4">
-                    <div className="text-gray-500 text-sm text-center py-4">
-                      メニューは準備中です
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1 relative group">
-                <a href="#" className="block text-white hover:text-green-200 px-6 py-4 text-lg font-medium text-center">
-                  交通
-                </a>
-                
-                {/* ドロップダウンメニュー */}
-                <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                  <div className="p-4">
-                    <div className="text-gray-500 text-sm text-center py-4">
-                      メニューは準備中です
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <Header />
 
       {/* カルーセルスライダー */}
       <div className="relative w-full h-screen overflow-hidden">
@@ -416,77 +279,122 @@ export default function Home() {
           <div className="bg-white rounded-lg shadow-lg border border-gray-200">
             {/* ヘッダー */}
             <div className="border-b border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">お知らせ</h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900">お知らせ</h2>
+                <button
+                  onClick={refreshAnnouncements}
+                  disabled={isLoading}
+                  className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  <svg 
+                    className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
+                    />
+                  </svg>
+                  更新
+                </button>
+              </div>
               
               {/* タブナビゲーション */}
-              <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
-                <button 
-                  onClick={() => setActiveTab('all')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    activeTab === 'all' 
-                      ? 'text-white bg-green-600' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                  }`}
-                >
-                  すべて
-                </button>
-                <button 
-                  onClick={() => setActiveTab('important')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    activeTab === 'important' 
-                      ? 'text-white bg-green-600' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                  }`}
-                >
-                  重要なお知らせ
-                </button>
-                <button 
-                  onClick={() => setActiveTab('normal')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    activeTab === 'normal' 
-                      ? 'text-white bg-green-600' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                  }`}
-                >
-                  お知らせ
-                </button>
-                <button 
-                  onClick={() => setActiveTab('pickup')}
-                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                    activeTab === 'pickup' 
-                      ? 'text-white bg-green-600' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                  }`}
-                >
-                  ピックアップ
-                </button>
+              <div className="flex items-center justify-between">
+                <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+                  <button 
+                    onClick={() => setActiveTab('all')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      activeTab === 'all' 
+                        ? 'text-white bg-green-600' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                    }`}
+                  >
+                    すべて
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('important')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      activeTab === 'important' 
+                        ? 'text-white bg-green-600' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                    }`}
+                  >
+                    重要なお知らせ
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('normal')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      activeTab === 'normal' 
+                        ? 'text-white bg-green-600' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                    }`}
+                  >
+                    お知らせ
+                  </button>
+                  <button 
+                    onClick={() => setActiveTab('pickup')}
+                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                      activeTab === 'pickup' 
+                        ? 'text-white bg-green-600' 
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                    }`}
+                  >
+                    ピックアップ
+                  </button>
+                </div>
+                
+                {!isLoading && (
+                  <span className="text-sm text-gray-500">
+                    {filteredAnnouncements.length}件のお知らせ
+                  </span>
+                )}
               </div>
             </div>
             
             {/* お知らせリスト */}
             <div className="divide-y divide-gray-200">
-              {filteredAnnouncements.map((announcement) => (
-                <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-32">
-                      <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium w-full ${getTagStyle(announcement.type)}`}>
-                        {getTagName(announcement.type)}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-gray-900 hover:text-green-600 cursor-pointer">
-                          {announcement.title}
-                        </h3>
-                        <span className="text-sm text-gray-500">{announcement.date}</span>
+              {isLoading ? (
+                // ローディング状態
+                <div className="p-6 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
+                  <p className="mt-2 text-gray-500">お知らせを読み込み中...</p>
+                </div>
+              ) : filteredAnnouncements.length > 0 ? (
+                filteredAnnouncements.map((announcement) => (
+                  <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
+                    <div className="flex items-start space-x-4">
+                      <div className="flex-shrink-0 w-32">
+                        <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium w-full ${getTagStyle(announcement.type)}`}>
+                          {getTagName(announcement.type)}
+                        </span>
                       </div>
-                      <p className="mt-2 text-gray-600 text-sm">
-                        {announcement.content}
-                      </p>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <Link href={`/announcements/${announcement.id}`}>
+                            <h3 className="text-lg font-semibold text-gray-900 hover:text-green-600 cursor-pointer transition-colors duration-200">
+                              {announcement.title}
+                            </h3>
+                          </Link>
+                          <span className="text-sm text-gray-500">{announcement.date}</span>
+                        </div>
+                        <p className="mt-2 text-gray-600 text-sm">
+                          {announcement.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                // お知らせが見つからない場合
+                <div className="p-6 text-center text-gray-500">
+                  お知らせがありません
                 </div>
-              ))}
+              )}
             </div>
             
             {/* もっと見るボタン */}

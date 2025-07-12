@@ -1,0 +1,19 @@
+# Netlify settings
+[build]
+  publish = ".next"
+  command = "npm run build"
+
+[build.environment]
+  NPM_FLAGS = "--version" # オプション：バージョン確認のため
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# CMSアクセスの設定
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
