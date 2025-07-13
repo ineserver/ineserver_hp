@@ -5,6 +5,13 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 
+// 生活・くらし用アイコン
+const HomeIcon = ({ className }: { className?: string }) => (
+  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 12 8.25-8.25a1.125 1.125 0 0 1 1.59 0L20.25 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+  </svg>
+);
+
 interface ContentItem {
   id: string;
   title: string;
@@ -49,7 +56,7 @@ export default function LifestylePage() {
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">
-            <div className="w-1 h-12 bg-[#5b8064] mr-6"></div>
+            <HomeIcon className="w-12 h-12 text-[#5b8064] mr-6" />
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">生活・くらし</h1>
               <p className="text-gray-600 text-lg">
