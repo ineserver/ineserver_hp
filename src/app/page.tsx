@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 
 interface Announcement {
@@ -18,6 +18,48 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('all');
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  
+  // タブのref
+  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // タブのアニメーション用
+  const tabs = [
+    { id: 'all', label: 'すべて' },
+    { id: 'important', label: '重要なお知らせ' },
+    { id: 'normal', label: 'お知らせ' },
+    { id: 'pickup', label: 'ピックアップ' }
+  ];
+  
+  // インジケーターの位置を更新
+  const updateIndicator = (tabId: string) => {
+    const activeButton = tabRefs.current[tabId];
+    const container = containerRef.current;
+    
+    if (activeButton && container) {
+      const containerRect = container.getBoundingClientRect();
+      const buttonRect = activeButton.getBoundingClientRect();
+      
+      setIndicatorStyle({
+        left: buttonRect.left - containerRect.left,
+        width: buttonRect.width
+      });
+    }
+  };
+  
+  // タブが変更されたときにインジケーターを更新
+  useEffect(() => {
+    updateIndicator(activeTab);
+  }, [activeTab]);
+  
+  // 初期ロード時にインジケーターをセット
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      updateIndicator(activeTab);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
   
   const slides = [
     {
@@ -305,47 +347,31 @@ export default function Home() {
               
               {/* タブナビゲーション */}
               <div className="flex items-center justify-between">
-                <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
-                  <button 
-                    onClick={() => setActiveTab('all')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                      activeTab === 'all' 
-                        ? 'text-white bg-[#5b8064]' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                    }`}
-                  >
-                    すべて
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('important')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                      activeTab === 'important' 
-                        ? 'text-white bg-[#5b8064]' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                    }`}
-                  >
-                    重要なお知らせ
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('normal')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                      activeTab === 'normal' 
-                        ? 'text-white bg-[#5b8064]' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                    }`}
-                  >
-                    お知らせ
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('pickup')}
-                    className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
-                      activeTab === 'pickup' 
-                        ? 'text-white bg-[#5b8064]' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-white'
-                    }`}
-                  >
-                    ピックアップ
-                  </button>
+                <div ref={containerRef} className="relative flex bg-gray-100 rounded-lg p-1">
+                  {/* 移動するインジケーター */}
+                  <div 
+                    className="absolute top-1 bottom-1 bg-[#5b8064] rounded-md transition-all duration-300 ease-out"
+                    style={{
+                      left: `${indicatorStyle.left}px`,
+                      width: `${indicatorStyle.width}px`,
+                    }}
+                  />
+                  
+                  {/* タブボタン */}
+                  {tabs.map((tab) => (
+                    <button 
+                      key={tab.id}
+                      ref={(el) => { tabRefs.current[tab.id] = el; }}
+                      onClick={() => setActiveTab(tab.id)}
+                      className={`relative z-10 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 ${
+                        activeTab === tab.id 
+                          ? 'text-white' 
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
                 </div>
                 
                 {!isLoading && (

@@ -3,41 +3,14 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-
-// カスタムアイコンコンポーネント
-const ChevronRightIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-  </svg>
-);
-
-// サーバールール用アイコン
-const DocumentTextIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-  </svg>
-);
-
-// 保護用アイコン（シールド）
-const ShieldCheckIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.623 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-  </svg>
-);
-
-// お金を貯める用アイコン（コイン）
-const PlusCircleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>
-);
-
-// お金を使う用アイコン（マイナス）
-const MinusCircleIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-  </svg>
-);
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faChevronRight,
+  faFileText,
+  faShield,
+  faPlus,
+  faMinus
+} from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -169,23 +142,23 @@ const Header = () => {
                 <div className="p-4">
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <DocumentTextIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FontAwesomeIcon icon={faFileText} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       サーバールール
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/housing-guide" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      <li><Link href="/lifestyle/allowed-mods" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
-                      <li><Link href="/lifestyle/prohibited-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム</Link></li>
+                      <li><Link href="/lifestyle/housing-guide" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
+                      <li><Link href="/lifestyle/allowed-mods" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
+                      <li><Link href="/lifestyle/prohibited-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム</Link></li>
                     </ul>
                   </div>
                   <div>
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <ShieldCheckIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FontAwesomeIcon icon={faShield} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       保護
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/land-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
-                      <li><Link href="/lifestyle/block-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
+                      <li><Link href="/lifestyle/land-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
+                      <li><Link href="/lifestyle/block-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -203,25 +176,25 @@ const Header = () => {
                 <div className="p-4">
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <PlusCircleIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/jobs" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
-                      <li><Link href="/economy/item-market" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/shops" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/jobs" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
+                      <li><Link href="/economy/item-market" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/shops" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                   <div>
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <MinusCircleIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FontAwesomeIcon icon={faMinus} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/item-market-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/land-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
-                      <li><Link href="/economy/command-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
-                      <li><Link href="/economy/shop-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/item-market-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/land-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
+                      <li><Link href="/economy/command-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                      <li><Link href="/economy/shop-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -238,9 +211,9 @@ const Header = () => {
               <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="p-4">
                   <ul className="space-y-2">
-                    <li><Link href="/entertainment/arena" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
-                    <li><Link href="/entertainment/additional-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
-                    <li><Link href="/entertainment/hidden-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
+                    <li><Link href="/entertainment/arena" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
+                    <li><Link href="/entertainment/additional-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
+                    <li><Link href="/entertainment/hidden-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
                   </ul>
                 </div>
               </div>

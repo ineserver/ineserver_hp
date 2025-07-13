@@ -4,13 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-
-// 観光用アイコン
-const MapIcon = ({ className }: { className?: string }) => (
-  <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498 4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 0 0-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0Z" />
-  </svg>
-);
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMap } from '@fortawesome/free-solid-svg-icons';
 
 interface ContentItem {
   id: string;
@@ -57,7 +52,7 @@ export default function TourismPage() {
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">
-            <MapIcon className="w-12 h-12 text-[#5b8064] mr-6" />
+            <FontAwesomeIcon icon={faMap} className="text-[#5b8064] mr-6" style={{ fontSize: '2.5rem' }} />
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">観光</h1>
               <p className="text-gray-600 text-lg">
@@ -90,7 +85,7 @@ export default function TourismPage() {
                 >
                   <div className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-6 transition-colors duration-200 hover:shadow-md">
                     <div className="flex items-center">
-                      <MapIcon className="w-12 h-12 text-[#5b8064] mr-6" />
+                      <FontAwesomeIcon icon={faMap} className="text-[#5b8064] mr-6" style={{ fontSize: '2.5rem' }} />
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
                           {item.title}
