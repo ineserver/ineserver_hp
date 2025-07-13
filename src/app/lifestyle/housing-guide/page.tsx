@@ -33,7 +33,7 @@ export default function HousingGuidePage() {
             </p>
             <p className="text-gray-700 leading-relaxed mb-4">
               サーバールールに従わなかった場合、BANなどの措置をいたします。なお、措置に不服な場合は異議申し立てフォーム（
-              <a href="https://forms.gle/pXWFq3uHCV5mvau6" className="text-blue-600 hover:text-blue-800 underline">
+              <a href="https://forms.gle/pXWFq3uHCV5mvau6" className="text-[#5b8064] hover:text-[#4a6b55] underline">
                 https://forms.gle/pXWFq3uHCV5mvau6
               </a>
               ）でのみ受領いたします。

@@ -11,6 +11,10 @@ const config = {
       colors: {
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
+        primary: {
+          DEFAULT: '#5b8064',
+          hover: '#4a6b55',
+        },
       },
       fontFamily: {
         sans: ['var(--font-noto-sans-jp)', 'system-ui', 'sans-serif'],

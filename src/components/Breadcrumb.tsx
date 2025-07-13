@@ -16,7 +16,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
     <nav className="bg-white">
       <div className="max-w-4xl mx-auto px-6 py-4">
         <div className="flex items-center space-x-2 text-sm">
-          <div className="bg-green-600 text-white px-3 py-1 rounded text-xs font-medium">
+          <div className="bg-[#5b8064] text-white px-3 py-1 rounded text-xs font-medium">
             現在のページ
           </div>
           
@@ -26,7 +26,7 @@ const Breadcrumb = ({ items }: BreadcrumbProps) => {
               {item.href && index < items.length - 1 ? (
                 <Link 
                   href={item.href}
-                  className="text-blue-600 hover:text-blue-800 underline transition-colors duration-200"
+                  className="text-[#5b8064] hover:text-[#4a6b55] underline transition-colors duration-200"
                 >
                   {item.label}
                 </Link>

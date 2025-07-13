@@ -119,7 +119,7 @@ export default function EntertainmentArticlePage() {
           <div className="flex justify-between items-center">
             <a 
               href="/entertainment"
-              className="inline-flex items-center text-purple-600 hover:text-purple-700 font-medium transition-colors duration-200"
+              className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] font-medium transition-colors duration-200"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />

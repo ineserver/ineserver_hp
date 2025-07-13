@@ -14,20 +14,20 @@ interface ContentItem {
   category?: string;
 }
 
-export default function EconomyPage() {
+export default function AnnouncementsPage() {
   const [content, setContent] = useState<ContentItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/economy');
+        const response = await fetch('/api/announcements');
         if (response.ok) {
           const data = await response.json();
           setContent(data);
         }
       } catch (error) {
-        console.error('Error fetching economy content:', error);
+        console.error('Error fetching announcements content:', error);
       } finally {
         setIsLoading(false);
       }
@@ -38,7 +38,7 @@ export default function EconomyPage() {
 
   const breadcrumbItems = [
     { label: 'いねさば', href: '/' },
-    { label: '経済' }
+    { label: 'お知らせ' }
   ];
 
   return (
@@ -52,9 +52,9 @@ export default function EconomyPage() {
           <div className="flex items-center mb-6">
             <div className="w-1 h-12 bg-[#5b8064] mr-6"></div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">経済</h1>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">お知らせ</h1>
               <p className="text-gray-600 text-lg">
-                サーバーの経済システムや取引に関する情報について説明します
+                サーバーからの重要なお知らせや更新情報をご確認ください
               </p>
             </div>
           </div>
@@ -69,16 +69,16 @@ export default function EconomyPage() {
             </div>
           ) : content.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">💰</div>
-              <h3 className="text-xl font-medium text-gray-900 mb-2">コンテンツがありません</h3>
-              <p className="text-gray-600">まだコンテンツが追加されていません。</p>
+              <div className="text-gray-400 text-6xl mb-4">📢</div>
+              <h3 className="text-xl font-medium text-gray-900 mb-2">お知らせがありません</h3>
+              <p className="text-gray-600">まだお知らせが投稿されていません。</p>
             </div>
           ) : (
             <div className="space-y-4">
               {content.map((item) => (
                 <Link
                   key={item.id}
-                  href={`/economy/${item.id}`}
+                  href={`/announcements/${item.id}`}
                   className="block w-full"
                 >
                   <div className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-6 transition-colors duration-200 hover:shadow-md">
