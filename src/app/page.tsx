@@ -20,10 +20,12 @@ interface PatchNote {
   title: string;
   date: string;
   description: string;
+  isLatest?: boolean;
   sections: {
-    type: 'fixes' | 'features' | 'breaking' | 'performance' | 'security';
+    type: 'fixes' | 'features' | 'other';
     title: string;
     items: string[];
+    itemsHtml?: string[];
   }[];
 }
 
@@ -206,21 +208,21 @@ export default function Home() {
             id: '1',
             slug: '4-19-0-1',
             version: '4.19.0.1',
-            title: 'WolfyScript 4.19.0.1 アップデート',
+            title: '2025年4月25日',
             date: '2025年4月25日',
             description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
             sections: [
               {
                 type: 'fixes',
-                title: 'バグ修正',
+                title: '不具合修正',
                 items: [
                   'CCPlayerDataが利用不可時のデフォルト値設定を修正',
                   'プロトコルライブラリ機能の無効化処理を修正'
                 ]
               },
               {
-                type: 'performance',
-                title: 'パフォーマンス改善',
+                type: 'other',
+                title: 'その他',
                 items: [
                   'CI/CDパイプラインのコミット詳細リンク修正'
                 ]
@@ -235,13 +237,13 @@ export default function Home() {
         const fallbackPatchNote: PatchNote = {
           id: '1',
           version: '4.19.0.1',
-          title: 'WolfyScript 4.19.0.1 アップデート',
+          title: '2025年4月25日',
           date: '2025年4月25日',
           description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
           sections: [
             {
               type: 'fixes',
-              title: 'バグ修正',
+              title: '不具合修正',
               items: [
                 'CCPlayerDataが利用不可時のデフォルト値設定を修正',
                 'プロトコルライブラリ機能の無効化処理を修正'
@@ -283,12 +285,8 @@ export default function Home() {
         return '🔧';
       case 'features':
         return '✨';
-      case 'breaking':
-        return '⚠️';
-      case 'performance':
-        return '⚡';
-      case 'security':
-        return '🔒';
+      case 'other':
+        return '⚙️';
       default:
         return '📝';
     }
@@ -300,12 +298,8 @@ export default function Home() {
         return 'text-blue-600';
       case 'features':
         return 'text-green-600';
-      case 'breaking':
-        return 'text-red-600';
-      case 'performance':
-        return 'text-yellow-600';
-      case 'security':
-        return 'text-purple-600';
+      case 'other':
+        return 'text-gray-600';
       default:
         return 'text-gray-600';
     }
@@ -556,79 +550,83 @@ export default function Home() {
         </section>
 
         {/* パッチノートセクション */}
-        <section className="py-16 bg-gray-50">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-              {/* ヘッダー */}
-              <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] px-8 py-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white">パッチノート</h2>
-                    <p className="text-green-100 mt-1">最新のアップデート情報</p>
-                  </div>
-                  <Link href="/patch-notes">
-                    <button className="flex items-center px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-white transition-all duration-200">
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                      </svg>
-                      アーカイブ
-                    </button>
-                  </Link>
+        <section className="mb-12">
+          <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+            {/* ヘッダー */}
+            <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-white">パッチノート</h2>
+                <Link href="/patch-notes">
+                  <button className="inline-flex items-center px-3 py-2 bg-white rounded-md text-sm font-medium text-[#5b8064] hover:bg-gray-50 transition-all duration-200">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    </svg>
+                    アーカイブ
+                  </button>
+                </Link>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <p className="text-green-100">最新のアップデート情報</p>
+              </div>
+            </div>
+            
+            {/* パッチノート内容 */}
+            <div className="divide-y divide-gray-200">
+              {isPatchNoteLoading ? (
+                <div className="p-6 text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5b8064] mx-auto"></div>
+                  <p className="mt-2 text-gray-500">パッチノートを読み込み中...</p>
                 </div>
-              </div>
-
-              {/* パッチノート内容 */}
-              <div className="p-8">
-                {isPatchNoteLoading ? (
-                  <div className="text-center py-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5b8064] mx-auto"></div>
-                    <p className="mt-2 text-gray-500">パッチノートを読み込み中...</p>
+              ) : latestPatchNote ? (
+                <div className="p-6">
+                  {/* ヘッダー */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center">
+                      <h3 className="text-xl font-bold text-gray-900">{latestPatchNote.date}</h3>
+                    </div>
+                    <Link href={`/patch-notes/${latestPatchNote.slug || latestPatchNote.id}`}>
+                      <button className="text-[#5b8064] hover:text-[#4a6b55] text-sm font-medium transition-colors duration-200">
+                        詳細を見る →
+                      </button>
+                    </Link>
                   </div>
-                ) : latestPatchNote ? (
-                  <div>
-                    {/* バージョンヘッダー */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center">
-                        <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-                        <h3 className="text-xl font-bold text-gray-900">{latestPatchNote.version}</h3>
-                        <span className="ml-3 text-sm text-gray-500">by WolfyScript on {latestPatchNote.date}</span>
+
+                  {/* 説明 */}
+                  <p className="text-gray-600 mb-6">{latestPatchNote.description}</p>
+
+                  {/* セクション一覧 */}
+                  <div className="space-y-4">
+                    {latestPatchNote.sections.map((section, index) => (
+                      <div key={index}>
+                        <h4 className={`flex items-center text-sm font-semibold mb-2 ${getSectionColor(section.type)}`}>
+                          <span className="mr-2">{getSectionIcon(section.type)}</span>
+                          {section.title}
+                        </h4>
+                        <ul className="space-y-1 ml-6">
+                          {section.items.map((item, itemIndex) => (
+                            <li key={itemIndex} className="text-sm text-gray-600 flex items-start">
+                              <span className="inline-block w-1.5 h-1.5 bg-gray-400 rounded-full mt-1.5 mr-2 flex-shrink-0"></span>
+                              <div 
+                                className="prose prose-sm max-w-none text-gray-600"
+                                dangerouslySetInnerHTML={{ 
+                                  __html: section.itemsHtml && section.itemsHtml[itemIndex] 
+                                    ? section.itemsHtml[itemIndex] 
+                                    : item 
+                                }}
+                              />
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <Link href={`/patch-notes/${latestPatchNote.slug || latestPatchNote.id}`}>
-                        <button className="text-[#5b8064] hover:text-[#4a6b55] text-sm font-medium transition-colors duration-200">
-                          詳細を見る →
-                        </button>
-                      </Link>
-                    </div>
-
-                    {/* 説明 */}
-                    <p className="text-gray-600 mb-6">{latestPatchNote.description}</p>
-
-                    {/* セクション一覧 */}
-                    <div className="space-y-4">
-                      {latestPatchNote.sections.map((section, index) => (
-                        <div key={index}>
-                          <h4 className={`flex items-center text-sm font-semibold mb-2 ${getSectionColor(section.type)}`}>
-                            <span className="mr-2">{getSectionIcon(section.type)}</span>
-                            {section.title}
-                          </h4>
-                          <ul className="space-y-1 ml-6">
-                            {section.items.map((item, itemIndex) => (
-                              <li key={itemIndex} className="text-sm text-gray-600 flex items-start">
-                                <span className="mr-2 mt-1">•</span>
-                                <span>{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
+                    ))}
                   </div>
-                ) : (
-                  <div className="text-center py-12 text-gray-500">
-                    パッチノートがありません
-                  </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="p-6 text-center text-gray-500">
+                  パッチノートがありません
+                </div>
+              )}
             </div>
           </div>
         </section>

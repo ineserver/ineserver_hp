@@ -12,10 +12,12 @@ interface PatchNote {
   title: string;
   date: string;
   description: string;
+  isLatest?: boolean;
   sections: {
-    type: 'fixes' | 'features' | 'breaking' | 'performance' | 'security';
+    type: 'fixes' | 'features' | 'other';
     title: string;
     items: string[];
+    itemsHtml?: string[];
   }[];
 }
 
@@ -43,7 +45,7 @@ export default function PatchNoteDetailPage() {
             sections: [
               {
                 type: 'fixes',
-                title: 'バグ修正',
+                title: '不具合修正',
                 items: [
                   'CCPlayerDataが利用不可時のデフォルト値設定を修正',
                   'プロトコルライブラリの無効化機能がエラーで停止する問題を修正',
@@ -52,8 +54,8 @@ export default function PatchNoteDetailPage() {
                 ]
               },
               {
-                type: 'performance',
-                title: 'CI/CD',
+                type: 'other',
+                title: 'その他',
                 items: [
                   'コミット詳細リンクが間違ったリポジトリを指す問題を修正',
                   'ビルドプロセスの最適化により、デプロイ時間を30%短縮',
@@ -84,12 +86,8 @@ export default function PatchNoteDetailPage() {
         return '🔧';
       case 'features':
         return '✨';
-      case 'breaking':
-        return '⚠️';
-      case 'performance':
-        return '⚡';
-      case 'security':
-        return '🔒';
+      case 'other':
+        return '⚙️';
       default:
         return '📝';
     }
@@ -101,12 +99,8 @@ export default function PatchNoteDetailPage() {
         return 'text-blue-600 bg-blue-50 border-blue-200';
       case 'features':
         return 'text-green-600 bg-green-50 border-green-200';
-      case 'breaking':
-        return 'text-red-600 bg-red-50 border-red-200';
-      case 'performance':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'security':
-        return 'text-purple-600 bg-purple-50 border-purple-200';
+      case 'other':
+        return 'text-gray-600 bg-gray-50 border-gray-200';
       default:
         return 'text-gray-600 bg-gray-50 border-gray-200';
     }
@@ -163,9 +157,12 @@ export default function PatchNoteDetailPage() {
         <header className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <div className="w-4 h-4 bg-green-500 rounded-full mr-4"></div>
-              <h1 className="text-3xl font-bold text-gray-900">{patchNote.version}</h1>
-              <span className="ml-4 text-lg text-gray-500">by WolfyScript on {patchNote.date}</span>
+              <h1 className="text-3xl font-bold text-gray-900">{patchNote.date}</h1>
+              {patchNote.isLatest && (
+                <span className="ml-4 px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                  最新のアップデート
+                </span>
+              )}
             </div>
             <Link href="/patch-notes">
               <button className="flex items-center px-4 py-2 text-[#5b8064] hover:text-[#4a6b55] transition-colors duration-200">
@@ -196,7 +193,14 @@ export default function PatchNoteDetailPage() {
                 {section.items.map((item, itemIndex) => (
                   <li key={itemIndex} className="flex items-start">
                     <span className="inline-block w-2 h-2 bg-current rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                    <span className="text-gray-700 leading-relaxed">{item}</span>
+                    <div 
+                      className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ 
+                        __html: section.itemsHtml && section.itemsHtml[itemIndex] 
+                          ? section.itemsHtml[itemIndex] 
+                          : item 
+                      }}
+                    />
                   </li>
                 ))}
               </ul>

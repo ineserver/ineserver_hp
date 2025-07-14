@@ -1,8 +1,26 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { remark } from 'remark';
+import remarkHtml from 'remark-html';
 
 const contentDirectory = path.join(process.cwd(), 'content');
+
+// MarkdownをパースしてHTMLに変換する関数
+async function processMarkdown(markdown: string): Promise<string> {
+  const result = await remark()
+    .use(remarkHtml)
+    .process(markdown);
+  return result.toString();
+}
+
+// タイトルから先頭の「・」を削除する関数
+function cleanTitle(title: string): string {
+  if (title.startsWith('・')) {
+    return title.substring(1).trim();
+  }
+  return title;
+}
 
 export interface PatchNote {
   id: string;
@@ -11,10 +29,12 @@ export interface PatchNote {
   title: string;
   date: string;
   description: string;
+  isLatest?: boolean;
   sections: {
-    type: 'fixes' | 'features' | 'breaking' | 'performance' | 'security';
+    type: 'fixes' | 'features' | 'other';
     title: string;
     items: string[];
+    itemsHtml?: string[]; // HTML変換された項目
   }[];
   published: boolean;
 }
@@ -28,33 +48,77 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
   }
 
   const fileNames = fs.readdirSync(patchNotesDirectory);
-  const allPatchNotes = fileNames
-    .filter(name => name.endsWith('.md'))
-    .map((name) => {
-      const id = name.replace(/\.md$/, '');
-      const fullPath = path.join(patchNotesDirectory, name);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data } = matter(fileContents);
+  const allPatchNotes = await Promise.all(
+    fileNames
+      .filter(name => name.endsWith('.md'))
+      .map(async (name) => {
+        const id = name.replace(/\.md$/, '');
+        const fullPath = path.join(patchNotesDirectory, name);
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const { data } = matter(fileContents);
 
-      return {
-        id,
-        slug: id.replace(/\./g, '-'), // バージョン番号をslugに変換（例: 4.19.0.1 → 4-19-0-1）
-        version: data.version,
-        title: data.title,
-        date: new Date(data.date).toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }),
-        description: data.description,
-        sections: data.sections || [],
-        published: data.published ?? true,
-      } as PatchNote;
-    })
+        // タイプに基づいてタイトルを自動生成（既存のタイトルがある場合はそれを優先）
+        const sectionsWithTitles = await Promise.all(
+          (data.sections || []).map(async (section: any) => {
+            // 各アイテムをMarkdownからHTMLに変換
+            const itemsHtml = await Promise.all(
+              (section.items || []).map(async (item: string) => {
+                return await processMarkdown(item);
+              })
+            );
+
+            return {
+              ...section,
+              title: section.title || getAutoTitle(section.type),
+              itemsHtml
+            };
+          })
+        );
+
+        return {
+          id,
+          slug: id.replace(/\./g, '-'), // バージョン番号をslugに変換（例: 4.19.0.1 → 4-19-0-1）
+          version: data.version,
+          title: cleanTitle(data.title), // タイトルから先頭の「・」を削除
+          date: data.date ? new Date(data.date).toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : '',
+          description: data.description,
+          sections: sectionsWithTitles,
+          published: data.published ?? true,
+          rawDate: data.date ? new Date(data.date) : new Date(0), // ソート用の生の日付
+        } as PatchNote & { rawDate: Date };
+      })
+  );
+
+  const sortedPatchNotes = allPatchNotes
     .filter(patchNote => patchNote.published)
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .sort((a, b) => {
+      // 日付で降順にソート（新しいものが上）
+      return b.rawDate.getTime() - a.rawDate.getTime();
+    })
+    .map(({ rawDate, ...patchNote }, index) => ({
+      ...patchNote,
+      isLatest: index === 0 // 最初のアイテム（最新）にisLatestフラグを設定
+    }));
 
-  return allPatchNotes;
+  return sortedPatchNotes;
+}
+
+// タイプに基づいてタイトルを自動生成する関数
+function getAutoTitle(type: string): string {
+  switch (type) {
+    case 'features':
+      return '追加・変更要素';
+    case 'fixes':
+      return '不具合修正';
+    case 'other':
+      return 'その他';
+    default:
+      return 'その他';
+  }
 }
 
 export async function getPatchNoteBySlug(slug: string): Promise<PatchNote | null> {

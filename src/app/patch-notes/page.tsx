@@ -12,10 +12,12 @@ interface PatchNote {
   title: string;
   date: string;
   description: string;
+  isLatest?: boolean;
   sections: {
-    type: 'fixes' | 'features' | 'breaking' | 'performance' | 'security';
+    type: 'fixes' | 'features' | 'other';
     title: string;
     items: string[];
+    itemsHtml?: string[];
   }[];
 }
 
@@ -48,7 +50,7 @@ export default function PatchNotesArchive() {
               sections: [
                 {
                   type: 'fixes',
-                  title: 'バグ修正',
+                  title: '不具合修正',
                   items: [
                     'CCPlayerDataが利用不可時のデフォルト値設定を修正',
                     'プロトコルライブラリの無効化機能がエラーで停止する問題を修正',
@@ -56,8 +58,8 @@ export default function PatchNotesArchive() {
                   ]
                 },
                 {
-                  type: 'performance',
-                  title: 'CI/CD',
+                  type: 'other',
+                  title: 'その他',
                   items: [
                     'コミット詳細リンクが間違ったリポジトリを指す問題を修正',
                     'ビルドプロセスの最適化により、デプロイ時間を30%短縮'
@@ -74,8 +76,8 @@ export default function PatchNotesArchive() {
               description: 'WU 4.19への大規模アップデートと非推奨コードの削除を実施。このメジャーアップデートでは、古いAPIの削除と新しい機能の追加が含まれています。',
               sections: [
                 {
-                  type: 'breaking',
-                  title: '破壊的変更',
+                  type: 'other',
+                  title: 'その他',
                   items: [
                     'WU 4.19への更新と非推奨コードの削除',
                     '古いプラグインAPIの廃止'
@@ -83,7 +85,7 @@ export default function PatchNotesArchive() {
                 },
                 {
                   type: 'features',
-                  title: 'テスト',
+                  title: '追加・変更要素',
                   items: [
                     'テストサーバーを1.21.5に更新',
                     '自動テストスイートの追加'
@@ -100,8 +102,8 @@ export default function PatchNotesArchive() {
               description: 'サーバーパフォーマンスの大幅な改善を実施しました。',
               sections: [
                 {
-                  type: 'performance',
-                  title: 'パフォーマンス改善',
+                  type: 'other',
+                  title: 'その他',
                   items: [
                     'メモリ使用量を20%削減',
                     'レスポンス時間を30%短縮',
@@ -109,8 +111,8 @@ export default function PatchNotesArchive() {
                   ]
                 },
                 {
-                  type: 'security',
-                  title: 'セキュリティ修正',
+                  type: 'fixes',
+                  title: '不具合修正',
                   items: [
                     'XSS脆弱性の修正',
                     '認証システムの強化'
@@ -128,7 +130,7 @@ export default function PatchNotesArchive() {
               sections: [
                 {
                   type: 'fixes',
-                  title: 'バグ修正',
+                  title: '不具合修正',
                   items: [
                     'アイテム復旧機能の不具合を修正',
                     'チャット機能の表示エラーを解決'
@@ -136,7 +138,7 @@ export default function PatchNotesArchive() {
                 },
                 {
                   type: 'features',
-                  title: 'UI改善',
+                  title: '追加・変更要素',
                   items: [
                     '管理パネルのレスポンシブデザイン対応',
                     'ダークモードの改善'
@@ -153,8 +155,8 @@ export default function PatchNotesArchive() {
               description: 'セキュリティの強化と安定性の向上を実施しました。',
               sections: [
                 {
-                  type: 'security',
-                  title: 'セキュリティ',
+                  type: 'other',
+                  title: 'その他',
                   items: [
                     'ログイン機能の多要素認証対応',
                     'API エンドポイントの保護強化'
@@ -183,12 +185,8 @@ export default function PatchNotesArchive() {
         return '🔧';
       case 'features':
         return '✨';
-      case 'breaking':
-        return '⚠️';
-      case 'performance':
-        return '⚡';
-      case 'security':
-        return '🔒';
+      case 'other':
+        return '⚙️';
       default:
         return '📝';
     }
@@ -200,12 +198,8 @@ export default function PatchNotesArchive() {
         return 'text-blue-600';
       case 'features':
         return 'text-green-600';
-      case 'breaking':
-        return 'text-red-600';
-      case 'performance':
-        return 'text-yellow-600';
-      case 'security':
-        return 'text-purple-600';
+      case 'other':
+        return 'text-gray-600';
       default:
         return 'text-gray-600';
     }
@@ -265,21 +259,18 @@ export default function PatchNotesArchive() {
                       {/* ヘッダー */}
                       <div className="mb-3">
                         <Link href={`/patch-notes/${patchNote.slug || patchNote.id}`}>
-                          <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#5b8064] transition-colors duration-200">
-                            ・{patchNote.version}
-                          </h2>
+                          <div className="flex items-center">
+                            <h2 className="text-xl font-bold text-gray-900 group-hover:text-[#5b8064] transition-colors duration-200">
+                              {patchNote.date}
+                            </h2>
+                            {patchNote.isLatest && (
+                              <span className="ml-3 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                                最新のアップデート
+                              </span>
+                            )}
+                          </div>
                         </Link>
-                        <span className="text-sm text-gray-500">
-                          {patchNote.date}
-                        </span>
                       </div>
-                      
-                      {/* タイトル */}
-                      <Link href={`/patch-notes/${patchNote.slug || patchNote.id}`}>
-                        <h3 className="text-lg font-medium text-[#5b8064] mb-3 hover:text-[#4a6952] transition-colors duration-200">
-                          {patchNote.title}
-                        </h3>
-                      </Link>
                       
                       {/* 説明 */}
                       <p className="text-gray-600 mb-4 line-clamp-2">

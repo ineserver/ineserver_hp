@@ -9,6 +9,12 @@ public_folder: "/images/uploads" # 公開URLパス
 # ローカル開発用設定
 local_backend: true
 
+# CMS設定
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 # コレクション（コンテンツタイプ）の定義
 collections:
   # パッチノート（最初に配置）
@@ -20,21 +26,28 @@ collections:
     extension: "md"
     format: "frontmatter"
     identifier_field: "version"
+    sortable_fields: ["date", "version"]
     fields:
-      - {label: "バージョン", name: "version", widget: "string"}
-      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "バージョン", name: "version", widget: "string", required: false}
+      - {label: "タイトル", name: "title", widget: "string", required: false}
       - {label: "発行日", name: "date", widget: "datetime"}
-      - {label: "概要", name: "description", widget: "text"}
+      - {label: "概要", name: "description", widget: "text", required: false}
       - label: "セクション"
         name: "sections"
         widget: "list"
         fields:
-          - {label: "タイプ", name: "type", widget: "select", options: ["fixes", "features", "breaking", "performance", "security"], default: "fixes"}
-          - {label: "セクションタイトル", name: "title", widget: "string"}
+          - label: "タイプ"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "追加・変更要素", value: "features"}
+              - {label: "不具合修正", value: "fixes"}
+              - {label: "その他", value: "other"}
+            default: "fixes"
           - label: "項目"
             name: "items"
             widget: "list"
-            field: {label: "項目", name: "item", widget: "string"}
+            field: {label: "項目", name: "item", widget: "markdown"}
       - {label: "公開", name: "published", widget: "boolean", default: true}
 
   # お知らせ
@@ -131,8 +144,9 @@ collections:
     slug: "{{fields.version}}"
     extension: "md"
     format: "frontmatter"
+    sortable_fields: ["date", "version"]
     fields:
-      - {label: "バージョン", name: "version", widget: "string"}
+      - {label: "バージョン", name: "version", widget: "string", required: false}
       - {label: "タイトル", name: "title", widget: "string"}
       - {label: "発行日", name: "date", widget: "datetime"}
       - {label: "概要", name: "description", widget: "text"}
@@ -140,12 +154,18 @@ collections:
         name: "sections"
         widget: "list"
         fields:
-          - {label: "タイプ", name: "type", widget: "select", options: ["fixes", "features", "breaking", "performance", "security"], default: "fixes"}
-          - {label: "セクションタイトル", name: "title", widget: "string"}
+          - label: "タイプ"
+            name: "type"
+            widget: "select"
+            options:
+              - {label: "追加・変更要素", value: "features"}
+              - {label: "不具合修正", value: "fixes"}
+              - {label: "その他", value: "other"}
+            default: "fixes"
           - label: "項目"
             name: "items"
             widget: "list"
-            field: {label: "項目", name: "item", widget: "string"}
+            field: {label: "項目", name: "item", widget: "markdown"}
       - {label: "公開", name: "published", widget: "boolean", default: true}
 
   # ページ設定
