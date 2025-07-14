@@ -11,6 +11,32 @@ local_backend: true
 
 # コレクション（コンテンツタイプ）の定義
 collections:
+  # パッチノート（最初に配置）
+  - name: "patchnotes"
+    label: "パッチノート"
+    folder: "content/patch-notes"
+    create: true
+    slug: "{{fields.version}}"
+    extension: "md"
+    format: "frontmatter"
+    identifier_field: "version"
+    fields:
+      - {label: "バージョン", name: "version", widget: "string"}
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "発行日", name: "date", widget: "datetime"}
+      - {label: "概要", name: "description", widget: "text"}
+      - label: "セクション"
+        name: "sections"
+        widget: "list"
+        fields:
+          - {label: "タイプ", name: "type", widget: "select", options: ["fixes", "features", "breaking", "performance", "security"], default: "fixes"}
+          - {label: "セクションタイトル", name: "title", widget: "string"}
+          - label: "項目"
+            name: "items"
+            widget: "list"
+            field: {label: "項目", name: "item", widget: "string"}
+      - {label: "公開", name: "published", widget: "boolean", default: true}
+
   # お知らせ
   - name: "announcements"
     label: "お知らせ"
@@ -95,6 +121,31 @@ collections:
       - {label: "概要", name: "description", widget: "text"}
       - {label: "本文", name: "body", widget: "markdown"}
       - {label: "路線図・地図", name: "map_image", widget: "image", required: false}
+      - {label: "公開", name: "published", widget: "boolean", default: true}
+
+  # パッチノート
+  - name: "patch-notes"
+    label: "パッチノート"
+    folder: "content/patch-notes"
+    create: true
+    slug: "{{fields.version}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - {label: "バージョン", name: "version", widget: "string"}
+      - {label: "タイトル", name: "title", widget: "string"}
+      - {label: "発行日", name: "date", widget: "datetime"}
+      - {label: "概要", name: "description", widget: "text"}
+      - label: "セクション"
+        name: "sections"
+        widget: "list"
+        fields:
+          - {label: "タイプ", name: "type", widget: "select", options: ["fixes", "features", "breaking", "performance", "security"], default: "fixes"}
+          - {label: "セクションタイトル", name: "title", widget: "string"}
+          - label: "項目"
+            name: "items"
+            widget: "list"
+            field: {label: "項目", name: "item", widget: "string"}
       - {label: "公開", name: "published", widget: "boolean", default: true}
 
   # ページ設定

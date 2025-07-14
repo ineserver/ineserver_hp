@@ -13,11 +13,27 @@ interface Announcement {
   description: string;
 }
 
+interface PatchNote {
+  id: string;
+  slug?: string;
+  version: string;
+  title: string;
+  date: string;
+  description: string;
+  sections: {
+    type: 'fixes' | 'features' | 'breaking' | 'performance' | 'security';
+    title: string;
+    items: string[];
+  }[];
+}
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [latestPatchNote, setLatestPatchNote] = useState<PatchNote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPatchNoteLoading, setIsPatchNoteLoading] = useState(true);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   
   // タブのref
@@ -173,7 +189,74 @@ export default function Home() {
       }
     ];
 
+    // パッチノートデータを取得
+    const fetchPatchNotes = async () => {
+      try {
+        setIsPatchNoteLoading(true);
+        const response = await fetch('/api/patch-notes');
+        if (response.ok) {
+          const result = await response.json();
+          const cmsPatchNotes = result.data || result;
+          if (Array.isArray(cmsPatchNotes) && cmsPatchNotes.length > 0) {
+            setLatestPatchNote(cmsPatchNotes[0]); // 最新の1件のみ
+          }
+        } else {
+          // CMSからの取得に失敗した場合のサンプルデータ
+          const samplePatchNote: PatchNote = {
+            id: '1',
+            slug: '4-19-0-1',
+            version: '4.19.0.1',
+            title: 'WolfyScript 4.19.0.1 アップデート',
+            date: '2025年4月25日',
+            description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
+            sections: [
+              {
+                type: 'fixes',
+                title: 'バグ修正',
+                items: [
+                  'CCPlayerDataが利用不可時のデフォルト値設定を修正',
+                  'プロトコルライブラリ機能の無効化処理を修正'
+                ]
+              },
+              {
+                type: 'performance',
+                title: 'パフォーマンス改善',
+                items: [
+                  'CI/CDパイプラインのコミット詳細リンク修正'
+                ]
+              }
+            ]
+          };
+          setLatestPatchNote(samplePatchNote);
+        }
+      } catch (error) {
+        console.error('Error fetching patch notes:', error);
+        // エラー時のフォールバック
+        const fallbackPatchNote: PatchNote = {
+          id: '1',
+          version: '4.19.0.1',
+          title: 'WolfyScript 4.19.0.1 アップデート',
+          date: '2025年4月25日',
+          description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
+          sections: [
+            {
+              type: 'fixes',
+              title: 'バグ修正',
+              items: [
+                'CCPlayerDataが利用不可時のデフォルト値設定を修正',
+                'プロトコルライブラリ機能の無効化処理を修正'
+              ]
+            }
+          ]
+        };
+        setLatestPatchNote(fallbackPatchNote);
+      } finally {
+        setIsPatchNoteLoading(false);
+      }
+    };
+
     fetchAnnouncements();
+    fetchPatchNotes();
   }, []);
 
   const nextSlide = () => {
@@ -192,6 +275,41 @@ export default function Home() {
     if (activeTab === 'pickup') return announcement.type === 'pickup';
     return true;
   });
+
+  // パッチノートセクションのスタイル取得
+  const getSectionIcon = (type: string) => {
+    switch (type) {
+      case 'fixes':
+        return '🔧';
+      case 'features':
+        return '✨';
+      case 'breaking':
+        return '⚠️';
+      case 'performance':
+        return '⚡';
+      case 'security':
+        return '🔒';
+      default:
+        return '📝';
+    }
+  };
+
+  const getSectionColor = (type: string) => {
+    switch (type) {
+      case 'fixes':
+        return 'text-blue-600';
+      case 'features':
+        return 'text-green-600';
+      case 'breaking':
+        return 'text-red-600';
+      case 'performance':
+        return 'text-yellow-600';
+      case 'security':
+        return 'text-purple-600';
+      default:
+        return 'text-gray-600';
+    }
+  };
 
   // 手動更新機能
   const refreshAnnouncements = async () => {
@@ -425,12 +543,92 @@ export default function Home() {
             
             {/* もっと見るボタン */}
             <div className="p-6 border-t border-gray-200 text-center">
-              <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
-                もっと見る
-                <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+              <Link href="/announcements">
+                <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                  もっと見る
+                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* パッチノートセクション */}
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden">
+              {/* ヘッダー */}
+              <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] px-8 py-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">パッチノート</h2>
+                    <p className="text-green-100 mt-1">最新のアップデート情報</p>
+                  </div>
+                  <Link href="/patch-notes">
+                    <button className="flex items-center px-4 py-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg text-white transition-all duration-200">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                      </svg>
+                      アーカイブ
+                    </button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* パッチノート内容 */}
+              <div className="p-8">
+                {isPatchNoteLoading ? (
+                  <div className="text-center py-12">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5b8064] mx-auto"></div>
+                    <p className="mt-2 text-gray-500">パッチノートを読み込み中...</p>
+                  </div>
+                ) : latestPatchNote ? (
+                  <div>
+                    {/* バージョンヘッダー */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <h3 className="text-xl font-bold text-gray-900">{latestPatchNote.version}</h3>
+                        <span className="ml-3 text-sm text-gray-500">by WolfyScript on {latestPatchNote.date}</span>
+                      </div>
+                      <Link href={`/patch-notes/${latestPatchNote.slug || latestPatchNote.id}`}>
+                        <button className="text-[#5b8064] hover:text-[#4a6b55] text-sm font-medium transition-colors duration-200">
+                          詳細を見る →
+                        </button>
+                      </Link>
+                    </div>
+
+                    {/* 説明 */}
+                    <p className="text-gray-600 mb-6">{latestPatchNote.description}</p>
+
+                    {/* セクション一覧 */}
+                    <div className="space-y-4">
+                      {latestPatchNote.sections.map((section, index) => (
+                        <div key={index}>
+                          <h4 className={`flex items-center text-sm font-semibold mb-2 ${getSectionColor(section.type)}`}>
+                            <span className="mr-2">{getSectionIcon(section.type)}</span>
+                            {section.title}
+                          </h4>
+                          <ul className="space-y-1 ml-6">
+                            {section.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="text-sm text-gray-600 flex items-start">
+                                <span className="mr-2 mt-1">•</span>
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 text-gray-500">
+                    パッチノートがありません
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </section>

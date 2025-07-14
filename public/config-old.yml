@@ -1,3 +1,4 @@
+# このファイルはバックアップ用の設定ファイルです。実際に設定を行う際は、`config.yml`を使用してください。
 backend:
   name: git-gateway
   branch: master # デフォルトブランチ名

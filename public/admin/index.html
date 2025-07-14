@@ -4,10 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>いねさば CMS</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
   <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    // ローカル開発モードの確認
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      // ローカルバックエンドが利用可能になるまで少し待つ
+      setTimeout(() => {
+        console.log('CMS initialized with local backend');
+      }, 1000);
+    }
+  </script>
 </body>
 </html>
