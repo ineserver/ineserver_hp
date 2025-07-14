@@ -136,38 +136,6 @@ collections:
       - {label: "路線図・地図", name: "map_image", widget: "image", required: false}
       - {label: "公開", name: "published", widget: "boolean", default: true}
 
-  # パッチノート
-  - name: "patch-notes"
-    label: "パッチノート"
-    folder: "content/patch-notes"
-    create: true
-    slug: "{{fields.version}}"
-    extension: "md"
-    format: "frontmatter"
-    sortable_fields: ["date", "version"]
-    fields:
-      - {label: "バージョン", name: "version", widget: "string", required: false}
-      - {label: "タイトル", name: "title", widget: "string"}
-      - {label: "発行日", name: "date", widget: "datetime"}
-      - {label: "概要", name: "description", widget: "text"}
-      - label: "セクション"
-        name: "sections"
-        widget: "list"
-        fields:
-          - label: "タイプ"
-            name: "type"
-            widget: "select"
-            options:
-              - {label: "追加・変更要素", value: "features"}
-              - {label: "不具合修正", value: "fixes"}
-              - {label: "その他", value: "other"}
-            default: "fixes"
-          - label: "項目"
-            name: "items"
-            widget: "list"
-            field: {label: "項目", name: "item", widget: "markdown"}
-      - {label: "公開", name: "published", widget: "boolean", default: true}
-
   # ページ設定
   - name: "pages"
     label: "ページ設定"
