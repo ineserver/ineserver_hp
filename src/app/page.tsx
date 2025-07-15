@@ -230,39 +230,6 @@ export default function Home() {
     }
   };
 
-  // 手動更新機能
-  const refreshAnnouncements = async () => {
-    setIsLoading(true);
-    setAnnouncementError(false);
-    try {
-      const response = await fetch('/api/announcements');
-      if (response.ok) {
-        const cmsAnnouncements = await response.json();
-        const formattedAnnouncements = cmsAnnouncements.map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          date: new Date(item.date).toLocaleDateString('ja-JP', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }),
-          type: item.type || 'normal'
-        }));
-        setAnnouncements(formattedAnnouncements);
-      } else {
-        setAnnouncementError(true);
-        setAnnouncements([]);
-      }
-    } catch (error) {
-      console.warn('Error refreshing announcements:', error);
-      setAnnouncementError(true);
-      setAnnouncements([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   // タグの色を取得する関数
   const getTagStyle = (type: string) => {
     switch (type) {
@@ -401,22 +368,8 @@ export default function Home() {
               <div className="bg-white rounded-lg border border-gray-200">
             {/* ヘッダー */}
             <div className="border-b border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4">
                 <h2 className="text-2xl font-bold text-gray-900">お知らせ</h2>
-                <button
-                  onClick={refreshAnnouncements}
-                  disabled={isLoading}
-                  className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b8064] disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                >
-                  <svg 
-                    className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} 
-                    fill="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
-                  </svg>
-                  更新
-                </button>
               </div>
               
               {/* タブナビゲーション */}
@@ -474,15 +427,6 @@ export default function Home() {
                   </div>
                   <p className="text-red-600 font-medium">読み込みができませんでした</p>
                   <p className="text-sm text-gray-500 mt-1">しばらく時間をおいてから再度お試しください</p>
-                  <button
-                    onClick={refreshAnnouncements}
-                    className="mt-4 inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
-                  >
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
-                    </svg>
-                    再試行
-                  </button>
                 </div>
               ) : filteredAnnouncements.length > 0 ? (
                 filteredAnnouncements.map((announcement) => (

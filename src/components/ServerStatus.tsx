@@ -15,10 +15,11 @@ export default function ServerStatus({
   refreshInterval = 30000 // 30秒
 }: ServerStatusProps) {
   const [status, setStatus] = useState<ServerStatusType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期値をfalseに変更
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isClient, setIsClient] = useState(false);
+  const [hasInitialLoad, setHasInitialLoad] = useState(false); // 初回ロード完了フラグ
 
   // クライアントサイドでのみ実行
   useEffect(() => {
@@ -29,6 +30,11 @@ export default function ServerStatus({
   const fetchServerStatus = async () => {
     try {
       setError(null);
+      // 初回ロード時のみローディング状態を表示
+      if (!hasInitialLoad) {
+        setIsLoading(true);
+      }
+      
       const response = await fetch(`/api/server-status?address=${encodeURIComponent(serverAddress)}`);
       
       if (!response.ok) {
@@ -46,12 +52,17 @@ export default function ServerStatus({
       // エラー時は前回のステータスを保持
     } finally {
       setIsLoading(false);
+      setHasInitialLoad(true);
     }
   };
 
-  // 初回ロード
+  // 初回ロード（非同期で実行、UI表示をブロックしない）
   useEffect(() => {
-    fetchServerStatus();
+    // 少し遅延させてUI表示を優先
+    const timer = setTimeout(() => {
+      fetchServerStatus();
+    }, 100);
+    return () => clearTimeout(timer);
   }, [serverAddress]);
 
   // 定期更新
@@ -59,12 +70,6 @@ export default function ServerStatus({
     const interval = setInterval(fetchServerStatus, refreshInterval);
     return () => clearInterval(interval);
   }, [serverAddress, refreshInterval]);
-
-  // 手動更新
-  const handleRefresh = () => {
-    setIsLoading(true);
-    fetchServerStatus();
-  };
 
   // プレイヤー数の表示色を取得
   const getPlayerCountColor = (online: number, max: number) => {
@@ -76,7 +81,8 @@ export default function ServerStatus({
 
   // ステータス表示
   const getStatusDisplay = () => {
-    if (isLoading && !status) {
+    // 初回ロード中の場合
+    if (isLoading && !hasInitialLoad) {
       return {
         text: '確認中...',
         color: 'text-gray-500',
@@ -113,6 +119,16 @@ export default function ServerStatus({
       };
     }
 
+    // データがない場合（初回ロード前）
+    if (!status && !hasInitialLoad) {
+      return {
+        text: '取得中...',
+        color: 'text-gray-500',
+        bgColor: 'bg-gray-100',
+        icon: '⏳'
+      };
+    }
+
     return {
       text: 'オフライン',
       color: 'text-red-600',
@@ -124,7 +140,7 @@ export default function ServerStatus({
   const statusDisplay = getStatusDisplay();
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+    <div className="bg-white rounded-lg border border-gray-200">
       {/* ヘッダー */}
       <div className="border-b border-gray-200 p-4">
         <h2 className="text-xl font-bold text-gray-900">サーバーステータス</h2>
@@ -147,7 +163,7 @@ export default function ServerStatus({
                 href="/announcements" 
                 className="inline-flex items-center text-sm text-orange-600 hover:text-orange-800 hover:underline transition-colors"
               >
-                <span className="mr-1">📢</span>
+                <span className="mr-1">⚙️</span>
                 メンテナンス情報を確認する
               </a>
             </div>
@@ -159,7 +175,7 @@ export default function ServerStatus({
           {/* サーバー状態 */}
           <div className="flex items-center">
             <div className="relative mr-3">
-              {isLoading && !status && (
+              {(isLoading && !hasInitialLoad) && (
                 <div className="w-4 h-4 bg-gray-400 rounded-full animate-pulse"></div>
               )}
               {error && (
@@ -176,6 +192,10 @@ export default function ServerStatus({
               {/* オフライン状態 */}
               {status && !status.online && status.version !== 'Maintenance' && status.version !== 'メンテナンス' && (
                 <div className="w-4 h-4 bg-red-500 rounded-full"></div>
+              )}
+              {/* 初回ロード前 */}
+              {!status && !hasInitialLoad && !isLoading && (
+                <div className="w-4 h-4 bg-gray-400 rounded-full animate-pulse"></div>
               )}
             </div>
             <div>
