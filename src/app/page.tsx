@@ -36,6 +36,8 @@ export default function Home() {
   const [latestPatchNote, setLatestPatchNote] = useState<PatchNote | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPatchNoteLoading, setIsPatchNoteLoading] = useState(true);
+  const [announcementError, setAnnouncementError] = useState(false);
+  const [patchNoteError, setPatchNoteError] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   
   // タブのref
@@ -116,6 +118,7 @@ export default function Home() {
     const fetchAnnouncements = async () => {
       try {
         setIsLoading(true);
+        setAnnouncementError(false);
         const response = await fetch('/api/announcements');
         if (response.ok) {
           const cmsAnnouncements = await response.json();
@@ -133,125 +136,45 @@ export default function Home() {
           }));
           setAnnouncements(formattedAnnouncements);
         } else {
-          // CMSからの取得に失敗した場合は静的データを使用
-          console.warn('Failed to fetch announcements from CMS, using static data');
-          setAnnouncements(staticAnnouncements);
+          // CMSからの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch announcements from CMS');
+          setAnnouncementError(true);
+          setAnnouncements([]);
         }
       } catch (error) {
-        // エラーが発生した場合は静的データを使用
+        // エラーが発生した場合はエラー状態を設定
         console.warn('Error fetching announcements from CMS:', error);
-        setAnnouncements(staticAnnouncements);
+        setAnnouncementError(true);
+        setAnnouncements([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    const staticAnnouncements: Announcement[] = [
-      {
-        id: '1',
-        title: 'サーバーメンテナンスのお知らせ',
-        description: '7月15日（火）午前2時～午前6時の間、サーバーメンテナンスを実施いたします。',
-        date: '2025年7月13日',
-        type: 'important'
-      },
-      {
-        id: '2',
-        title: '夏季イベント開催中！',
-        description: '夏祭りイベントを開催しています。期間限定アイテムをゲットしよう！',
-        date: '2025年7月10日',
-        type: 'pickup'
-      },
-      {
-        id: '3',
-        title: '新しいエリアがオープンしました',
-        description: '新しい建築エリアが追加されました。ぜひ遊びに来てください！',
-        date: '2025年7月8日',
-        type: 'normal'
-      },
-      {
-        id: '4',
-        title: 'ルール更新のお知らせ',
-        description: 'サーバールールの一部を更新いたしました。詳細をご確認ください。',
-        date: '2025年7月5日',
-        type: 'normal'
-      },
-      {
-        id: '5',
-        title: 'アップデート実施のお知らせ',
-        description: '新機能の追加に伴うアップデートを実施いたします。',
-        date: '2025年7月3日',
-        type: 'important'
-      },
-      {
-        id: '6',
-        title: 'コミュニティイベント参加者募集',
-        description: '建築コンテストの参加者を募集中です。豪華賞品をご用意！',
-        date: '2025年7月1日',
-        type: 'pickup'
-      }
-    ];
-
     // パッチノートデータを取得
     const fetchPatchNotes = async () => {
       try {
         setIsPatchNoteLoading(true);
+        setPatchNoteError(false);
         const response = await fetch('/api/patch-notes');
         if (response.ok) {
           const result = await response.json();
           const cmsPatchNotes = result.data || result;
           if (Array.isArray(cmsPatchNotes) && cmsPatchNotes.length > 0) {
             setLatestPatchNote(cmsPatchNotes[0]); // 最新の1件のみ
+          } else {
+            setLatestPatchNote(null);
           }
         } else {
-          // CMSからの取得に失敗した場合のサンプルデータ
-          const samplePatchNote: PatchNote = {
-            id: '1',
-            slug: '4-19-0-1',
-            version: '4.19.0.1',
-            title: '2025年4月25日',
-            date: '2025年4月25日',
-            description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
-            sections: [
-              {
-                type: 'fixes',
-                title: '不具合修正',
-                items: [
-                  'CCPlayerDataが利用不可時のデフォルト値設定を修正',
-                  'プロトコルライブラリ機能の無効化処理を修正'
-                ]
-              },
-              {
-                type: 'other',
-                title: 'その他',
-                items: [
-                  'CI/CDパイプラインのコミット詳細リンク修正'
-                ]
-              }
-            ]
-          };
-          setLatestPatchNote(samplePatchNote);
+          // CMSからの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch patch notes from CMS');
+          setPatchNoteError(true);
+          setLatestPatchNote(null);
         }
       } catch (error) {
         console.error('Error fetching patch notes:', error);
-        // エラー時のフォールバック
-        const fallbackPatchNote: PatchNote = {
-          id: '1',
-          version: '4.19.0.1',
-          title: '2025年4月25日',
-          date: '2025年4月25日',
-          description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。',
-          sections: [
-            {
-              type: 'fixes',
-              title: '不具合修正',
-              items: [
-                'CCPlayerDataが利用不可時のデフォルト値設定を修正',
-                'プロトコルライブラリ機能の無効化処理を修正'
-              ]
-            }
-          ]
-        };
-        setLatestPatchNote(fallbackPatchNote);
+        setPatchNoteError(true);
+        setLatestPatchNote(null);
       } finally {
         setIsPatchNoteLoading(false);
       }
@@ -308,6 +231,7 @@ export default function Home() {
   // 手動更新機能
   const refreshAnnouncements = async () => {
     setIsLoading(true);
+    setAnnouncementError(false);
     try {
       const response = await fetch('/api/announcements');
       if (response.ok) {
@@ -324,9 +248,14 @@ export default function Home() {
           type: item.type || 'normal'
         }));
         setAnnouncements(formattedAnnouncements);
+      } else {
+        setAnnouncementError(true);
+        setAnnouncements([]);
       }
     } catch (error) {
       console.warn('Error refreshing announcements:', error);
+      setAnnouncementError(true);
+      setAnnouncements([]);
     } finally {
       setIsLoading(false);
     }
@@ -502,6 +431,26 @@ export default function Home() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
                   <p className="mt-2 text-gray-500">お知らせを読み込み中...</p>
                 </div>
+              ) : announcementError ? (
+                // エラー状態
+                <div className="p-6 text-center">
+                  <div className="text-red-500 mb-2">
+                    <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="text-red-600 font-medium">読み込みができませんでした</p>
+                  <p className="text-sm text-gray-500 mt-1">しばらく時間をおいてから再度お試しください</p>
+                  <button
+                    onClick={refreshAnnouncements}
+                    className="mt-4 inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    再試行
+                  </button>
+                </div>
               ) : filteredAnnouncements.length > 0 ? (
                 filteredAnnouncements.map((announcement) => (
                   <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
@@ -577,6 +526,17 @@ export default function Home() {
                 <div className="p-6 text-center">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5b8064] mx-auto"></div>
                   <p className="mt-2 text-gray-500">パッチノートを読み込み中...</p>
+                </div>
+              ) : patchNoteError ? (
+                // エラー状態
+                <div className="p-6 text-center">
+                  <div className="text-red-500 mb-2">
+                    <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <p className="text-red-600 font-medium">読み込みができませんでした</p>
+                  <p className="text-sm text-gray-500 mt-1">しばらく時間をおいてから再度お試しください</p>
                 </div>
               ) : latestPatchNote ? (
                 <div className="p-6">

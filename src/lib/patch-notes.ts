@@ -8,25 +8,20 @@ const contentDirectory = path.join(process.cwd(), 'content');
 
 // MarkdownをパースしてHTMLに変換する関数
 async function processMarkdown(markdown: string): Promise<string> {
+  // 引用符で囲まれた文字列から、Markdownの**を正しく処理するため、
+  // 文字列をそのままMarkdownとして扱う
   const result = await remark()
-    .use(remarkHtml)
+    .use(remarkHtml, { sanitize: false })
     .process(markdown);
   return result.toString();
 }
 
-// タイトルから先頭の「・」を削除する関数
-function cleanTitle(title: string): string {
-  if (title.startsWith('・')) {
-    return title.substring(1).trim();
-  }
-  return title;
-}
+
 
 export interface PatchNote {
   id: string;
   slug: string;
   version: string;
-  title: string;
   date: string;
   description: string;
   isLatest?: boolean;
@@ -79,13 +74,12 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
           id,
           slug: id.replace(/\./g, '-'), // バージョン番号をslugに変換（例: 4.19.0.1 → 4-19-0-1）
           version: data.version,
-          title: cleanTitle(data.title), // タイトルから先頭の「・」を削除
           date: data.date ? new Date(data.date).toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           }) : '',
-          description: data.description,
+          description: data.description || '',
           sections: sectionsWithTitles,
           published: data.published ?? true,
           rawDate: data.date ? new Date(data.date) : new Date(0), // ソート用の生の日付

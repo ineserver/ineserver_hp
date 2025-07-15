@@ -9,7 +9,6 @@ import Breadcrumb from '@/components/Breadcrumb';
 interface PatchNote {
   id: string;
   version: string;
-  title: string;
   date: string;
   description: string;
   isLatest?: boolean;
@@ -39,7 +38,6 @@ export default function PatchNoteDetailPage() {
           const samplePatchNote: PatchNote = {
             id: params.slug as string,
             version: '4.19.0.1',
-            title: 'WolfyScript 4.19.0.1 アップデート',
             date: '2025年4月25日',
             description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。このアップデートでは、プレイヤーデータの処理に関する重要な修正と、システム全体のパフォーマンス向上が含まれています。',
             sections: [
@@ -175,7 +173,6 @@ export default function PatchNoteDetailPage() {
           </div>
           
           <div className="border-l-4 border-[#5b8064] pl-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">{patchNote.title}</h2>
             <p className="text-gray-600 leading-relaxed">{patchNote.description}</p>
           </div>
         </header>
@@ -194,7 +191,7 @@ export default function PatchNoteDetailPage() {
                   <li key={itemIndex} className="flex items-start">
                     <span className="inline-block w-2 h-2 bg-current rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     <div 
-                      className="text-gray-700 leading-relaxed prose prose-sm max-w-none"
+                      className="text-gray-700 leading-relaxed prose-sm max-w-none [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900"
                       dangerouslySetInnerHTML={{ 
                         __html: section.itemsHtml && section.itemsHtml[itemIndex] 
                           ? section.itemsHtml[itemIndex] 

@@ -9,7 +9,6 @@ interface PatchNote {
   id: string;
   slug?: string;
   version: string;
-  title: string;
   date: string;
   description: string;
   isLatest?: boolean;
@@ -24,6 +23,7 @@ interface PatchNote {
 export default function PatchNotesArchive() {
   const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -31,6 +31,7 @@ export default function PatchNotesArchive() {
     const fetchPatchNotes = async () => {
       try {
         setIsLoading(true);
+        setError(false);
         const response = await fetch('/api/patch-notes');
         if (response.ok) {
           const result = await response.json();
@@ -38,137 +39,14 @@ export default function PatchNotesArchive() {
           const cmsPatchNotes = result.data || result;
           setPatchNotes(Array.isArray(cmsPatchNotes) ? cmsPatchNotes : []);
         } else {
-          // サンプルデータ
-          const samplePatchNotes: PatchNote[] = [
-            {
-              id: '1',
-              slug: '4-19-0-1',
-              version: '4.19.0.1',
-              title: 'WolfyScript 4.19.0.1 アップデート',
-              date: '2025年4月25日',
-              description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。このアップデートでは、プレイヤーデータの処理に関する重要な修正と、システム全体のパフォーマンス向上が含まれています。',
-              sections: [
-                {
-                  type: 'fixes',
-                  title: '不具合修正',
-                  items: [
-                    'CCPlayerDataが利用不可時のデフォルト値設定を修正',
-                    'プロトコルライブラリの無効化機能がエラーで停止する問題を修正',
-                    'プレイヤーデータの同期処理における競合状態を解決'
-                  ]
-                },
-                {
-                  type: 'other',
-                  title: 'その他',
-                  items: [
-                    'コミット詳細リンクが間違ったリポジトリを指す問題を修正',
-                    'ビルドプロセスの最適化により、デプロイ時間を30%短縮'
-                  ]
-                }
-              ]
-            },
-            {
-              id: '2',
-              slug: '4-19-0',
-              version: '4.19.0',
-              title: 'WolfyScript 4.19.0 メジャーアップデート',
-              date: '2025年4月16日',
-              description: 'WU 4.19への大規模アップデートと非推奨コードの削除を実施。このメジャーアップデートでは、古いAPIの削除と新しい機能の追加が含まれています。',
-              sections: [
-                {
-                  type: 'other',
-                  title: 'その他',
-                  items: [
-                    'WU 4.19への更新と非推奨コードの削除',
-                    '古いプラグインAPIの廃止'
-                  ]
-                },
-                {
-                  type: 'features',
-                  title: '追加・変更要素',
-                  items: [
-                    'テストサーバーを1.21.5に更新',
-                    '自動テストスイートの追加'
-                  ]
-                }
-              ]
-            },
-            {
-              id: '3',
-              slug: '4-18-5',
-              version: '4.18.5',
-              title: 'パフォーマンス最適化アップデート',
-              date: '2025年4月10日',
-              description: 'サーバーパフォーマンスの大幅な改善を実施しました。',
-              sections: [
-                {
-                  type: 'other',
-                  title: 'その他',
-                  items: [
-                    'メモリ使用量を20%削減',
-                    'レスポンス時間を30%短縮',
-                    'データベースクエリの最適化'
-                  ]
-                },
-                {
-                  type: 'fixes',
-                  title: '不具合修正',
-                  items: [
-                    'XSS脆弱性の修正',
-                    '認証システムの強化'
-                  ]
-                }
-              ]
-            },
-            {
-              id: '4',
-              slug: '4-18-4',
-              version: '4.18.4',
-              title: 'バグ修正とUI改善',
-              date: '2025年4月5日',
-              description: 'ユーザーインターフェースの改善と重要なバグ修正を行いました。',
-              sections: [
-                {
-                  type: 'fixes',
-                  title: '不具合修正',
-                  items: [
-                    'アイテム復旧機能の不具合を修正',
-                    'チャット機能の表示エラーを解決'
-                  ]
-                },
-                {
-                  type: 'features',
-                  title: '追加・変更要素',
-                  items: [
-                    '管理パネルのレスポンシブデザイン対応',
-                    'ダークモードの改善'
-                  ]
-                }
-              ]
-            },
-            {
-              id: '5',
-              slug: '4-18-3',
-              version: '4.18.3',
-              title: 'セキュリティアップデート',
-              date: '2025年3月28日',
-              description: 'セキュリティの強化と安定性の向上を実施しました。',
-              sections: [
-                {
-                  type: 'other',
-                  title: 'その他',
-                  items: [
-                    'ログイン機能の多要素認証対応',
-                    'API エンドポイントの保護強化'
-                  ]
-                }
-              ]
-            }
-          ];
-          setPatchNotes(samplePatchNotes);
+          // CMSからの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch patch notes from CMS');
+          setError(true);
+          setPatchNotes([]);
         }
       } catch (error) {
         console.error('Error fetching patch notes:', error);
+        setError(true);
         setPatchNotes([]);
       } finally {
         setIsLoading(false);
@@ -177,6 +55,29 @@ export default function PatchNotesArchive() {
 
     fetchPatchNotes();
   }, []);
+
+  // 再試行機能
+  const retryFetch = async () => {
+    setIsLoading(true);
+    setError(false);
+    try {
+      const response = await fetch('/api/patch-notes');
+      if (response.ok) {
+        const result = await response.json();
+        const cmsPatchNotes = result.data || result;
+        setPatchNotes(Array.isArray(cmsPatchNotes) ? cmsPatchNotes : []);
+      } else {
+        setError(true);
+        setPatchNotes([]);
+      }
+    } catch (error) {
+      console.error('Error fetching patch notes:', error);
+      setError(true);
+      setPatchNotes([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // セクションのスタイル取得
   const getSectionIcon = (type: string) => {
@@ -238,6 +139,26 @@ export default function PatchNotesArchive() {
             <div className="text-center py-12">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b8064] mx-auto mb-4"></div>
               <p className="text-gray-600">読み込み中...</p>
+            </div>
+          ) : error ? (
+            // エラー状態
+            <div className="text-center py-12">
+              <div className="text-red-500 mb-4">
+                <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <p className="text-red-600 font-medium text-lg mb-2">読み込みができませんでした</p>
+              <p className="text-gray-500 mb-6">しばらく時間をおいてから再度お試しください</p>
+              <button
+                onClick={retryFetch}
+                className="inline-flex items-center px-6 py-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                再試行
+              </button>
             </div>
           ) : currentPatchNotes.length > 0 ? (
             <div className="relative">

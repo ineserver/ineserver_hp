@@ -28,6 +28,9 @@ yarn install
 npm run dev
 # または
 yarn dev
+
+# 以下はCMSをローカルで起動させるのに必要
+npx decap-server
 ```
 
 4. ブラウザで http://localhost:3000 にアクセス
