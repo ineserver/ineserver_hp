@@ -30,6 +30,7 @@ interface PatchNote {
   }[];
 }
 
+
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
@@ -311,7 +312,7 @@ export default function Home() {
                   alt={slide.title}
                   width={120}
                   height={120}
-                  className="mx-auto mb-8 rounded-lg shadow-lg"
+                  className="mx-auto mb-8 rounded-lg"
                 />
                 <h2 className="text-6xl font-black mb-6">{slide.title}</h2>
                 <p className="text-2xl font-medium">{slide.description}</p>
@@ -323,20 +324,20 @@ export default function Home() {
         {/* 前へボタン */}
         <button
           onClick={prevSlide}
-          className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 rounded-full transition-all duration-200 shadow-lg"
+          className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 rounded-full transition-all duration-200"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
           </svg>
         </button>
         
         {/* 次へボタン */}
         <button
           onClick={nextSlide}
-          className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 rounded-full transition-all duration-200 shadow-lg"
+          className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-4 rounded-full transition-all duration-200"
         >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={3}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
           </svg>
         </button>
         
@@ -348,7 +349,7 @@ export default function Home() {
               onClick={() => setCurrentSlide(index)}
               className={`w-4 h-4 rounded-full transition-all duration-200 border-2 ${
                 index === currentSlide 
-                  ? 'bg-white border-white shadow-lg' 
+                  ? 'bg-white border-white' 
                   : 'bg-transparent border-white border-opacity-60 hover:border-opacity-100'
               }`}
             />
@@ -357,13 +358,47 @@ export default function Home() {
       </div>
 
       {/* メインコンテンツ */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
+        {/* 初心者向けバナー */}
+        <header className="mb-8">
+          <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-lg p-5 border border-green-200">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+              {/* アイコン部分 */}
+              <div className="bg-emerald-500 p-3 rounded-full shadow-md">
+                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" width="32" height="32" color="#ffffff" className="text-white">
+                  <defs>
+                    <style>{`.cls-637a2287b95f902aafde8ff1-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}`}</style>
+                  </defs>
+                  <path className="cls-637a2287b95f902aafde8ff1-1" d="M16.64,19.09h0a5.43,5.43,0,0,1-4.16,2.08h-1a7.41,7.41,0,0,1-5.07-2.08h0C1,12,12,2,12,2l5,7.45A8.29,8.29,0,0,1,16.64,19.09Z"></path>
+                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="11.97" y1="9.3" x2="11.97" y2="23"></line>
+                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="8.32" y1="14.78" x2="11.97" y2="18.43"></line>
+                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="14.71" y1="12.04" x2="11.97" y2="14.78"></line>
+                </svg>
+              </div>
+        
+              {/* テキスト部分 */}
+              <div>
+                <h2 className="text-xl font-bold mb-1 text-gray-900">初めての方へ</h2>
+                <p className="text-sm text-gray-700 font-medium">サーバーの基本的な情報やルールを確認しましょう</p>
+              </div>
+            </div>
+              {/* ボタン部分 */}
+              <Link href="/lifestyle/server-rules">
+                <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 border-t border-green-400">
+                 チュートリアルを見る
+                </button>
+              </Link>
+            </div>
+          </div>
+        </header>
+
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* 左側: お知らせとパッチノート */}
           <div className="xl:col-span-2 space-y-8">
             {/* お知らせセクション */}
             <section>
-              <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+              <div className="bg-white rounded-lg border border-gray-200">
             {/* ヘッダー */}
             <div className="border-b border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
@@ -375,16 +410,10 @@ export default function Home() {
                 >
                   <svg 
                     className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} 
-                    fill="none" 
-                    stroke="currentColor" 
+                    fill="currentColor" 
                     viewBox="0 0 24 24"
                   >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" 
-                    />
+                    <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
                   </svg>
                   更新
                 </button>
@@ -449,8 +478,8 @@ export default function Home() {
                     onClick={refreshAnnouncements}
                     className="mt-4 inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200"
                   >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
                     </svg>
                     再試行
                   </button>
@@ -493,8 +522,8 @@ export default function Home() {
               <Link href="/announcements">
                 <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
                   もっと見る
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
                   </svg>
                 </button>
               </Link>
@@ -504,15 +533,15 @@ export default function Home() {
 
             {/* パッチノートセクション */}
             <section>
-              <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             {/* ヘッダー */}
             <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-white">パッチノート</h2>
                 <Link href="/patch-notes">
                   <button className="inline-flex items-center px-3 py-2 bg-white rounded-md text-sm font-medium text-[#5b8064] hover:bg-gray-50 transition-all duration-200">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
                     </svg>
                     アーカイブ
                   </button>
@@ -598,7 +627,8 @@ export default function Home() {
 
       {/* 右側: サーバーステータス */}
       <div className="xl:col-span-1">
-        <div className="sticky top-8">
+        <div className="sticky top-8 space-y-6">
+          {/* サーバーステータス */}
           {/* 【本番環境での変更点2】 */}
           {/* 環境変数を使用することで、デプロイ時の設定変更を不要にします */}
           {/* ローカル環境: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565 */}
