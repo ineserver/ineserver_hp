@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
+import ServerStatus from "@/components/ServerStatus";
 
 interface Announcement {
   id: string;
@@ -357,9 +358,12 @@ export default function Home() {
 
       {/* メインコンテンツ */}
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* お知らせセクション */}
-        <section className="mb-12">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+          {/* 左側: お知らせとパッチノート */}
+          <div className="xl:col-span-2 space-y-8">
+            {/* お知らせセクション */}
+            <section>
+              <div className="bg-white rounded-lg shadow-lg border border-gray-200">
             {/* ヘッダー */}
             <div className="border-b border-gray-200 p-6">
               <div className="flex items-center justify-between mb-4">
@@ -496,11 +500,11 @@ export default function Home() {
               </Link>
             </div>
           </div>
-        </section>
+            </section>
 
-        {/* パッチノートセクション */}
-        <section className="mb-12">
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+            {/* パッチノートセクション */}
+            <section>
+              <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
             {/* ヘッダー */}
             <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] p-6">
               <div className="flex items-center justify-between mb-4">
@@ -590,7 +594,20 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </main>
+      </div>
+
+      {/* 右側: サーバーステータス */}
+      <div className="xl:col-span-1">
+        <div className="sticky top-8">
+          {/* 【本番環境での変更点2】 */}
+          {/* 環境変数を使用することで、デプロイ時の設定変更を不要にします */}
+          {/* ローカル環境: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565 */}
+          {/* 本番環境: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=play.ineserver.com */}
+          <ServerStatus serverAddress={process.env.NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS} />
+        </div>
+      </div>
     </div>
+  </main>
+</div>
   );
 }

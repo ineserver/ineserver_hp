@@ -91,6 +91,43 @@ ineserver_hp/
 - パンくずリスト
 - Go Topボタン
 - 記事風レイアウト
+- **リアルタイムサーバーステータス** - Minecraftサーバーの状態を30秒間隔で自動更新
+  - サーバーオンライン/オフライン状態
+  - プレイヤー数とプログレスバー
+  - サーバーバージョン情報
+  - MOTD（Message of the Day）
+  - 応答時間（Ping）
+  - 接続方法の表示
+
+## サーバーステータス機能
+
+### 環境変数の設定
+
+サーバーステータス機能を使用するには、以下の環境変数を設定してください：
+
+#### ローカル環境（`.env.local`）
+```env
+NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565
+MINECRAFT_SERVER_ADDRESS=localhost:25565
+```
+
+#### 本番環境（`.env.production`）
+```env
+NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=play.ineserver.com
+MINECRAFT_SERVER_ADDRESS=play.ineserver.com
+```
+
+### 機能詳細
+
+- **リアルタイム更新**: 30秒間隔でサーバーステータスを自動更新
+- **手動更新**: 更新ボタンで即座にステータスを確認
+- **視覚的フィードバック**: オンライン時のアニメーション、プレイヤー数のプログレスバー
+- **エラーハンドリング**: 接続失敗時の適切なエラー表示
+- **レスポンシブデザイン**: モバイルとデスクトップの両方で最適化
+
+### 本番環境への移行
+
+詳細な移行手順については、[PRODUCTION_MIGRATION_GUIDE.md](PRODUCTION_MIGRATION_GUIDE.md)を参照してください。
 
 ## カテゴリ
 

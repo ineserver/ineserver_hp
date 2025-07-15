@@ -24,3 +24,34 @@ body {
   color: var(--foreground);
   font-family: var(--font-noto-sans-jp), Arial, Helvetica, sans-serif;
 }
+
+/* サーバーステータス用のカスタムアニメーション */
+@keyframes pulse-green {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+.pulse-green {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+/* プログレスバーのアニメーション */
+@keyframes progress-fill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--progress-width);
+  }
+}
+
+.progress-bar {
+  animation: progress-fill 0.8s ease-out;
+}
