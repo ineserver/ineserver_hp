@@ -94,6 +94,16 @@ export default function ServerStatus({
       };
     }
 
+    // メンテナンス中の判定
+    if (status?.version && (status.version === 'Maintenance' || status.version === 'メンテナンス')) {
+      return {
+        text: 'メンテナンス中',
+        color: 'text-orange-600',
+        bgColor: 'bg-orange-50',
+        icon: '🔧'
+      };
+    }
+
     if (status?.online) {
       return {
         text: 'オンライン',
@@ -122,6 +132,28 @@ export default function ServerStatus({
 
       {/* ステータス内容 */}
       <div className="p-4">
+        {/* メンテナンス中の場合の追加メッセージ */}
+        {status?.version && (status.version === 'Maintenance' || status.version === 'メンテナンス') && (
+          <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex items-center">
+              <span className="text-orange-600 mr-2">🔧</span>
+              <span className="text-orange-800 font-medium">サーバーはメンテナンス中です</span>
+            </div>
+            <div className="text-sm text-orange-700 mt-1">
+              しばらくお待ちください。作業完了後にサーバーが再開されます。
+            </div>
+            <div className="mt-2">
+              <a 
+                href="/announcements" 
+                className="inline-flex items-center text-sm text-orange-600 hover:text-orange-800 hover:underline transition-colors"
+              >
+                <span className="mr-1">📢</span>
+                メンテナンス情報を確認する
+              </a>
+            </div>
+          </div>
+        )}
+
         {/* サーバー状態とプレイヤー数を横並びに */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           {/* サーバー状態 */}
@@ -133,10 +165,16 @@ export default function ServerStatus({
               {error && (
                 <div className="w-4 h-4 bg-red-500 rounded-full"></div>
               )}
-              {status?.online && (
+              {/* メンテナンス中の場合 */}
+              {status?.version && (status.version === 'Maintenance' || status.version === 'メンテナンス') && (
+                <div className="w-4 h-4 bg-orange-500 rounded-full animate-pulse"></div>
+              )}
+              {/* 通常のオンライン状態 */}
+              {status?.online && status.version !== 'Maintenance' && status.version !== 'メンテナンス' && (
                 <div className="w-4 h-4 bg-green-500 rounded-full pulse-green"></div>
               )}
-              {status && !status.online && (
+              {/* オフライン状態 */}
+              {status && !status.online && status.version !== 'Maintenance' && status.version !== 'メンテナンス' && (
                 <div className="w-4 h-4 bg-red-500 rounded-full"></div>
               )}
             </div>
@@ -182,7 +220,13 @@ export default function ServerStatus({
         <div className="flex justify-between items-center pt-3 border-t border-gray-100">
           {status && (
             <div className="text-sm text-gray-600">
-              バージョン: <span className="text-gray-900 font-medium">{status.version}</span>
+              バージョン: <span className={`font-medium ${
+                status.version === 'Maintenance' || status.version === 'メンテナンス' 
+                  ? 'text-orange-600 font-bold' 
+                  : 'text-gray-900'
+              }`}>
+                {status.version}
+              </span>
             </div>
           )}
           {isClient && lastUpdate && (
