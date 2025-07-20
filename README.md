@@ -109,17 +109,28 @@ ineserver_hp/
 ```env
 NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565
 MINECRAFT_SERVER_ADDRESS=localhost:25565
+GOOGLE_CALENDAR_API_KEY=your_google_calendar_api_key_here
 ```
 
 #### 本番環境（`.env.production`）
 ```env
 NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=play.ineserver.com
 MINECRAFT_SERVER_ADDRESS=play.ineserver.com
+GOOGLE_CALENDAR_API_KEY=your_google_calendar_api_key_here
 ```
+
+#### Google Calendar API Keyの取得方法
+
+1. [Google Cloud Console](https://console.cloud.google.com/) にアクセス
+2. 新しいプロジェクトを作成、または既存のプロジェクトを選択
+3. 「APIとサービス」→「ライブラリ」から「Google Calendar API」を有効化
+4. 「APIとサービス」→「認証情報」でAPIキーを作成
+5. 作成したAPIキーを環境変数に設定
 
 ### 機能詳細
 
 - **リアルタイム更新**: 30秒間隔でサーバーステータスを自動更新
+- **メンテナンス予定表示**: Googleカレンダーから次回メンテナンス予定を取得・表示
 - **手動更新**: 更新ボタンで即座にステータスを確認
 - **視覚的フィードバック**: オンライン時のアニメーション、プレイヤー数のプログレスバー
 - **エラーハンドリング**: 接続失敗時の適切なエラー表示
