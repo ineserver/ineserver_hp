@@ -75,7 +75,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-50 overflow-hidden lg:overflow-visible rounded-b-xl lg:rounded-none">
+    <header className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}>
       {/* メインヘッダー */}
       <div className="bg-white">
         <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">

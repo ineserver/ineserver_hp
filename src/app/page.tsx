@@ -294,7 +294,7 @@ export default function Home() {
       <Header />
 
       {/* カルーセルスライダー */}
-      <div className="relative w-full h-screen overflow-hidden">
+      <div className="relative w-full h-screen overflow-hidden -mt-14 lg:-mt-28">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
