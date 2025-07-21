@@ -79,7 +79,8 @@ const Header = () => {
       <header className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}>
         {/* メインヘッダー */}
         <div className="bg-white">
-          <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
+          {/* モバイル用ヘッダー下部の余白追加 */}
+          <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4 pb-1 lg:pb-0">
             <div className="flex items-center h-14">
               {/* ロゴ - 左側 */}
               <div className="flex items-center">
