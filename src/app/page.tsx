@@ -152,7 +152,7 @@ export default function Home() {
       try {
         setIsLoading(true);
         setAnnouncementError(false);
-        const response = await fetch('/api/announcements');
+        const response = await fetch('/api/announcements', { next: { revalidate: 60 } });
         if (response.ok) {
           const cmsAnnouncements = await response.json();
           // CMSデータをフロントエンド用の形式に変換
@@ -195,7 +195,7 @@ export default function Home() {
       try {
         setIsPatchNoteLoading(true);
         setPatchNoteError(false);
-        const response = await fetch('/api/patch-notes');
+        const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
         if (response.ok) {
           const result = await response.json();
           const cmsPatchNotes = result.data || result;

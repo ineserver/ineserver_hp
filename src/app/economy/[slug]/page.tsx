@@ -25,7 +25,7 @@ export default function EconomyArticlePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`/api/economy/${slug}`);
+        const response = await fetch(`/api/economy/${slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

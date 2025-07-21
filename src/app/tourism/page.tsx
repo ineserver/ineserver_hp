@@ -23,7 +23,7 @@ export default function TourismPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/tourism');
+        const response = await fetch('/api/tourism', { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

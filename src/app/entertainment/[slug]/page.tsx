@@ -25,7 +25,7 @@ export default function EntertainmentArticlePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`/api/entertainment/${slug}`);
+        const response = await fetch(`/api/entertainment/${slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

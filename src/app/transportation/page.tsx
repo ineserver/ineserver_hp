@@ -23,7 +23,7 @@ export default function TransportationPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/transportation');
+        const response = await fetch('/api/transportation', { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

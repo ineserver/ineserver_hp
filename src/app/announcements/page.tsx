@@ -23,7 +23,7 @@ export default function AnnouncementsPage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/announcements');
+        const response = await fetch('/api/announcements', { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

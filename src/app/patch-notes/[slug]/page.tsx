@@ -29,7 +29,7 @@ export default function PatchNoteDetailPage() {
     const fetchPatchNote = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`/api/patch-notes/${params.slug}`);
+        const response = await fetch(`/api/patch-notes/${params.slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const cmsPatchNote = await response.json();
           setPatchNote(cmsPatchNote);

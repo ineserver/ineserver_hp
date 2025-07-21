@@ -25,7 +25,7 @@ export default function TourismArticlePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`/api/tourism/${slug}`);
+        const response = await fetch(`/api/tourism/${slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

@@ -32,7 +32,7 @@ export default function PatchNotesArchive() {
       try {
         setIsLoading(true);
         setError(false);
-        const response = await fetch('/api/patch-notes');
+        const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
         if (response.ok) {
           const result = await response.json();
           // APIが {data: PatchNote[], pagination: {...}} の形式で返すので、dataプロパティを取得
@@ -61,7 +61,7 @@ export default function PatchNotesArchive() {
     setIsLoading(true);
     setError(false);
     try {
-      const response = await fetch('/api/patch-notes');
+      const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
       if (response.ok) {
         const result = await response.json();
         const cmsPatchNotes = result.data || result;

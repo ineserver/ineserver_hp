@@ -25,7 +25,7 @@ export default function LifestyleArticlePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch(`/api/lifestyle/${slug}`);
+        const response = await fetch(`/api/lifestyle/${slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);

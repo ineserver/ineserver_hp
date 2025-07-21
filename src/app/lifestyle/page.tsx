@@ -23,7 +23,7 @@ export default function LifestylePage() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('/api/lifestyle');
+        const response = await fetch('/api/lifestyle', { next: { revalidate: 60 } });
         if (response.ok) {
           const data = await response.json();
           setContent(data);
