@@ -98,7 +98,7 @@ const Header = () => {
                   <Link href="/">
                     <h1 className="text-2xl font-black text-gray-900 hover:text-gray-700 transition-colors duration-200 cursor-pointer">いねさば</h1>
                   </Link>
-                  <p className="text-base text-gray-600">IneServer</p>
+                  <p className="text-base text-gray-600">Ine Server</p>
                 </div>
               </div>
             </div>
