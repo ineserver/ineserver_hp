@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { ServerStatus as ServerStatusType } from '@/types/server-status';
 import MaintenanceSchedule from './MaintenanceSchedule';
 
@@ -168,13 +169,13 @@ export default function ServerStatus({
                 しばらくお待ちください。作業完了後にサーバーが再開されます。
               </div>
               <div className="mt-2">
-                <a 
+                <Link 
                   href="/announcements" 
                   className="inline-flex items-center text-sm text-orange-600 hover:text-orange-800 hover:underline transition-colors"
                 >
                   <span className="mr-1">⚙️</span>
                   メンテナンス情報を確認する
-                </a>
+                </Link>
               </div>
             </div>
           )}

@@ -6,9 +6,11 @@ export async function GET() {
     const entertainmentFiles = await getEntertainmentFiles();
     
     // 公開されているエンターテインメント情報のみをフィルター
-    const publishedEntertainment = entertainmentFiles.filter((entertainment: any) => 
-      entertainment.published !== false
-    );
+    const publishedEntertainment = entertainmentFiles.filter((entertainment) => {
+      return typeof entertainment === 'object' && entertainment !== null && 'published' in entertainment
+        ? (entertainment as { published?: boolean }).published !== false
+        : true;
+    });
     
     return NextResponse.json(publishedEntertainment);
   } catch (error) {

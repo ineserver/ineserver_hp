@@ -1,6 +1,10 @@
+
 import { NextRequest, NextResponse } from 'next/server';
 import { ServerStatus } from '@/types/server-status';
 import * as mc from 'minecraft-protocol';
+import type { OldPingResult, NewPingResult } from 'minecraft-protocol';
+
+
 
 // 内部でMinecraftサーバーに直接クエリを送信する実装
 async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus> {
@@ -14,17 +18,16 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
     console.log(`Attempting to connect to Minecraft server: ${host}:${port}`);
     
     // Minecraft サーバーにpingを送信
-    const response = await new Promise<any>((resolve, reject) => {
+    const response = await new Promise<OldPingResult | NewPingResult>((resolve, reject) => {
       const timeoutId = setTimeout(() => {
         reject(new Error('Ping timeout'));
       }, 10000);
-      
       mc.ping({ host, port }, (err, result) => {
         clearTimeout(timeoutId);
         if (err) {
           reject(err);
         } else {
-          resolve(result);
+          resolve(result as OldPingResult | NewPingResult);
         }
       });
     });
@@ -33,11 +36,25 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
     console.log(`Server ping successful in ${ping}ms:`, response);
     
     // レスポンスの構造を確認してパース
-    const description = response.description || {};
-    const motd = typeof description === 'string' ? description : description.text || 'Minecraft Server';
-    const players = response.players || { online: 0, max: 0 };
-    const version = response.version || {};
-    
+    let motd = 'Minecraft Server';
+    let players = { online: 0, max: 0 };
+    let version = { name: 'Unknown' };
+    if (response && typeof response === 'object') {
+      if ('description' in response) {
+        const description = response.description;
+        motd = typeof description === 'string' ? description : description?.text || 'Minecraft Server';
+      }
+      if ('players' in response && response.players) {
+        players = response.players;
+      }
+      if ('version' in response && response.version) {
+        if (typeof response.version === 'object' && 'name' in response.version) {
+          version = { name: response.version.name };
+        } else {
+          version = { name: 'Unknown' };
+        }
+      }
+    }
     return {
       online: true,
       players: {

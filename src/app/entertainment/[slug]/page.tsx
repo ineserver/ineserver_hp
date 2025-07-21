@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -117,15 +118,12 @@ export default function EntertainmentArticlePage() {
         {/* フッター */}
         <footer className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex justify-between items-center">
-            <a 
-              href="/entertainment"
-              className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] font-medium transition-colors duration-200"
-            >
+            <Link href="/entertainment" className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] font-medium transition-colors duration-200">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               エンタメ一覧に戻る
-            </a>
+            </Link>
           </div>
         </footer>
       </article>

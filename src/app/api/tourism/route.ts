@@ -6,9 +6,11 @@ export async function GET() {
     const tourismFiles = await getTourismFiles();
     
     // 公開されている観光情報のみをフィルター
-    const publishedTourism = tourismFiles.filter((tourism: any) => 
-      tourism.published !== false
-    );
+    const publishedTourism = tourismFiles.filter((tourism) => {
+      return typeof tourism === 'object' && tourism !== null && 'published' in tourism
+        ? (tourism as { published?: boolean }).published !== false
+        : true;
+    });
     
     return NextResponse.json(publishedTourism);
   } catch (error) {

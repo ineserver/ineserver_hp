@@ -156,7 +156,13 @@ export default function Home() {
         if (response.ok) {
           const cmsAnnouncements = await response.json();
           // CMSデータをフロントエンド用の形式に変換
-          const formattedAnnouncements = cmsAnnouncements.map((item: any) => ({
+          const formattedAnnouncements = cmsAnnouncements.map((item: {
+            id: string;
+            title: string;
+            description: string;
+            date: string;
+            type?: string;
+          }) => ({
             id: item.id,
             title: item.title,
             description: item.description,

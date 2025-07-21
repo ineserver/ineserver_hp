@@ -6,9 +6,11 @@ export async function GET() {
     const transportationFiles = await getTransportationFiles();
     
     // 公開されている交通情報のみをフィルター
-    const publishedTransportation = transportationFiles.filter((transportation: any) => 
-      transportation.published !== false
-    );
+    const publishedTransportation = transportationFiles.filter((transportation) => {
+      return typeof transportation === 'object' && transportation !== null && 'published' in transportation
+        ? (transportation as { published?: boolean }).published !== false
+        : true;
+    });
     
     return NextResponse.json(publishedTransportation);
   } catch (error) {

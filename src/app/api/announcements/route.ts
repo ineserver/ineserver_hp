@@ -6,9 +6,11 @@ export async function GET() {
     const announcements = await getAnnouncementFiles();
     
     // 公開されているお知らせのみをフィルター
-    const publishedAnnouncements = announcements.filter((announcement: any) => 
-      announcement.published !== false
-    );
+    const publishedAnnouncements = announcements.filter((announcement) => {
+      return typeof announcement === 'object' && announcement !== null && 'published' in announcement
+        ? (announcement as { published?: boolean }).published !== false
+        : true;
+    });
     
     return NextResponse.json(publishedAnnouncements);
   } catch (error) {

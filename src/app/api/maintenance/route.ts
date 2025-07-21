@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Googleカレンダーの公開フィードURL
     const calendarId = 'vqhntikal9u59a5bma9javccqg@group.calendar.google.com';
@@ -36,10 +36,10 @@ export async function GET(request: NextRequest) {
       console.log('Calendar data:', JSON.stringify(data, null, 2));
       
       // メンテナンス関連のイベントをフィルタリング
-      const maintenanceEvents = data.items?.filter((event: any) => {
-        const summary = event.summary?.toLowerCase() || '';
-        const description = event.description?.toLowerCase() || '';
-        // カレンダー名に「メンテナンス」が含まれる場合は全てのイベントを対象とする
+      const maintenanceEvents = data.items?.filter((event: unknown) => {
+        if (typeof event !== 'object' || event === null) return false;
+        const summary = 'summary' in event && typeof event.summary === 'string' ? event.summary.toLowerCase() : '';
+        const description = 'description' in event && typeof event.description === 'string' ? event.description.toLowerCase() : '';
         const calendarSummary = data.summary?.toLowerCase() || '';
         return summary.includes('メンテナンス') || 
                summary.includes('maintenance') || 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -117,7 +118,7 @@ export default function TransportationArticlePage() {
         {/* フッター */}
         <footer className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex justify-between items-center">
-            <a 
+            <Link 
               href="/transportation"
               className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-medium transition-colors duration-200"
             >
@@ -125,7 +126,7 @@ export default function TransportationArticlePage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               交通一覧に戻る
-            </a>
+            </Link>
           </div>
         </footer>
       </article>

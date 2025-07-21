@@ -54,20 +54,21 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
 
         // タイプに基づいてタイトルを自動生成（既存のタイトルがある場合はそれを優先）
         const sectionsWithTitles = await Promise.all(
-          (data.sections || []).map(async (section: any) => {
-            // 各アイテムをMarkdownからHTMLに変換
-            const itemsHtml = await Promise.all(
-              (section.items || []).map(async (item: string) => {
-                return await processMarkdown(item);
-              })
-            );
-
-            return {
-              ...section,
-              title: section.title || getAutoTitle(section.type),
-              itemsHtml
-            };
-          })
+  (data.sections || []).map(async (section: unknown) => {
+    if (typeof section !== 'object' || section === null) return null;
+    type Section = { items?: string[]; title?: string; type?: string };
+    const s = section as Section;
+    const itemsHtml = await Promise.all(
+      (s.items || []).map(async (item: string) => {
+        return await processMarkdown(item);
+      })
+    );
+    return {
+      ...s,
+      title: s.title || getAutoTitle(typeof s.type === 'string' ? s.type : ''),
+      itemsHtml
+    };
+  })
         );
 
         return {
@@ -93,6 +94,7 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
       // 日付で降順にソート（新しいものが上）
       return b.rawDate.getTime() - a.rawDate.getTime();
     })
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     .map(({ rawDate, ...patchNote }, index) => ({
       ...patchNote,
       isLatest: index === 0 // 最初のアイテム（最新）にisLatestフラグを設定

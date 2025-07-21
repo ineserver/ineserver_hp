@@ -39,15 +39,19 @@ export async function getAnnouncementFiles() {
   )
 
   // 日付でソート（新しい順）
+  // 型ガードでdateプロパティがあるか確認
+  function hasDate(obj: unknown): obj is { date: string } {
+    return typeof obj === 'object' && obj !== null && 'date' in obj && typeof (obj as { date?: unknown }).date === 'string';
+  }
   return allAnnouncementsData.sort((a, b) => {
-    const dateA = (a as any).date
-    const dateB = (b as any).date
+    const dateA = hasDate(a) ? a.date : '';
+    const dateB = hasDate(b) ? b.date : '';
     if (dateA < dateB) {
-      return 1
+      return 1;
     } else {
-      return -1
+      return -1;
     }
-  })
+  });
 }
 
 export async function getAnnouncementData(id: string) {
@@ -106,8 +110,11 @@ export async function getRulesFiles() {
 
   // 順序でソート
   return allRulesData.sort((a, b) => {
-    const orderA = (a as any).order || 0
-    const orderB = (b as any).order || 0
+    function hasOrder(obj: unknown): obj is { order?: number } {
+      return typeof obj === 'object' && obj !== null && 'order' in obj;
+    }
+    const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+    const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
     return orderA - orderB
   })
 }
@@ -145,10 +152,13 @@ export async function getEconomyFiles() {
 
   // 順序でソート
   return allEconomyData.sort((a, b) => {
-    const orderA = (a as any).order || 0
-    const orderB = (b as any).order || 0
-    return orderA - orderB
-  })
+    function hasOrder(obj: unknown): obj is { order?: number } {
+      return typeof obj === 'object' && obj !== null && 'order' in obj;
+    }
+    const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+    const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
+    return orderA - orderB;
+  });
 }
 
 // 生活・くらしのコンテンツを取得
@@ -184,8 +194,15 @@ export async function getLifestyleFiles() {
   )
 
   return allLifestyleData
-    .filter(item => (item as any).published !== false)
-    .sort((a, b) => ((a as any).order || 0) - ((b as any).order || 0))
+    .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
+    .sort((a, b) => {
+      function hasOrder(obj: unknown): obj is { order?: number } {
+        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      }
+      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
+      return orderA - orderB;
+    })
 }
 
 // 観光コンテンツを取得
@@ -221,8 +238,15 @@ export async function getTourismFiles() {
   )
 
   return allTourismData
-    .filter(item => (item as any).published !== false)
-    .sort((a, b) => ((a as any).order || 0) - ((b as any).order || 0))
+    .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
+    .sort((a, b) => {
+      function hasOrder(obj: unknown): obj is { order?: number } {
+        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      }
+      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
+      return orderA - orderB;
+    })
 }
 
 // 交通コンテンツを取得
@@ -258,8 +282,15 @@ export async function getTransportationFiles() {
   )
 
   return allTransportationData
-    .filter(item => (item as any).published !== false)
-    .sort((a, b) => ((a as any).order || 0) - ((b as any).order || 0))
+    .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
+    .sort((a, b) => {
+      function hasOrder(obj: unknown): obj is { order?: number } {
+        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      }
+      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
+      return orderA - orderB;
+    })
 }
 
 // 娯楽コンテンツを取得
@@ -295,8 +326,15 @@ export async function getEntertainmentFiles() {
   )
 
   return allEntertainmentData
-    .filter(item => (item as any).published !== false)
-    .sort((a, b) => ((a as any).order || 0) - ((b as any).order || 0))
+    .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
+    .sort((a, b) => {
+      function hasOrder(obj: unknown): obj is { order?: number } {
+        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      }
+      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
+      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
+      return orderA - orderB;
+    });
 }
 
 // 個別データ取得関数

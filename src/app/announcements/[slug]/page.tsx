@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -107,25 +108,21 @@ export default function AnnouncementArticlePage() {
         </header>
 
         {/* コンテンツ */}
-        <div className="prose prose-lg max-w-none">
-          <div 
-            className="text-gray-700 leading-relaxed"
-            dangerouslySetInnerHTML={{ __html: content.content }}
-          />
-        </div>
-
-        {/* フッター */}
-        <footer className="mt-12 pt-8 border-t border-gray-200">
-          <div className="flex justify-between items-center">
-            <a 
-              href="/"
-              className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200"
-            >
+        <div className="prose prose-lg max-w-none mb-8" dangerouslySetInnerHTML={{ __html: content.content }} />
+        <footer>
+          <div className="flex flex-col gap-2">
+            <Link href="/announcements" className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] font-medium text-sm">
+              <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              一覧に戻る
+            </Link>
+            <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors duration-200">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
               トップページに戻る
-            </a>
+            </Link>
           </div>
         </footer>
       </article>
