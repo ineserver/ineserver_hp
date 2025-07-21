@@ -30,6 +30,31 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // メニューが開いているときに外側をクリックしたら閉じる
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen) {
+        const target = event.target as Element;
+        const menuButton = document.querySelector('[aria-label="メニューを開く"]');
+        const menuContent = document.querySelector('.lg\\:hidden .px-4');
+        
+        if (menuButton && menuContent && 
+            !menuButton.contains(target) && 
+            !menuContent.contains(target)) {
+          closeMenu();
+        }
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   // トップへスクロールする関数
   const scrollToTop = () => {
     window.scrollTo({
@@ -50,7 +75,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-lg sticky top-0 z-40">
+    <header className="bg-white shadow-lg sticky top-0 z-50 overflow-hidden lg:overflow-visible rounded-b-xl lg:rounded-none">
       {/* メインヘッダー */}
       <div className="bg-white">
         <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
@@ -282,13 +307,13 @@ const Header = () => {
 
       {/* モバイルメニュー */}
       {isMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200 shadow-lg rounded-b-lg">
+        <div className="bg-white border-t border-gray-200 shadow-lg rounded-b-xl lg:rounded-none fixed left-0 right-0 top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto z-50">
           <div className="px-4 py-2">
             {/* 主要ナビゲーション */}
             <div className="space-y-1 mb-4">
               {/* 生活・くらし */}
-              <div>
-                <div className="flex items-center justify-between">
+              <div className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-center justify-between py-1">
                   <Link 
                     href="/lifestyle" 
                     className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
@@ -298,7 +323,8 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('lifestyle')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064]"
+                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    aria-label="生活・くらしのサブメニューを開く"
                   >
                     <FontAwesomeIcon 
                       icon={faChevronDown} 
@@ -307,38 +333,42 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'lifestyle' && (
-                  <div className="ml-6 mt-2 space-y-1 pb-2">
-                    <div className="text-gray-600 text-sm font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faFileText} className="w-3 h-3 mr-2 text-[#5b8064]" />
+                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
+                    <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
+                      <FontAwesomeIcon icon={faFileText} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       サーバールール
                     </div>
-                    <Link href="/lifestyle/housing-guide" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      中心地の土地利用について
-                    </Link>
-                    <Link href="/lifestyle/allowed-mods" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      許可MOD一覧
-                    </Link>
-                    <Link href="/lifestyle/prohibited-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      流通禁止アイテム
-                    </Link>
+                    <div className="pl-2 space-y-1">
+                      <Link href="/lifestyle/housing-guide" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        中心地の土地利用について
+                      </Link>
+                      <Link href="/lifestyle/allowed-mods" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        許可MOD一覧
+                      </Link>
+                      <Link href="/lifestyle/prohibited-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        流通禁止アイテム
+                      </Link>
+                    </div>
                     
-                    <div className="text-gray-600 text-sm font-semibold mb-2 mt-4 flex items-center">
-                      <FontAwesomeIcon icon={faShield} className="w-3 h-3 mr-2 text-[#5b8064]" />
+                    <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
+                      <FontAwesomeIcon icon={faShield} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       保護
                     </div>
-                    <Link href="/lifestyle/land-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      土地の保護
-                    </Link>
-                    <Link href="/lifestyle/block-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      ブロック保護
-                    </Link>
+                    <div className="pl-2 space-y-1">
+                      <Link href="/lifestyle/land-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        土地の保護
+                      </Link>
+                      <Link href="/lifestyle/block-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        ブロック保護
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* 経済 */}
-              <div>
-                <div className="flex items-center justify-between">
+              <div className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-center justify-between py-1">
                   <Link 
                     href="/economy" 
                     className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
@@ -348,7 +378,8 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('economy')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064]"
+                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    aria-label="経済のサブメニューを開く"
                   >
                     <FontAwesomeIcon 
                       icon={faChevronDown} 
@@ -357,44 +388,48 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'economy' && (
-                  <div className="ml-6 mt-2 space-y-1 pb-2">
-                    <div className="text-gray-600 text-sm font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faPlus} className="w-3 h-3 mr-2 text-[#5b8064]" />
+                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
+                    <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
+                      <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </div>
-                    <Link href="/economy/jobs" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      就職
-                    </Link>
-                    <Link href="/economy/item-market" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      アイテム市場取引
-                    </Link>
-                    <Link href="/economy/shops" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      お店を作る・お店で買う
-                    </Link>
+                    <div className="pl-2 space-y-1">
+                      <Link href="/economy/jobs" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        就職
+                      </Link>
+                      <Link href="/economy/item-market" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        アイテム市場取引
+                      </Link>
+                      <Link href="/economy/shops" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        お店を作る・お店で買う
+                      </Link>
+                    </div>
                     
-                    <div className="text-gray-600 text-sm font-semibold mb-2 mt-4 flex items-center">
-                      <FontAwesomeIcon icon={faMinus} className="w-3 h-3 mr-2 text-[#5b8064]" />
+                    <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
+                      <FontAwesomeIcon icon={faMinus} className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </div>
-                    <Link href="/economy/item-market-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      アイテム市場取引
-                    </Link>
-                    <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      土地の購入
-                    </Link>
-                    <Link href="/economy/command-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      コマンドの購入
-                    </Link>
-                    <Link href="/economy/shop-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      お店を作る・お店で買う
-                    </Link>
+                    <div className="pl-2 space-y-1">
+                      <Link href="/economy/item-market-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        アイテム市場取引
+                      </Link>
+                      <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        土地の購入
+                      </Link>
+                      <Link href="/economy/command-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        コマンドの購入
+                      </Link>
+                      <Link href="/economy/shop-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        お店を作る・お店で買う
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* 娯楽 */}
-              <div>
-                <div className="flex items-center justify-between">
+              <div className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-center justify-between py-1">
                   <Link 
                     href="/entertainment" 
                     className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
@@ -404,7 +439,8 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('entertainment')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064]"
+                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    aria-label="娯楽のサブメニューを開く"
                   >
                     <FontAwesomeIcon 
                       icon={faChevronDown} 
@@ -413,23 +449,25 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'entertainment' && (
-                  <div className="ml-6 mt-2 space-y-1 pb-2">
-                    <Link href="/entertainment/arena" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      アリーナ
-                    </Link>
-                    <Link href="/entertainment/additional-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      追加アイテム一覧
-                    </Link>
-                    <Link href="/entertainment/hidden-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md" onClick={closeMenu}>
-                      隠しアイテム
-                    </Link>
+                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3">
+                    <div className="pl-2 space-y-1">
+                      <Link href="/entertainment/arena" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        アリーナ
+                      </Link>
+                      <Link href="/entertainment/additional-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        追加アイテム一覧
+                      </Link>
+                      <Link href="/entertainment/hidden-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        隠しアイテム
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* 観光 */}
-              <div>
-                <div className="flex items-center justify-between">
+              <div className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-center justify-between py-1">
                   <Link 
                     href="/tourism" 
                     className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
@@ -439,7 +477,8 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('tourism')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064]"
+                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    aria-label="観光のサブメニューを開く"
                   >
                     <FontAwesomeIcon 
                       icon={faChevronDown} 
@@ -448,8 +487,8 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'tourism' && (
-                  <div className="ml-6 mt-2 space-y-1 pb-2">
-                    <div className="text-gray-500 text-sm text-center py-2">
+                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3">
+                    <div className="text-gray-500 text-sm text-center py-4">
                       メニューは準備中です
                     </div>
                   </div>
@@ -457,8 +496,8 @@ const Header = () => {
               </div>
 
               {/* 交通 */}
-              <div>
-                <div className="flex items-center justify-between">
+              <div className="border-b border-gray-100 last:border-b-0">
+                <div className="flex items-center justify-between py-1">
                   <Link 
                     href="/transportation" 
                     className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
@@ -468,7 +507,8 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('transportation')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064]"
+                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    aria-label="交通のサブメニューを開く"
                   >
                     <FontAwesomeIcon 
                       icon={faChevronDown} 
@@ -477,8 +517,8 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'transportation' && (
-                  <div className="ml-6 mt-2 space-y-1 pb-2">
-                    <div className="text-gray-500 text-sm text-center py-2">
+                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3">
+                    <div className="text-gray-500 text-sm text-center py-4">
                       メニューは準備中です
                     </div>
                   </div>
@@ -487,53 +527,53 @@ const Header = () => {
             </div>
 
             {/* セパレーター */}
-            <div className="border-t border-gray-200 pt-4 mb-4">
+            <div className="border-t border-gray-200 pt-4 mb-4 mt-2">
               {/* 外部リンク */}
               <div className="space-y-2">
                 <a 
                   href="https://minecraft.jp/servers/67de4f4ce22bc84120000007" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  minecraft.jp
-                  <svg className="w-3.5 h-3.5 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span className="flex-1">minecraft.jp</span>
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
                 <a 
                   href="#" 
-                  className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  メンテナンス情報
+                  <span className="flex-1">メンテナンス情報</span>
                 </a>
                 <a 
                   href="#" 
-                  className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
-                  アイテム市場状況
+                  <span className="flex-1">アイテム市場状況</span>
                 </a>
                 <a 
                   href="https://map.1necat.net" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
-                  平面/俯瞰マップ
-                  <svg className="w-3.5 h-3.5 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span className="flex-1">平面/俯瞰マップ</span>
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                   </svg>
                 </a>
@@ -541,15 +581,17 @@ const Header = () => {
             </div>
 
             {/* ガイドボタン */}
-            <a 
-              href="#" 
-              className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg text-sm text-white font-bold shadow-lg mb-2"
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              ガイド
-            </a>
+            <div className="pb-4">
+              <a 
+                href="#" 
+                className="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-lg text-sm text-white font-bold shadow-lg transition-all duration-200"
+              >
+                <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                ガイド
+              </a>
+            </div>
           </div>
         </div>
       )}

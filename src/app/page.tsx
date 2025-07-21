@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Header from "@/components/Header";
 import ServerStatus from "@/components/ServerStatus";
 
@@ -41,10 +41,12 @@ export default function Home() {
   const [announcementError, setAnnouncementError] = useState(false);
   const [patchNoteError, setPatchNoteError] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   // タブのref
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null); // モバイルプルダウン用
+  const tabContainerRef = useRef<HTMLDivElement>(null); // PC版タブ用
   
   // タブのアニメーション用
   const tabs = [
@@ -55,9 +57,9 @@ export default function Home() {
   ];
   
   // インジケーターの位置を更新
-  const updateIndicator = (tabId: string) => {
+  const updateIndicator = useCallback((tabId: string) => {
     const activeButton = tabRefs.current[tabId];
-    const container = containerRef.current;
+    const container = tabContainerRef.current; // PC版タブ用のrefを使用
     
     if (activeButton && container) {
       const containerRect = container.getBoundingClientRect();
@@ -68,20 +70,49 @@ export default function Home() {
         width: buttonRect.width
       });
     }
+  }, []);
+
+  // タブ切り替え関数
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    updateIndicator(tab);
+    setIsDropdownOpen(false); // プルダウンを閉じる
   };
+
+  // プルダウンの開閉
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // プルダウンの外側クリック検出
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen]);
   
   // タブが変更されたときにインジケーターを更新
   useEffect(() => {
     updateIndicator(activeTab);
-  }, [activeTab]);
+  }, [activeTab, updateIndicator]);
   
   // 初期ロード時にインジケーターをセット
   useEffect(() => {
     const timer = setTimeout(() => {
       updateIndicator(activeTab);
-    }, 100);
+    }, 200); // 少し時間を延ばして確実にレンダリング後に実行
     return () => clearTimeout(timer);
-  }, []);
+  }, [activeTab, updateIndicator]);
   
   const slides = [
     {
@@ -329,33 +360,36 @@ export default function Home() {
         {/* 初心者向けバナー */}
         <header className="mb-8">
           <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-lg p-5 border border-green-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-              {/* アイコン部分 */}
-              <div className="bg-emerald-500 p-3 rounded-full shadow-md">
-                <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" width="32" height="32" color="#ffffff" className="text-white">
-                  <defs>
-                    <style>{`.cls-637a2287b95f902aafde8ff1-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}`}</style>
-                  </defs>
-                  <path className="cls-637a2287b95f902aafde8ff1-1" d="M16.64,19.09h0a5.43,5.43,0,0,1-4.16,2.08h-1a7.41,7.41,0,0,1-5.07-2.08h0C1,12,12,2,12,2l5,7.45A8.29,8.29,0,0,1,16.64,19.09Z"></path>
-                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="11.97" y1="9.3" x2="11.97" y2="23"></line>
-                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="8.32" y1="14.78" x2="11.97" y2="18.43"></line>
-                  <line className="cls-637a2287b95f902aafde8ff1-1" x1="14.71" y1="12.04" x2="11.97" y2="14.78"></line>
-                </svg>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-start sm:items-center space-x-4">
+                {/* アイコン部分 */}
+                <div className="bg-emerald-500 p-3 rounded-full flex-shrink-0 shadow-none" style={{ boxShadow: 'none', filter: 'none' }}>
+                  <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" width="32" height="32" color="#ffffff" className="text-white">
+                    <defs>
+                      <style>{`.cls-637a2287b95f902aafde8ff1-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}`}</style>
+                    </defs>
+                    <path className="cls-637a2287b95f902aafde8ff1-1" d="M16.64,19.09h0a5.43,5.43,0,0,1-4.16,2.08h-1a7.41,7.41,0,0,1-5.07-2.08h0C1,12,12,2,12,2l5,7.45A8.29,8.29,0,0,1,16.64,19.09Z"></path>
+                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="11.97" y1="9.3" x2="11.97" y2="23"></line>
+                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="8.32" y1="14.78" x2="11.97" y2="18.43"></line>
+                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="14.71" y1="12.04" x2="11.97" y2="14.78"></line>
+                  </svg>
+                </div>
+          
+                {/* テキスト部分 */}
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-xl font-bold mb-1 text-gray-900">初めての方へ</h2>
+                  <p className="text-sm text-gray-700 font-medium">サーバーの基本的な情報やルールを確認しましょう</p>
+                </div>
               </div>
-        
-              {/* テキスト部分 */}
-              <div>
-                <h2 className="text-xl font-bold mb-1 text-gray-900">初めての方へ</h2>
-                <p className="text-sm text-gray-700 font-medium">サーバーの基本的な情報やルールを確認しましょう</p>
+              
+              {/* ボタン部分 - PC版では右端、モバイル版ではアイコンの右側に左揃え */}
+              <div className="sm:flex-shrink-0 ml-16 sm:ml-0">
+                <Link href="/lifestyle/server-rules">
+                  <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 border-t border-green-400">
+                   チュートリアルを見る
+                  </button>
+                </Link>
               </div>
-            </div>
-              {/* ボタン部分 */}
-              <Link href="/lifestyle/server-rules">
-                <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 border-t border-green-400">
-                 チュートリアルを見る
-                </button>
-              </Link>
             </div>
           </div>
         </header>
@@ -374,7 +408,8 @@ export default function Home() {
               
               {/* タブナビゲーション */}
               <div className="flex items-center justify-between">
-                <div ref={containerRef} className="relative flex bg-gray-100 rounded-lg p-1">
+                {/* デスクトップ版タブ */}
+                <div ref={tabContainerRef} className="relative hidden sm:flex bg-gray-100 rounded-lg p-1 w-fit">
                   {/* 移動するインジケーター */}
                   <div 
                     className="absolute top-1 bottom-1 bg-[#5b8064] rounded-md transition-all duration-300 ease-out"
@@ -389,8 +424,8 @@ export default function Home() {
                     <button 
                       key={tab.id}
                       ref={(el) => { tabRefs.current[tab.id] = el; }}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`relative z-10 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 ${
+                      onClick={() => handleTabChange(tab.id)}
+                      className={`relative z-10 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 whitespace-nowrap ${
                         activeTab === tab.id 
                           ? 'text-white' 
                           : 'text-gray-600 hover:text-gray-900'
@@ -401,8 +436,53 @@ export default function Home() {
                   ))}
                 </div>
                 
+                {/* モバイル版カスタムプルダウン */}
+                <div className="sm:hidden w-full relative" ref={containerRef}>
+                  <button
+                    onClick={toggleDropdown}
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-base font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#5b8064] focus:border-[#5b8064] transition-all duration-200 flex items-center justify-between"
+                  >
+                    <span>{tabs.find(tab => tab.id === activeTab)?.label || '選択してください'}</span>
+                    <svg 
+                      className={`w-5 h-5 text-[#5b8064] transition-transform duration-200 ${
+                        isDropdownOpen ? 'rotate-180' : ''
+                      }`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {/* プルダウンメニュー */}
+                  <div className={`absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg transition-all duration-200 ${
+                    isDropdownOpen 
+                      ? 'opacity-100 translate-y-0 visible' 
+                      : 'opacity-0 -translate-y-2 invisible'
+                  }`}>
+                    {tabs.map((tab, index) => (
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className={`w-full px-4 py-3 text-left text-base font-medium transition-colors duration-200 ${
+                          activeTab === tab.id
+                            ? 'bg-[#5b8064] text-white'
+                            : 'text-gray-700 hover:bg-gray-50 hover:text-[#5b8064]'
+                        } ${
+                          index === 0 ? 'rounded-t-lg' : ''
+                        } ${
+                          index === tabs.length - 1 ? 'rounded-b-lg' : 'border-b border-gray-100'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
                 {!isLoading && (
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-gray-500 hidden sm:block">
                     {filteredAnnouncements.length}件のお知らせ
                   </span>
                 )}
@@ -431,24 +511,59 @@ export default function Home() {
               ) : filteredAnnouncements.length > 0 ? (
                 filteredAnnouncements.map((announcement) => (
                   <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
-                    <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0 w-32">
-                        <span className={`inline-flex items-center justify-center px-3 py-1 rounded-full text-xs font-medium w-full ${getTagStyle(announcement.type)}`}>
+                    {/* モバイル表示 */}
+                    <div className="sm:hidden space-y-3">
+                      {/* タグと日付 */}
+                      <div className="flex items-center justify-between">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)}`}>
                           {getTagName(announcement.type)}
                         </span>
+                        <span className="text-sm text-gray-500">{announcement.date}</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <Link href={`/announcements/${announcement.id}`}>
-                            <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200">
-                              {announcement.title}
-                            </h3>
-                          </Link>
-                          <span className="text-sm text-gray-500">{announcement.date}</span>
-                        </div>
-                        <p className="mt-2 text-gray-600 text-sm">
+                      
+                      {/* タイトル */}
+                      <div>
+                        <Link href={`/announcements/${announcement.id}`}>
+                          <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200">
+                            {announcement.title}
+                          </h3>
+                        </Link>
+                      </div>
+                      
+                      {/* 内容 */}
+                      <div>
+                        <p className="text-gray-600 text-sm leading-relaxed">
                           {announcement.description}
                         </p>
+                      </div>
+                    </div>
+
+                    {/* PC表示（従来通りの横並び形式） */}
+                    <div className="hidden sm:block">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start space-x-4 flex-1">
+                          {/* タグ */}
+                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)} flex-shrink-0`}>
+                            {getTagName(announcement.type)}
+                          </span>
+                          
+                          {/* タイトルと内容 */}
+                          <div className="flex-1 min-w-0">
+                            <Link href={`/announcements/${announcement.id}`}>
+                              <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200 mb-1">
+                                {announcement.title}
+                              </h3>
+                            </Link>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                              {announcement.description}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* 日付 */}
+                        <span className="text-sm text-gray-500 flex-shrink-0 ml-4">
+                          {announcement.date}
+                        </span>
                       </div>
                     </div>
                   </div>

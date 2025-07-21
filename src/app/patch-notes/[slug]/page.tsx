@@ -153,15 +153,8 @@ export default function PatchNoteDetailPage() {
       <article className="max-w-4xl mx-auto px-6 py-8">
         {/* パッチノートヘッダー */}
         <header className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center">
-              <h1 className="text-3xl font-bold text-gray-900">{patchNote.date}</h1>
-              {patchNote.isLatest && (
-                <span className="ml-4 px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
-                  最新のアップデート
-                </span>
-              )}
-            </div>
+          {/* 一覧に戻るボタン - モバイル優先で上部に配置 */}
+          <div className="mb-6 -ml-4">
             <Link href="/patch-notes">
               <button className="flex items-center px-4 py-2 text-[#5b8064] hover:text-[#4a6b55] transition-colors duration-200">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,6 +163,20 @@ export default function PatchNoteDetailPage() {
                 一覧に戻る
               </button>
             </Link>
+          </div>
+          
+          {/* 最新のアップデート表示 */}
+          {patchNote.isLatest && (
+            <div className="mb-4">
+              <span className="px-3 py-1 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                最新のアップデート
+              </span>
+            </div>
+          )}
+          
+          {/* 日付 */}
+          <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-900">{patchNote.date}</h1>
           </div>
           
           <div className="border-l-4 border-[#5b8064] pl-6">
@@ -207,12 +214,12 @@ export default function PatchNoteDetailPage() {
 
         {/* フッター */}
         <footer className="mt-12 pt-8 border-t border-gray-200">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="text-sm text-gray-500 order-2 sm:order-1">
               このパッチノートは {patchNote.date} に公開されました
             </div>
-            <Link href="/patch-notes">
-              <button className="px-6 py-3 bg-[#5b8064] text-white rounded-lg hover:bg-[#4a6b55] transition-colors duration-200">
+            <Link href="/patch-notes" className="order-1 sm:order-2">
+              <button className="w-full sm:w-auto px-6 py-3 bg-[#5b8064] text-white rounded-lg hover:bg-[#4a6b55] transition-colors duration-200">
                 他のパッチノートを見る
               </button>
             </Link>
