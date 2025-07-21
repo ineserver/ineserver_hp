@@ -75,40 +75,41 @@ const Header = () => {
   };
 
   return (
-    <header className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}>
-      {/* メインヘッダー */}
-      <div className="bg-white">
-        <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
-          <div className="flex items-center h-14">
-            {/* ロゴ - 左側 */}
-            <div className="flex items-center">
+    <>
+      <header className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}>
+        {/* メインヘッダー */}
+        <div className="bg-white">
+          <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
+            <div className="flex items-center h-14">
+              {/* ロゴ - 左側 */}
               <div className="flex items-center">
-                <div className="w-8 h-8 mr-3 flex items-center justify-center">
-                  <Link href="/">
-                    <Image
-                      src="/server-icon.png"
-                      alt="いねさばアイコン"
-                      width={32}
-                      height={32}
-                      className="rounded-sm"
-                    />
-                  </Link>
-                </div>
-                <div className="flex items-baseline space-x-2">
-                  <Link href="/">
-                    <h1 className="text-2xl font-black text-gray-900 hover:text-gray-700 transition-colors duration-200 cursor-pointer">いねさば</h1>
-                  </Link>
-                  <p className="text-base text-gray-600">Ine Server</p>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 mr-3 flex items-center justify-center">
+                    <Link href="/">
+                      <Image
+                        src="/server-icon.png"
+                        alt="いねさばアイコン"
+                        width={32}
+                        height={32}
+                        className="rounded-sm"
+                      />
+                    </Link>
+                  </div>
+                  <div className="flex items-baseline space-x-2">
+                    <Link href="/">
+                      <h1 className="text-2xl font-black text-gray-900 hover:text-gray-700 transition-colors duration-200 cursor-pointer">いねさば</h1>
+                    </Link>
+                    <p className="text-base text-gray-600">Ine Server</p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* スペーサー */}
-            <div className="flex-1"></div>
+              {/* スペーサー */}
+              <div className="flex-1"></div>
 
-            {/* トップバーナビゲーション - デスクトップのみ表示 */}
-            <nav className="hidden lg:flex items-center space-x-2">
-              <div className="flex space-x-2">
+              {/* トップバーナビゲーション - デスクトップのみ表示 */}
+              <nav className="hidden lg:flex items-center space-x-2">
+                <div className="flex space-x-2">
                 <a 
                   href="https://minecraft.jp/servers/67de4f4ce22bc84120000007" 
                   target="_blank" 
@@ -164,17 +165,55 @@ const Header = () => {
               </a>
             </nav>
 
-            {/* モバイル用ハンバーガーメニューボタン */}
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100"
-              aria-label="メニューを開く"
-            >
-              <FontAwesomeIcon 
-                icon={isMenuOpen ? faTimes : faBars} 
-                className="w-6 h-6" 
-              />
-            </button>
+            {/* モバイル用ガイドボタン＋ハンバーガーメニュー */}
+            <div className="flex items-center lg:hidden gap-1">
+              {/* ガイドボタン（アイコンのみ） */}
+              <a
+                href="#"
+                className="relative p-2 rounded-md flex items-center justify-center"
+                aria-label="ガイド"
+                style={{ minWidth: '48px', minHeight: '48px' }}
+              >
+                <svg className="w-7 h-7" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="mobileGuideGradient" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+                      <stop stopColor="#3b82f6" />
+                      <stop offset="1" stopColor="#a21caf" />
+                    </linearGradient>
+                  </defs>
+                  <path stroke="url(#mobileGuideGradient)" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </a>
+              {/* ハンバーガーメニュー */}
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100"
+                aria-label="メニューを開く"
+              >
+                <div className={`relative w-7 h-7 flex flex-col justify-center items-center transition-all duration-300 group`}>
+                  {/* 上の線 */}
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current rounded transition-all duration-300
+                      ${isMenuOpen ? 'rotate-45 top-3.5' : 'top-2'}
+                    `}
+                  ></span>
+                  {/* 真ん中の線（徐々に消えるアニメーション） */}
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current rounded transition-all duration-300
+                      top-3.5
+                      ${isMenuOpen ? 'opacity-0 scale-x-0' : 'opacity-100 scale-x-100'}
+                    `}
+                    style={{ transitionProperty: 'opacity, transform', transitionDuration: '300ms' }}
+                  ></span>
+                  {/* 下の線 */}
+                  <span
+                    className={`block absolute h-0.5 w-6 bg-current rounded transition-all duration-300
+                      ${isMenuOpen ? '-rotate-45 top-3.5' : 'top-5'}
+                    `}
+                  ></span>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -595,7 +634,21 @@ const Header = () => {
           </div>
         </div>
       )}
-    </header>
+      </header>
+      {/* トップへ戻るボタン */}
+      {showGoTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 z-[100] bg-[#5b8064] hover:bg-[#3b5c47] text-white rounded-full shadow-lg p-3 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b8064]"
+          aria-label="トップへ戻る"
+          style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
+      )}
+    </>
   );
 };
 
