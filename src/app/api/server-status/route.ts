@@ -99,7 +99,7 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const address = searchParams.get('address') || process.env.MINECRAFT_SERVER_ADDRESS || 'localhost:25565';
+  const address = searchParams.get('address') || process.env.MINECRAFT_SERVER_ADDRESS || '1necat.net';
 
   try {
     const status = await fetchMinecraftServerStatus(address);

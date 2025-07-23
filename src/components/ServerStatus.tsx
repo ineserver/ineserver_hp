@@ -8,12 +8,12 @@ interface ServerStatusProps {
   refreshInterval?: number;
 }
 
-export default function ServerStatus({ 
+export default function ServerStatus({
   // 【本番環境での変更点1】
   // 環境変数を使用することで、ローカル/本番の切り替えが容易になります
   // .env.local: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565
-  // .env.production: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=play.ineserver.com
-  serverAddress = process.env.NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS || 'localhost:25565',
+  // .env.production: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=1necat.net
+  serverAddress = process.env.NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS || '1necat.net',
   refreshInterval = 30000 // 30秒
 }: ServerStatusProps) {
   const [status, setStatus] = useState<ServerStatusType | null>(null);
