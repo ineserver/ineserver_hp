@@ -1,74 +1,86 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ServerStatus } from '@/types/server-status';
-import * as mc from 'minecraft-protocol';
-import type { OldPingResult, NewPingResult } from 'minecraft-protocol';
 
+// mcsrvstat.us APIのレスポンス型
+interface McSrvStatResponse {
+  online: boolean;
+  ip: string;
+  port: number;
+  hostname?: string;
+  version?: string;
+  protocol?: number;
+  players?: {
+    online: number;
+    max: number;
+    list?: string[];
+  };
+  motd?: {
+    raw?: string;
+    clean?: string;
+    html?: string;
+  };
+  icon?: string;
+  software?: string;
+  debug?: {
+    ping: boolean;
+    query: boolean;
+    srv: boolean;
+    querymismatch: boolean;
+    ipinsrv: boolean;
+    cnameinsrv: boolean;
+    animatedmotd: boolean;
+    cachetime: number;
+    cacheexpire: number;
+    apiversion: number;
+  };
+}
 
-
-// 内部でMinecraftサーバーに直接クエリを送信する実装
+// mcsrvstat.us APIを使用してMinecraftサーバーの状態を取得
 async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus> {
   const startTime = Date.now();
   
   try {
     // アドレスとポートを分割
     const [host, portStr] = address.split(':');
-    const port = parseInt(portStr || '25565');
+    const port = portStr || '25565';
     
-    console.log(`Attempting to connect to Minecraft server: ${host}:${port}`);
+    // mcsrvstat.us APIのエンドポイント
+    const apiUrl = `https://api.mcsrvstat.us/3/${host}:${port}`;
     
-    // Minecraft サーバーにpingを送信
-    const response = await new Promise<OldPingResult | NewPingResult>((resolve, reject) => {
-      const timeoutId = setTimeout(() => {
-        reject(new Error('Ping timeout'));
-      }, 10000);
-      mc.ping({ host, port }, (err, result) => {
-        clearTimeout(timeoutId);
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result as OldPingResult | NewPingResult);
-        }
-      });
+    console.log(`Fetching server status from mcsrvstat.us: ${apiUrl}`);
+    
+    const response = await fetch(apiUrl, {
+      headers: {
+        'User-Agent': 'ineserver-hp/1.0',
+      },
+      // 10秒のタイムアウト
+      signal: AbortSignal.timeout(10000),
     });
     
-    const ping = Date.now() - startTime;
-    console.log(`Server ping successful in ${ping}ms:`, response);
-    
-    // レスポンスの構造を確認してパース
-    let motd = 'Minecraft Server';
-    let players = { online: 0, max: 0 };
-    let version = { name: 'Unknown' };
-    if (response && typeof response === 'object') {
-      if ('description' in response) {
-        const description = response.description;
-        motd = typeof description === 'string' ? description : description?.text || 'Minecraft Server';
-      }
-      if ('players' in response && response.players) {
-        players = response.players;
-      }
-      if ('version' in response && response.version) {
-        if (typeof response.version === 'object' && 'name' in response.version) {
-          version = { name: response.version.name };
-        } else {
-          version = { name: 'Unknown' };
-        }
-      }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    
+    const data: McSrvStatResponse = await response.json();
+    const ping = Date.now() - startTime;
+    
+    console.log(`mcsrvstat.us API response in ${ping}ms:`, data);
+    
     return {
-      online: true,
+      online: data.online,
       players: {
-        online: players.online || 0,
-        max: players.max || 0
+        online: data.players?.online || 0,
+        max: data.players?.max || 0
       },
-      version: version.name || 'Unknown',
-      motd: motd,
+      version: data.version || 'Unknown',
+      motd: data.motd?.clean || data.motd?.raw || 'Minecraft Server',
       ping: ping,
       lastChecked: new Date().toISOString()
     };
     
   } catch (error) {
-    console.error('Failed to ping Minecraft server:', error);
+    console.error('Failed to fetch server status from mcsrvstat.us:', error);
     
     // エラー時はオフライン状態を返す
     return {
