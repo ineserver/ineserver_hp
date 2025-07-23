@@ -694,15 +694,7 @@ export default function Home() {
       <div className="xl:col-span-1">
         <div className="sticky top-8 space-y-6">
           {/* サーバーステータス */}
-          {/* 【本番環境での変更点2】 */}
-          {/* 環境変数を使用することで、デプロイ時の設定変更を不要にします */}
-          {/* ローカル環境: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565 */}
-          {/* 本番環境: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=play.ineserver.com */}
-                    {/* サーバーステータス */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">サーバーステータス</h2>
-          <ServerStatus />
-          </div>
+            <ServerStatus />
         </div>
       </div>
     </div>
