@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ServerStatus as ServerStatusType } from '@/types/server-status';
 import MaintenanceSchedule from './MaintenanceSchedule';
@@ -29,7 +29,7 @@ export default function ServerStatus({
   }, []);
 
   // サーバーステータスを取得する関数
-  const fetchServerStatus = async () => {
+  const fetchServerStatus = useCallback(async () => {
     try {
       setError(null);
       // 初回ロード時のみローディング状態を表示
@@ -56,7 +56,7 @@ export default function ServerStatus({
       setIsLoading(false);
       setHasInitialLoad(true);
     }
-  };
+  }, [serverAddress, hasInitialLoad, isClient]);
 
   // 初回ロード（非同期で実行、UI表示をブロックしない）
   useEffect(() => {
@@ -65,13 +65,13 @@ export default function ServerStatus({
       fetchServerStatus();
     }, 100);
     return () => clearTimeout(timer);
-  }, [serverAddress]);
+  }, [serverAddress, fetchServerStatus]);
 
   // 定期更新
   useEffect(() => {
     const interval = setInterval(fetchServerStatus, refreshInterval);
     return () => clearInterval(interval);
-  }, [serverAddress, refreshInterval]);
+  }, [serverAddress, refreshInterval, fetchServerStatus]);
 
   // プレイヤー数の表示色を取得
   const getPlayerCountColor = (online: number, max: number) => {
