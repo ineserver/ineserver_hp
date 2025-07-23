@@ -1,12 +1,11 @@
 import ContentListPage from '@/components/ContentListPage';
-import { faSubway } from '@fortawesome/free-solid-svg-icons';
 
 const config = {
   title: "交通案内",
   description: "鉄道路線やバス、その他の交通手段に関する情報をご覧いただけます。",
   apiEndpoint: "/api/transportation",
   basePath: "/transportation",
-  icon: faSubway,
+  icon: 'subway' as const,
   color: 'text-blue-600',
   bgColor: 'bg-blue-50',
   borderColor: 'border-blue-200',

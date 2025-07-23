@@ -1,12 +1,11 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { faMap } from '@fortawesome/free-solid-svg-icons';
 
 const config = {
   title: '観光',
   description: 'サーバー内の見どころや観光スポットについて紹介します',
   apiEndpoint: '/api/tourism',
   basePath: '/tourism',
-  icon: faMap,
+  icon: 'map' as const,
   color: 'text-orange-600',
   bgColor: 'bg-orange-50',
   borderColor: 'border-orange-200',

@@ -1,12 +1,11 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { faHome } from '@fortawesome/free-solid-svg-icons';
 
 const config = {
   title: 'くらし・生活',
   description: 'サーバーでの生活に関する情報やルールについて説明します',
   apiEndpoint: '/api/lifestyle',
   basePath: '/lifestyle',
-  icon: faHome,
+  icon: 'home' as const,
   color: 'text-green-600',
   bgColor: 'bg-green-50',
   borderColor: 'border-green-200',

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 
@@ -11,6 +11,9 @@ const notoSansJP = Noto_Sans_JP({
 export const metadata: Metadata = {
   title: "いねさば",
   description: "Minecraftサーバー「いねさば」の公式ホームページです。",
+};
+
+export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 

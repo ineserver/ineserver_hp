@@ -3,15 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { 
-  faChevronRight,
-  faFileText,
-  faShield,
-  faPlus,
-  faMinus,
-  faChevronDown
-} from '@fortawesome/free-solid-svg-icons';
+import { ChevronRightIcon, FileTextIcon, ShieldIcon, PlusIcon, MinusIcon, ChevronDownIcon } from './Icons';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -232,23 +224,23 @@ const Header = () => {
                 <div className="p-4">
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faFileText} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FileTextIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       サーバールール
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/housing-guide" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      <li><Link href="/lifestyle/allowed-mods" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
-                      <li><Link href="/lifestyle/prohibited-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム</Link></li>
+                      <li><Link href="/lifestyle/housing-guide" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
+                      <li><Link href="/lifestyle/allowed-mods" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
+                      <li><Link href="/lifestyle/prohibited-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム</Link></li>
                     </ul>
                   </div>
                   <div>
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faShield} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <ShieldIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       保護
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/land-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
-                      <li><Link href="/lifestyle/block-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
+                      <li><Link href="/lifestyle/land-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
+                      <li><Link href="/lifestyle/block-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -266,25 +258,25 @@ const Header = () => {
                 <div className="p-4">
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <PlusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/jobs" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
-                      <li><Link href="/economy/item-market" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/shops" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/jobs" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
+                      <li><Link href="/economy/item-market" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/shops" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                   <div>
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <FontAwesomeIcon icon={faMinus} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <MinusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/item-market-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/land-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
-                      <li><Link href="/economy/command-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
-                      <li><Link href="/economy/shop-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/item-market-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/land-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
+                      <li><Link href="/economy/command-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                      <li><Link href="/economy/shop-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -301,9 +293,9 @@ const Header = () => {
               <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="p-4">
                   <ul className="space-y-2">
-                    <li><Link href="/entertainment/arena" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
-                    <li><Link href="/entertainment/additional-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
-                    <li><Link href="/entertainment/hidden-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><FontAwesomeIcon icon={faChevronRight} className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
+                    <li><Link href="/entertainment/arena" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
+                    <li><Link href="/entertainment/additional-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
+                    <li><Link href="/entertainment/hidden-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
                   </ul>
                 </div>
               </div>
@@ -364,8 +356,7 @@ const Header = () => {
                     className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
                     aria-label="生活・くらしのサブメニューを開く"
                   >
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
+                    <ChevronDownIcon 
                       className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'lifestyle' ? 'rotate-180' : ''}`} 
                     />
                   </button>
@@ -373,7 +364,7 @@ const Header = () => {
                 {openSubMenu === 'lifestyle' && (
                   <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
                     <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
-                      <FontAwesomeIcon icon={faFileText} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <FileTextIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       サーバールール
                     </div>
                     <div className="pl-2 space-y-1">
@@ -389,7 +380,7 @@ const Header = () => {
                     </div>
                     
                     <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
-                      <FontAwesomeIcon icon={faShield} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <ShieldIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       保護
                     </div>
                     <div className="pl-2 space-y-1">
@@ -419,8 +410,7 @@ const Header = () => {
                     className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
                     aria-label="経済のサブメニューを開く"
                   >
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
+                    <ChevronDownIcon 
                       className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'economy' ? 'rotate-180' : ''}`} 
                     />
                   </button>
@@ -428,7 +418,7 @@ const Header = () => {
                 {openSubMenu === 'economy' && (
                   <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
                     <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
-                      <FontAwesomeIcon icon={faPlus} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <PlusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </div>
                     <div className="pl-2 space-y-1">
@@ -444,7 +434,7 @@ const Header = () => {
                     </div>
                     
                     <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
-                      <FontAwesomeIcon icon={faMinus} className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <MinusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </div>
                     <div className="pl-2 space-y-1">
@@ -480,8 +470,7 @@ const Header = () => {
                     className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
                     aria-label="娯楽のサブメニューを開く"
                   >
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
+                    <ChevronDownIcon 
                       className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'entertainment' ? 'rotate-180' : ''}`} 
                     />
                   </button>
@@ -518,8 +507,7 @@ const Header = () => {
                     className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
                     aria-label="観光のサブメニューを開く"
                   >
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
+                    <ChevronDownIcon 
                       className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'tourism' ? 'rotate-180' : ''}`} 
                     />
                   </button>
@@ -548,8 +536,7 @@ const Header = () => {
                     className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
                     aria-label="交通のサブメニューを開く"
                   >
-                    <FontAwesomeIcon 
-                      icon={faChevronDown} 
+                    <ChevronDownIcon 
                       className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'transportation' ? 'rotate-180' : ''}`} 
                     />
                   </button>

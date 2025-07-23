@@ -1,4 +1,5 @@
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import React from 'react';
+import { IconName } from '@/components/Icons';
 
 export interface ContentItem {
   id: string;
@@ -14,7 +15,7 @@ export interface ContentPageConfig {
   description: string;
   apiEndpoint: string;
   basePath: string;
-  icon: IconDefinition;
+  icon: IconName;
   color: string;
   bgColor: string;
   borderColor: string;

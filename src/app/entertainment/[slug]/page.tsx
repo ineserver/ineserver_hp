@@ -1,12 +1,11 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 const config = {
   title: 'エンタメ',
   description: 'サーバー内のエンターテイメントやイベントについて紹介します',
   apiEndpoint: '/api/entertainment',
   basePath: '/entertainment',
-  icon: faGamepad,
+  icon: 'gamepad' as const,
   color: 'text-purple-600',
   bgColor: 'bg-purple-50',
   borderColor: 'border-purple-200',

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { iconMap } from '@/components/Icons';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 
 interface ContentListPageProps {
@@ -14,6 +14,8 @@ interface ContentListPageProps {
 export default function ContentListPage({ config }: ContentListPageProps) {
   const [content, setContent] = useState<ContentItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  const IconComponent = iconMap[config.icon];
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -47,7 +49,7 @@ export default function ContentListPage({ config }: ContentListPageProps) {
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">
-            <FontAwesomeIcon icon={config.icon} className={`${config.color} mr-6`} style={{ fontSize: '2.5rem' }} />
+            <IconComponent className={`${config.color} mr-6`} size={40} />
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">{config.title}</h1>
               <p className="text-gray-600 text-lg">
@@ -80,7 +82,7 @@ export default function ContentListPage({ config }: ContentListPageProps) {
                 >
                   <div className="bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg p-6 transition-colors duration-200 hover:shadow-md">
                     <div className="flex items-center">
-                      <FontAwesomeIcon icon={config.icon} className={`${config.color} mr-6`} style={{ fontSize: '2.5rem' }} />
+                      <IconComponent className={`${config.color} mr-6`} size={40} />
                       <div className="flex-1">
                         <h3 className="text-xl font-semibold text-gray-900 mb-2">
                           {item.title}
