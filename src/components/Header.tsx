@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronRightIcon, FileTextIcon, ShieldIcon, PlusIcon, MinusIcon, ChevronDownIcon } from './Icons';
+import { ChevronRightIcon, FileTextIcon, ShieldIcon, CoinsIcon, TrendingUpIcon, TrendingDownIcon, ChevronDownIcon } from './Icons';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -258,7 +258,7 @@ const Header = () => {
                 <div className="p-4">
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <PlusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <TrendingUpIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </h4>
                     <ul className="ml-4 space-y-1">
@@ -269,7 +269,7 @@ const Header = () => {
                   </div>
                   <div>
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
-                      <MinusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <TrendingDownIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </h4>
                     <ul className="ml-4 space-y-1">
@@ -418,7 +418,7 @@ const Header = () => {
                 {openSubMenu === 'economy' && (
                   <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
                     <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
-                      <PlusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <TrendingUpIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを貯める
                     </div>
                     <div className="pl-2 space-y-1">
@@ -434,7 +434,7 @@ const Header = () => {
                     </div>
                     
                     <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
-                      <MinusIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
+                      <TrendingDownIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       ineを使う
                     </div>
                     <div className="pl-2 space-y-1">

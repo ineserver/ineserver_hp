@@ -18,6 +18,24 @@ export const CoinsIcon = ({ className, size = 24 }: IconProps) => (
   </svg>
 );
 
+export const TrendingUpIcon = ({ className, size = 24 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M16,6L18.29,8.29L13.41,13.17L9.41,9.17L2,16.59L3.41,18L9.41,12L13.41,16L19.71,9.71L22,12V6H16Z"/>
+  </svg>
+);
+
+export const TrendingDownIcon = ({ className, size = 24 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M16,18L18.29,15.71L13.41,10.83L9.41,14.83L2,7.41L3.41,6L9.41,12L13.41,8L19.71,14.29L22,12V18H16Z"/>
+  </svg>
+);
+
+export const CashIcon = ({ className, size = 24 }: IconProps) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9Z"/>
+  </svg>
+);
+
 export const GamepadIcon = ({ className, size = 24 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path d="M7,6H17A6,6 0 0,1 23,12A6,6 0 0,1 17,18C15.22,18 13.63,17.23 12.53,16H11.47C10.37,17.23 8.78,18 7,18A6,6 0 0,1 1,12A6,6 0 0,1 7,6M6,9V11H4V13H6V15H8V13H10V11H8V9H6M15.5,12A1.5,1.5 0 0,0 17,10.5A1.5,1.5 0 0,0 15.5,9A1.5,1.5 0 0,0 14,10.5A1.5,1.5 0 0,0 15.5,12M18.5,15A1.5,1.5 0 0,0 20,13.5A1.5,1.5 0 0,0 18.5,12A1.5,1.5 0 0,0 17,13.5A1.5,1.5 0 0,0 18.5,15Z"/>
@@ -82,6 +100,9 @@ export const ChevronDownIcon = ({ className, size = 24 }: IconProps) => (
 export const iconMap = {
   bullhorn: BullhornIcon,
   coins: CoinsIcon,
+  trendingUp: TrendingUpIcon,
+  trendingDown: TrendingDownIcon,
+  cash: CashIcon,
   gamepad: GamepadIcon,
   home: HomeIcon,
   map: MapIcon,
