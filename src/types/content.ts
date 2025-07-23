@@ -1,4 +1,3 @@
-import React from 'react';
 import { IconName } from '@/components/Icons';
 
 export interface ContentItem {

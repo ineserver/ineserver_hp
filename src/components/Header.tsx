@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronRightIcon, FileTextIcon, ShieldIcon, CoinsIcon, TrendingUpIcon, TrendingDownIcon, ChevronDownIcon } from './Icons';
+import { ChevronRightIcon, FileTextIcon, ShieldIcon, TrendingUpIcon, TrendingDownIcon, ChevronDownIcon } from './Icons';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
