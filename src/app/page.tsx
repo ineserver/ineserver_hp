@@ -604,7 +604,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-bold text-white">パッチノート</h2>
                 <Link href="/patch-notes">
-                  <button className="inline-flex items-center px-3 py-2 bg-white rounded-md text-sm font-medium text-[#5b8064] hover:bg-gray-50 transition-all duration-200">
+                  <button className="inline-flex items-center px-3 py-2 bg-white/20 text-white rounded-md text-sm font-medium hover:bg-white/30 transition-all duration-200 backdrop-blur-sm">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
                     </svg>
