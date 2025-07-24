@@ -145,18 +145,18 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // 初期データの設定（CMSから取得する前のフォールバック）
+  // 初期データの設定（サーバーから取得する前のフォールバック）
   useEffect(() => {
-    // CMSからお知らせデータを取得
+    // お知らせデータを取得
     const fetchAnnouncements = async () => {
       try {
         setIsLoading(true);
         setAnnouncementError(false);
         const response = await fetch('/api/announcements', { next: { revalidate: 60 } });
         if (response.ok) {
-          const cmsAnnouncements = await response.json();
-          // CMSデータをフロントエンド用の形式に変換
-          const formattedAnnouncements = cmsAnnouncements.map((item: {
+          const announcements = await response.json();
+          // データをフロントエンド用の形式に変換
+          const formattedAnnouncements = announcements.map((item: {
             id: string;
             title: string;
             description: string;
@@ -175,14 +175,14 @@ export default function Home() {
           }));
           setAnnouncements(formattedAnnouncements);
         } else {
-          // CMSからの取得に失敗した場合はエラー状態を設定
-          console.warn('Failed to fetch announcements from CMS');
+          // データの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch announcements from server');
           setAnnouncementError(true);
           setAnnouncements([]);
         }
       } catch (error) {
         // エラーが発生した場合はエラー状態を設定
-        console.warn('Error fetching announcements from CMS:', error);
+        console.warn('Error fetching announcements from server:', error);
         setAnnouncementError(true);
         setAnnouncements([]);
       } finally {
@@ -198,15 +198,15 @@ export default function Home() {
         const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
         if (response.ok) {
           const result = await response.json();
-          const cmsPatchNotes = result.data || result;
-          if (Array.isArray(cmsPatchNotes) && cmsPatchNotes.length > 0) {
-            setLatestPatchNote(cmsPatchNotes[0]); // 最新の1件のみ
+          const patchNotes = result.data || result;
+          if (Array.isArray(patchNotes) && patchNotes.length > 0) {
+            setLatestPatchNote(patchNotes[0]); // 最新の1件のみ
           } else {
             setLatestPatchNote(null);
           }
         } else {
-          // CMSからの取得に失敗した場合はエラー状態を設定
-          console.warn('Failed to fetch patch notes from CMS');
+          // データの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch patch notes from server');
           setPatchNoteError(true);
           setLatestPatchNote(null);
         }
