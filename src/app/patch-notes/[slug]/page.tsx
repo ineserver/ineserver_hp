@@ -31,8 +31,8 @@ export default function PatchNoteDetailPage() {
         setIsLoading(true);
         const response = await fetch(`/api/patch-notes/${params.slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
-          const cmsPatchNote = await response.json();
-          setPatchNote(cmsPatchNote);
+          const patchNote = await response.json();
+          setPatchNote(patchNote);
         } else {
           // サンプルデータ（slugに応じて適切なデータを返す）
           const samplePatchNote: PatchNote = {

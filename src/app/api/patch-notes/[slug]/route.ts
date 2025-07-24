@@ -8,7 +8,7 @@ export async function GET(
   try {
     const { slug } = await params;
     
-    // CMSからパッチノートデータを取得
+    // パッチノートデータを取得
     const patchNote = await getPatchNoteBySlug(slug);
     
     if (!patchNote) {

@@ -36,11 +36,11 @@ export default function PatchNotesArchive() {
         if (response.ok) {
           const result = await response.json();
           // APIが {data: PatchNote[], pagination: {...}} の形式で返すので、dataプロパティを取得
-          const cmsPatchNotes = result.data || result;
-          setPatchNotes(Array.isArray(cmsPatchNotes) ? cmsPatchNotes : []);
+          const patchNotes = result.data || result;
+          setPatchNotes(Array.isArray(patchNotes) ? patchNotes : []);
         } else {
-          // CMSからの取得に失敗した場合はエラー状態を設定
-          console.warn('Failed to fetch patch notes from CMS');
+          // データの取得に失敗した場合はエラー状態を設定
+          console.warn('Failed to fetch patch notes from server');
           setError(true);
           setPatchNotes([]);
         }
@@ -64,8 +64,8 @@ export default function PatchNotesArchive() {
       const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
       if (response.ok) {
         const result = await response.json();
-        const cmsPatchNotes = result.data || result;
-        setPatchNotes(Array.isArray(cmsPatchNotes) ? cmsPatchNotes : []);
+        const patchNotes = result.data || result;
+        setPatchNotes(Array.isArray(patchNotes) ? patchNotes : []);
       } else {
         setError(true);
         setPatchNotes([]);
