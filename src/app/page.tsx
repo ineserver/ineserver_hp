@@ -383,8 +383,8 @@ export default function Home() {
           
                 {/* テキスト部分 */}
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-xl font-bold mb-1 text-gray-900">初めての方へ</h2>
-                  <p className="text-sm text-gray-700 font-medium">サーバーの基本的な情報やルールを確認しましょう</p>
+                  <h2 className="text-xl font-bold mb-1 text-gray-900">はじめての方へ</h2>
+                  <p className="text-sm text-gray-700 font-medium">サーバーへの入り方や遊び方はこちらから！</p>
                 </div>
               </div>
               

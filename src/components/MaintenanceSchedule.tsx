@@ -108,7 +108,7 @@ export default function MaintenanceSchedule() {
             <h2 className="text-xl font-bold text-white">メンテナンス予定</h2>
           </div>
           <p className="text-white/80 text-sm leading-relaxed">
-            定期メンテナンス情報をお知らせします。メンテナンス中はサーバーへの接続ができません。
+            定期メンテナンス情報です。メンテナンス中はサーバーへの接続ができません。
           </p>
         </div>
         
@@ -131,7 +131,7 @@ export default function MaintenanceSchedule() {
             <h2 className="text-xl font-bold text-white">メンテナンス予定</h2>
           </div>
           <p className="text-white/80 text-sm leading-relaxed">
-            定期メンテナンス情報をお知らせします。メンテナンス中はサーバーへの接続ができません。
+            定期メンテナンス情報です。メンテナンス中はサーバーへの接続ができません。
           </p>
         </div>
         

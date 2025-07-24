@@ -153,7 +153,7 @@ export default function ServerStatus({
             <h2 className="text-xl font-bold text-white">サーバーステータス</h2>
           </div>
           <p className="text-white/80 text-sm leading-relaxed">
-            現在のサーバー状況とプレイヤー情報をリアルタイムでお知らせします。
+            現在のサーバー状況です。
           </p>
         </div>
 
@@ -166,16 +166,7 @@ export default function ServerStatus({
                 <span className="text-orange-800 font-medium">サーバーはメンテナンス中です</span>
               </div>
               <div className="text-sm text-orange-700 mt-1">
-                しばらくお待ちください。作業完了後にサーバーが再開されます。
-              </div>
-              <div className="mt-2">
-                <Link 
-                  href="/announcements" 
-                  className="inline-flex items-center text-sm text-orange-600 hover:text-orange-800 hover:underline transition-colors"
-                >
-                  <span className="mr-1">⚙️</span>
-                  メンテナンス情報を確認する
-                </Link>
+                メンテナンス中はサーバーに接続できません。メンテナンス終了までお待ち下さい。
               </div>
             </div>
           )}
