@@ -152,7 +152,7 @@ export default function ServerStatus({
             <h2 className="text-xl font-bold text-white">サーバーステータス</h2>
           </div>
           <p className="text-white/80 text-sm leading-relaxed">
-            現在のサーバー状況です。
+            現在のサーバー状況です
           </p>
         </div>
 

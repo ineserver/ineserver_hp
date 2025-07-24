@@ -104,12 +104,12 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
         </header>
 
         {/* コンテンツ */}
-        <div className="prose prose-lg max-w-none">
+        <article className="max-w-none">
           <div 
-            className="text-gray-700 leading-relaxed"
+            className="markdown-content"
             dangerouslySetInnerHTML={{ __html: content.content }}
           />
-        </div>
+        </article>
 
         {/* フッター */}
         <footer className="mt-12 pt-8 border-t border-gray-200">
