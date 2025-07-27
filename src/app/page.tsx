@@ -1,6 +1,5 @@
 ﻿"use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Header from "@/components/Header";
@@ -154,6 +153,14 @@ export default function Home() {
     }
   ];
 
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  }, [slides.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -178,7 +185,7 @@ export default function Home() {
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [slides.length]);
+  }, [slides.length, nextSlide, prevSlide]);
 
   // 初期データの設定（サーバーから取得する前のフォールバック）
   useEffect(() => {
@@ -257,14 +264,6 @@ export default function Home() {
     fetchAnnouncements();
     fetchPatchNotes();
   }, []);
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
 
   // フィルタリング機能
   const filteredAnnouncements = announcements.filter(announcement => {

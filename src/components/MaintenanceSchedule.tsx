@@ -89,9 +89,6 @@ export default function MaintenanceSchedule() {
     const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
     const diffSeconds = Math.floor((diffTime % (1000 * 60)) / 1000);
     
-    // ゼロパディング関数
-    const pad = (num: number) => num.toString().padStart(2, '0');
-    
     // 24時間以内（1日未満）の場合は時間表示
     if (diffTime < 24 * 60 * 60 * 1000) {
       if (diffHours > 0) {
