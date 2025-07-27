@@ -75,25 +75,46 @@ export default function MaintenanceSchedule() {
     
     if (diffTime < 0) return null; // 過去のメンテナンス
     
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    // 日本時間での日付計算のため、JST (UTC+9) を考慮
+    const nowJST = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+    const maintenanceDateJST = new Date(maintenanceDate.getTime() + (9 * 60 * 60 * 1000));
+    
+    // 日本時間での日付のみを比較（時刻は無視）
+    const nowDateJST = new Date(nowJST.getFullYear(), nowJST.getMonth(), nowJST.getDate());
+    const maintenanceDateOnlyJST = new Date(maintenanceDateJST.getFullYear(), maintenanceDateJST.getMonth(), maintenanceDateJST.getDate());
+    
+    const dayDiff = Math.floor((maintenanceDateOnlyJST.getTime() - nowDateJST.getTime()) / (1000 * 60 * 60 * 24));
+    
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
     const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
     const diffSeconds = Math.floor((diffTime % (1000 * 60)) / 1000);
     
     // ゼロパディング関数
     const pad = (num: number) => num.toString().padStart(2, '0');
     
-    if (diffDays > 1) {
-      return `${pad(diffDays)}日${pad(diffHours)}時間${pad(diffMinutes)}分後`;
-    } else if (diffDays === 1) {
-      return `<span class="text-lg font-bold">明日</span> ${pad(diffHours)}時間${pad(diffMinutes)}分後`;
-    } else if (diffHours > 0) {
-      return `${pad(diffHours)}時間${pad(diffMinutes)}分後`;
-    } else if (diffMinutes > 0) {
-      return `${pad(diffMinutes)}分${pad(diffSeconds)}秒後`;
-    } else {
-      return `${pad(diffSeconds)}秒後`;
+    // 24時間以内（1日未満）の場合は時間表示
+    if (diffTime < 24 * 60 * 60 * 1000) {
+      if (diffHours > 0) {
+        return `${diffHours}時間後`;
+      } else if (diffMinutes > 0) {
+        return `${diffMinutes}分後`;
+      } else {
+        return `${diffSeconds}秒後`;
+      }
     }
+    
+    // 前日（明日）の場合
+    if (dayDiff === 1) {
+      return `明日`;
+    }
+    
+    // 2日以上先の場合
+    if (dayDiff >= 2) {
+      return `${dayDiff}日後`;
+    }
+    
+    // その他の場合（当日の24時間以上先など）
+    return `${diffHours}時間後`;
   };
 
   if (isLoading) {
@@ -177,8 +198,8 @@ export default function MaintenanceSchedule() {
   }
 
   const daysUntil = getDaysUntilMaintenance(maintenance.startTime);
-  const isToday = daysUntil && !daysUntil.includes('日') && !daysUntil.includes('明日');
-  const isTomorrow = daysUntil && daysUntil.includes('明日');
+  const isToday = daysUntil && (daysUntil.includes('時間後') || daysUntil.includes('分後') || daysUntil.includes('秒後'));
+  const isTomorrow = daysUntil && daysUntil === '明日';
   
   // 日時の色を緊急度に応じて設定
   const dateTimeColorClass = isToday ? 'text-red-700' : isTomorrow ? 'text-yellow-700' : 'text-blue-700';
@@ -228,9 +249,16 @@ export default function MaintenanceSchedule() {
           {/* カウントダウン表示 */}
           {daysUntil && (
             <div className="flex items-baseline justify-center">
-              <span className={`${dateTimeColorClass}`} dangerouslySetInnerHTML={{
-                __html: daysUntil.replace(/(\d+)(日|時間|分|秒)(後)?/g, '<span class="text-2xl font-bold">$1</span><span class="text-lg font-bold"> $2$3 </span>')
-              }} />
+              {daysUntil === '明日' ? (
+                <span className={`text-2xl font-bold ${dateTimeColorClass}`}>明日</span>
+              ) : (
+                <span 
+                  className={`${dateTimeColorClass}`} 
+                  dangerouslySetInnerHTML={{
+                    __html: daysUntil.replace(/(\d+)(日後|時間後|分後|秒後)/g, '<span class="text-2xl font-bold">$1</span><span class="text-lg font-bold">$2</span>')
+                  }} 
+                />
+              )}
             </div>
           )}
           
