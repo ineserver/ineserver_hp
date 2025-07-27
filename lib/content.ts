@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import matter from 'gray-matter'
+import { parseFrontMatter } from './front-matter-parser'
 import { remark } from 'remark'
 import html from 'remark-html'
 
@@ -22,7 +22,7 @@ export async function getAnnouncementFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(announcementDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         // Markdownを HTMLに変換
         const processedContent = await remark()
@@ -62,7 +62,7 @@ export async function getAnnouncementData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
 
   // Markdownを HTMLに変換
   const processedContent = await remark()
@@ -93,7 +93,7 @@ export async function getRulesFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(rulesDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -135,7 +135,7 @@ export async function getEconomyFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(economyDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -178,7 +178,7 @@ export async function getLifestyleFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(lifestyleDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -222,7 +222,7 @@ export async function getTourismFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(tourismDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -266,7 +266,7 @@ export async function getTransportationFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(transportationDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -310,7 +310,7 @@ export async function getEntertainmentFiles() {
         const id = fileName.replace(/\.md$/, '')
         const fullPath = path.join(entertainmentDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
-        const matterResult = matter(fileContents)
+        const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
           .use(html)
@@ -346,7 +346,7 @@ export async function getLifestyleData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
     .use(html)
@@ -368,7 +368,7 @@ export async function getTourismData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
     .use(html)
@@ -390,7 +390,7 @@ export async function getTransportationData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
     .use(html)
@@ -412,7 +412,7 @@ export async function getEconomyData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
     .use(html)
@@ -434,7 +434,7 @@ export async function getEntertainmentData(id: string) {
   }
   
   const fileContents = fs.readFileSync(fullPath, 'utf8')
-  const matterResult = matter(fileContents)
+  const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
     .use(html)

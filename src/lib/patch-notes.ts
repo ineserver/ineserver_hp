@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import matter from 'gray-matter';
+import { parseFrontMatter } from '../../lib/front-matter-parser';
 import { remark } from 'remark';
 import remarkHtml from 'remark-html';
 
@@ -50,11 +50,11 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
         const id = name.replace(/\.md$/, '');
         const fullPath = path.join(patchNotesDirectory, name);
         const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const { data } = matter(fileContents);
+        const { data } = parseFrontMatter(fileContents);
 
         // タイプに基づいてタイトルを自動生成（既存のタイトルがある場合はそれを優先）
         const sectionsWithTitles = await Promise.all(
-  (data.sections || []).map(async (section: unknown) => {
+  ((data.sections as unknown[]) || []).map(async (section: unknown) => {
     if (typeof section !== 'object' || section === null) return null;
     type Section = { items?: string[]; title?: string; type?: string };
     const s = section as Section;
@@ -74,16 +74,16 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
         return {
           id,
           slug: id.replace(/\./g, '-'), // バージョン番号をslugに変換（例: 4.19.0.1 → 4-19-0-1）
-          version: data.version,
-          date: data.date ? new Date(data.date).toLocaleDateString('ja-JP', {
+          version: data.version as string,
+          date: data.date ? new Date(data.date as string).toLocaleDateString('ja-JP', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           }) : '',
-          description: data.description || '',
+          description: (data.description as string) || '',
           sections: sectionsWithTitles,
-          published: data.published ?? true,
-          rawDate: data.date ? new Date(data.date) : new Date(0), // ソート用の生の日付
+          published: (data.published as boolean) ?? true,
+          rawDate: data.date ? new Date(data.date as string) : new Date(0), // ソート用の生の日付
         } as PatchNote & { rawDate: Date };
       })
   );
