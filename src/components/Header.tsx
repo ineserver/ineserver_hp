@@ -117,8 +117,8 @@ const Header = () => {
                 </a>
                 <a href="https://stats.uptimerobot.com/Rw0L1innjO" className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                   死活情報
                   <svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,21 +349,21 @@ const Header = () => {
             <div className="space-y-1 mb-4">
               {/* 生活・くらし */}
               <div className="border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center justify-between py-1">
+                <div className="flex items-center justify-between">
                   <Link 
                     href="/lifestyle" 
-                    className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
+                    className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                     onClick={closeMenu}
                   >
                     生活・くらし
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('lifestyle')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
                     aria-label="生活・くらしのサブメニューを開く"
                   >
                     <ChevronDownIcon 
-                      className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'lifestyle' ? 'rotate-180' : ''}`} 
+                      className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'lifestyle' ? 'rotate-180' : ''}`} 
                     />
                   </button>
                 </div>
@@ -403,21 +403,21 @@ const Header = () => {
 
               {/* 経済 */}
               <div className="border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center justify-between py-1">
+                <div className="flex items-center justify-between">
                   <Link 
                     href="/economy" 
-                    className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
+                    className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                     onClick={closeMenu}
                   >
                     経済
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('economy')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
                     aria-label="経済のサブメニューを開く"
                   >
                     <ChevronDownIcon 
-                      className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'economy' ? 'rotate-180' : ''}`} 
+                      className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'economy' ? 'rotate-180' : ''}`} 
                     />
                   </button>
                 </div>
@@ -463,21 +463,21 @@ const Header = () => {
 
               {/* 娯楽 */}
               <div className="border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center justify-between py-1">
+                <div className="flex items-center justify-between">
                   <Link 
                     href="/entertainment" 
-                    className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
+                    className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                     onClick={closeMenu}
                   >
                     娯楽
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('entertainment')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
                     aria-label="娯楽のサブメニューを開く"
                   >
                     <ChevronDownIcon 
-                      className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'entertainment' ? 'rotate-180' : ''}`} 
+                      className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'entertainment' ? 'rotate-180' : ''}`} 
                     />
                   </button>
                 </div>
@@ -500,21 +500,21 @@ const Header = () => {
 
               {/* 観光 */}
               <div className="border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center justify-between py-1">
+                <div className="flex items-center justify-between">
                   <Link 
                     href="/tourism" 
-                    className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
+                    className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                     onClick={closeMenu}
                   >
                     観光
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('tourism')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
                     aria-label="観光のサブメニューを開く"
                   >
                     <ChevronDownIcon 
-                      className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'tourism' ? 'rotate-180' : ''}`} 
+                      className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'tourism' ? 'rotate-180' : ''}`} 
                     />
                   </button>
                 </div>
@@ -529,21 +529,21 @@ const Header = () => {
 
               {/* 交通 */}
               <div className="border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center justify-between py-1">
+                <div className="flex items-center justify-between">
                   <Link 
                     href="/transportation" 
-                    className="flex-1 py-3 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
+                    className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                     onClick={closeMenu}
                   >
                     交通
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('transportation')}
-                    className="p-3 text-gray-500 hover:text-[#5b8064] min-w-[48px] flex items-center justify-center"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
                     aria-label="交通のサブメニューを開く"
                   >
                     <ChevronDownIcon 
-                      className={`w-4 h-4 transition-transform duration-200 ${openSubMenu === 'transportation' ? 'rotate-180' : ''}`} 
+                      className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'transportation' ? 'rotate-180' : ''}`} 
                     />
                   </button>
                 </div>
@@ -576,23 +576,29 @@ const Header = () => {
                   </svg>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://stats.uptimerobot.com/Rw0L1innjO" 
                   className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
-                  <span className="flex-1">メンテナンス情報</span>
+                  <span className="flex-1">死活情報</span>
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </a>
                 <a 
-                  href="#" 
+                  href="https://market.1necat.net" 
                   className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                   <span className="flex-1">アイテム市場状況</span>
+                  <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
                 </a>
                 <a 
                   href="https://map.1necat.net" 
