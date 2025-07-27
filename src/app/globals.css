@@ -191,3 +191,62 @@ html, body {
   background-color: transparent;
   padding: 0;
 }
+
+/* スライダー用のアニメーション */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-content {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+/* スライダーのボタンホバーエフェクト */
+.slider-nav-btn {
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.slider-nav-btn:hover {
+  transform: scale(1.1);
+  backdrop-filter: blur(15px);
+}
+
+/* 特徴タグのアニメーション */
+.feature-tag {
+  transition: all 0.3s ease;
+}
+
+.feature-tag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
