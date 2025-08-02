@@ -500,21 +500,57 @@ export default function Home() {
     }
   };
 
-  // イベント状態に応じた開始までの日数を計算する関数
-  const getDaysToStart = (startDate: string) => {
+  // イベント状態に応じた開始までの時間を計算する関数
+  const getTimeToStart = (startDate: string) => {
     const start = new Date(startDate);
     const now = new Date();
+    
     const diffTime = start.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    
+    // 日付のみを比較するため、時刻を00:00:00に設定
+    const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const dayDiffTime = startDateOnly.getTime() - nowDateOnly.getTime();
+    const diffDays = Math.floor(dayDiffTime / (1000 * 60 * 60 * 24));
+    
+    return { diffDays, diffHours };
+  };
+
+  // 表示用のテキストを生成する関数
+  const getStartTimeText = (startDate: string) => {
+    const { diffDays, diffHours } = getTimeToStart(startDate);
+    
+    // 24時間以内の場合は時間表示
+    if (diffHours >= 0 && diffHours < 24) {
+      return `${diffHours}時間後開始`;
+    }
+    // 1日前（24時間以上48時間未満）の場合は「明日」
+    else if (diffDays === 1) {
+      return '明日開始';
+    }
+    // 2日以上先の場合は日数表示
+    else if (diffDays >= 2) {
+      return `${diffDays}日後開始`;
+    }
+    // 既に開始している場合
+    else {
+      return '開始済み';
+    }
   };
 
   // イベント期間の残り日数を計算する関数
   const getDaysRemaining = (endDate: string) => {
     const end = new Date(endDate);
     const now = new Date();
-    const diffTime = end.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // 日付のみを比較するため、時刻を00:00:00に設定
+    const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    const diffTime = endDateOnly.getTime() - nowDateOnly.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
 
@@ -922,7 +958,6 @@ export default function Home() {
                   {currentEvents.map((event) => {
                     const status = getEventStatus(event.startDate, event.endDate);
                     const daysRemaining = getDaysRemaining(event.endDate);
-                    const daysToStart = getDaysToStart(event.startDate);
                     
                     return (
                       <div key={event.id} className="bg-white/15 backdrop-blur-sm rounded-xl p-5 hover:bg-white/20 transition-all duration-200 border border-white/20">
@@ -933,7 +968,7 @@ export default function Home() {
                           <div className="ml-3 flex-shrink-0">
                             {status === 'upcoming' ? (
                               <span className="bg-blue-400 text-blue-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                {daysToStart === 1 ? '明日開始' : `${daysToStart}日後開始`}
+                                {getStartTimeText(event.startDate)}
                               </span>
                             ) : status === 'ongoing' ? (
                               daysRemaining > 0 ? (
