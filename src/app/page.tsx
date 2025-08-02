@@ -668,7 +668,7 @@ export default function Home() {
                 <div className="lg:hidden">
                   {/* ボタン */}
                   <div className="flex flex-col gap-3">
-                    <Link href="/lifestyle/server-rules">
+                    <Link href="/tutorial">
                       <button className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-md text-white px-6 py-3 rounded-lg font-bold text-sm hover:from-green-600/90 hover:to-emerald-700/90 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30">
                         チュートリアルを見る
                       </button>
@@ -686,7 +686,7 @@ export default function Home() {
                 <div className="hidden lg:block lg:min-w-[450px]">
                   {/* ボタン */}
                   <div className="flex flex-col gap-3">
-                    <Link href="/lifestyle/server-rules">
+                    <Link href="/tutorial">
                       <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30">
                         チュートリアルを見る
                       </button>
