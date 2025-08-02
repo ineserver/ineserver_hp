@@ -50,10 +50,8 @@ export default function Home() {
   const [latestPatchNote, setLatestPatchNote] = useState<PatchNote | null>(null);
   const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
   const [isPatchNoteLoading, setIsPatchNoteLoading] = useState(false); // 初期状態を false に変更
-  const [isEventLoading, setIsEventLoading] = useState(false); // 初期状態を false に変更
   const [announcementError, setAnnouncementError] = useState(false);
   const [patchNoteError, setPatchNoteError] = useState(false);
-  const [eventError, setEventError] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
@@ -208,12 +206,10 @@ export default function Home() {
       // 一度だけローディング状態を設定
       setIsLoading(true);
       setIsPatchNoteLoading(true);
-      setIsEventLoading(true);
       
       // エラー状態をリセット
       setAnnouncementError(false);
       setPatchNoteError(false);
-      setEventError(false);
       
       // 並列でデータ取得を実行
       const [announcementsResult, patchNotesResult] = await Promise.allSettled([
@@ -287,14 +283,12 @@ export default function Home() {
         } catch (error) {
           console.warn('Error processing announcements data:', error);
           setAnnouncementError(true);
-          setEventError(true);
           setAnnouncements([]);
           setCurrentEvents([]);
         }
       } else {
         console.warn('Failed to fetch announcements:', announcementsResult.reason);
         setAnnouncementError(true);
-        setEventError(true);
         setAnnouncements([]);
         setCurrentEvents([]);
       }
@@ -323,7 +317,6 @@ export default function Home() {
       // すべてのローディング状態を一度に解除
       setIsLoading(false);
       setIsPatchNoteLoading(false);
-      setIsEventLoading(false);
     };
 
     fetchAllData();

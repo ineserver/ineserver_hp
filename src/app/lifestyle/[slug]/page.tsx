@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-green-200',
   loadingColor: 'border-green-600',
   emptyIcon: '🏠',
+  emptyMessage: '生活に関する記事がありません',
+  pageTitle: '生活・エンターテイメント',
   backButtonText: 'くらし・生活一覧に戻る'
 };
 
