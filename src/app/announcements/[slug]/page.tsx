@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-red-200',
   loadingColor: 'border-red-600',
   emptyIcon: '📢',
+  emptyMessage: 'お知らせがまだありません。',
+  pageTitle: 'お知らせ | Ineサーバー',
   backButtonText: 'お知らせ一覧に戻る'
 };
 

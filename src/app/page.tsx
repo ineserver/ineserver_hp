@@ -12,6 +12,17 @@ interface Announcement {
   date: string;
   type: 'important' | 'normal' | 'pickup';
   description: string;
+  eventStartDate?: string;
+  eventEndDate?: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  image?: string;
 }
 
 interface PatchNote {
@@ -35,11 +46,14 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [activeTab, setActiveTab] = useState('all');
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [currentEvents, setCurrentEvents] = useState<Event[]>([]);
   const [latestPatchNote, setLatestPatchNote] = useState<PatchNote | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPatchNoteLoading, setIsPatchNoteLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
+  const [isPatchNoteLoading, setIsPatchNoteLoading] = useState(false); // 初期状態を false に変更
+  const [isEventLoading, setIsEventLoading] = useState(false); // 初期状態を false に変更
   const [announcementError, setAnnouncementError] = useState(false);
   const [patchNoteError, setPatchNoteError] = useState(false);
+  const [eventError, setEventError] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
@@ -189,21 +203,49 @@ export default function Home() {
 
   // 初期データの設定（サーバーから取得する前のフォールバック）
   useEffect(() => {
-    // お知らせデータを取得
-    const fetchAnnouncements = async () => {
-      try {
-        setIsLoading(true);
-        setAnnouncementError(false);
-        const response = await fetch('/api/announcements', { next: { revalidate: 60 } });
-        if (response.ok) {
-          const announcements = await response.json();
-          // データをフロントエンド用の形式に変換
+    // 並列でデータを取得して読み込み時間を短縮
+    const fetchAllData = async () => {
+      // 一度だけローディング状態を設定
+      setIsLoading(true);
+      setIsPatchNoteLoading(true);
+      setIsEventLoading(true);
+      
+      // エラー状態をリセット
+      setAnnouncementError(false);
+      setPatchNoteError(false);
+      setEventError(false);
+      
+      // 並列でデータ取得を実行
+      const [announcementsResult, patchNotesResult] = await Promise.allSettled([
+        // お知らせデータを取得
+        fetch('/api/announcements', { next: { revalidate: 60 } }).then(async (response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch announcements');
+          }
+          return response.json();
+        }),
+        // パッチノートデータを取得
+        fetch('/api/patch-notes', { next: { revalidate: 60 } }).then(async (response) => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch patch notes');
+          }
+          return response.json();
+        })
+      ]);
+      
+      // お知らせの結果を処理
+      if (announcementsResult.status === 'fulfilled') {
+        try {
+          const announcements = announcementsResult.value;
+          // データをフロントエンド用の形式に変換（最適化済み）
           const formattedAnnouncements = announcements.map((item: {
             id: string;
             title: string;
             description: string;
             date: string;
             type?: string;
+            eventStartDate?: string;
+            eventEndDate?: string;
           }) => ({
             id: item.id,
             title: item.title,
@@ -213,56 +255,78 @@ export default function Home() {
               month: 'long',
               day: 'numeric'
             }),
-            type: item.type || 'normal'
+            type: item.type || 'normal',
+            eventStartDate: item.eventStartDate,
+            eventEndDate: item.eventEndDate
           }));
           setAnnouncements(formattedAnnouncements);
-        } else {
-          // データの取得に失敗した場合はエラー状態を設定
-          console.warn('Failed to fetch announcements from server');
+          
+          // イベントのフィルタリング（開催中と開催予定を含む）
+          const currentDate = new Date();
+          const events = formattedAnnouncements
+            .filter((announcement: Announcement) => 
+              announcement.type === 'pickup' && 
+              announcement.eventStartDate && 
+              announcement.eventEndDate
+            )
+            .filter((announcement: Announcement) => {
+              const endDate = new Date(announcement.eventEndDate!);
+              // 終了日が過ぎていないイベント（開催中＋開催予定）を表示
+              return currentDate <= endDate;
+            })
+            .map((announcement: Announcement) => ({
+              id: announcement.id,
+              title: announcement.title,
+              description: announcement.description,
+              startDate: announcement.eventStartDate!,
+              endDate: announcement.eventEndDate!
+            }))
+            .sort((a: Event, b: Event) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()); // 開始日順にソート
+          
+          setCurrentEvents(events);
+        } catch (error) {
+          console.warn('Error processing announcements data:', error);
           setAnnouncementError(true);
+          setEventError(true);
           setAnnouncements([]);
+          setCurrentEvents([]);
         }
-      } catch (error) {
-        // エラーが発生した場合はエラー状態を設定
-        console.warn('Error fetching announcements from server:', error);
+      } else {
+        console.warn('Failed to fetch announcements:', announcementsResult.reason);
         setAnnouncementError(true);
+        setEventError(true);
         setAnnouncements([]);
-      } finally {
-        setIsLoading(false);
+        setCurrentEvents([]);
       }
-    };
-
-    // パッチノートデータを取得
-    const fetchPatchNotes = async () => {
-      try {
-        setIsPatchNoteLoading(true);
-        setPatchNoteError(false);
-        const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
-        if (response.ok) {
-          const result = await response.json();
+      
+      // パッチノートの結果を処理
+      if (patchNotesResult.status === 'fulfilled') {
+        try {
+          const result = patchNotesResult.value;
           const patchNotes = result.data || result;
           if (Array.isArray(patchNotes) && patchNotes.length > 0) {
             setLatestPatchNote(patchNotes[0]); // 最新の1件のみ
           } else {
             setLatestPatchNote(null);
           }
-        } else {
-          // データの取得に失敗した場合はエラー状態を設定
-          console.warn('Failed to fetch patch notes from server');
+        } catch (error) {
+          console.warn('Error processing patch notes data:', error);
           setPatchNoteError(true);
           setLatestPatchNote(null);
         }
-      } catch (error) {
-        console.error('Error fetching patch notes:', error);
+      } else {
+        console.warn('Failed to fetch patch notes:', patchNotesResult.reason);
         setPatchNoteError(true);
         setLatestPatchNote(null);
-      } finally {
-        setIsPatchNoteLoading(false);
       }
+      
+      // すべてのローディング状態を一度に解除
+      setIsLoading(false);
+      setIsPatchNoteLoading(false);
+      setIsEventLoading(false);
     };
 
-    fetchAnnouncements();
-    fetchPatchNotes();
+    fetchAllData();
   }, []);
 
   // フィルタリング機能
@@ -327,6 +391,48 @@ export default function Home() {
       default:
         return 'お知らせ';
     }
+  };
+
+  // イベントの状態を取得する関数
+  const getEventStatus = (startDate: string, endDate: string) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    
+    if (now < start) {
+      return 'upcoming'; // 開催予定
+    } else if (now >= start && now <= end) {
+      return 'ongoing'; // 開催中
+    } else {
+      return 'ended'; // 終了
+    }
+  };
+
+  // イベント状態に応じた開始までの日数を計算する関数
+  const getDaysToStart = (startDate: string) => {
+    const start = new Date(startDate);
+    const now = new Date();
+    const diffTime = start.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  // イベント期間の残り日数を計算する関数
+  const getDaysRemaining = (endDate: string) => {
+    const end = new Date(endDate);
+    const now = new Date();
+    const diffTime = end.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  // イベント期間を表示用にフォーマットする関数
+  const formatEventPeriod = (startDate: string, endDate: string) => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const startStr = start.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
+    const endStr = end.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
+    return `${startStr} - ${endStr}`;
   };
 
   return (
@@ -480,39 +586,62 @@ export default function Home() {
         ))}
         
         
-        {/* 前へボタン */}
+        {/* モバイル版：従来通り中央部分に左右のボタンを配置 */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 lg:left-8 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 lg:p-4 rounded-full transition-all duration-200 slider-nav-btn"
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden"
         >
-          <svg className="w-4 h-4 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
           </svg>
         </button>
         
-        {/* 次へボタン */}
         <button
           onClick={nextSlide}
-          className="absolute right-2 lg:right-8 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 lg:p-4 rounded-full transition-all duration-200 slider-nav-btn"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden"
         >
-          <svg className="w-4 h-4 lg:w-6 lg:h-6" fill="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
           </svg>
         </button>
         
-        {/* インディケーター */}
-        <div className="absolute bottom-16 right-4 transform space-x-3 lg:bottom-8 lg:right-20 hidden lg:flex">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-4 h-4 rounded-full transition-all duration-300 border-2 ${
-                index === currentSlide 
-                  ? 'bg-white border-white scale-125' 
-                  : 'bg-transparent border-white/60 hover:border-white hover:scale-110'
-              }`}
-            />
-          ))}
+        
+        {/* PC版：インディケーターと左右のボタンを右側に配置 */}
+        <div className="absolute bottom-8 right-20 hidden lg:flex items-center space-x-3">
+          {/* 前へボタン */}
+          <button
+            onClick={prevSlide}
+            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+            </svg>
+          </button>
+          
+          {/* インディケーター */}
+          <div className="flex space-x-2">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 border ${
+                  index === currentSlide 
+                    ? 'bg-white border-white scale-125' 
+                    : 'bg-transparent border-white/60 hover:border-white hover:scale-110'
+                }`}
+              />
+            ))}
+          </div>
+          
+          {/* 次へボタン */}
+          <button
+            onClick={nextSlide}
+            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+            </svg>
+          </button>
         </div>
 
         {/* スクロール誘導アニメーション */}
@@ -528,42 +657,153 @@ export default function Home() {
 
       {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
-        {/* 初心者向けバナー */}
-        <header className="mb-8">
-          <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-lg p-5 border border-green-200">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div className="flex items-start sm:items-center space-x-4">
-                {/* アイコン部分 */}
-                <div className="bg-emerald-500 p-3 rounded-full flex-shrink-0 shadow-none" style={{ boxShadow: 'none', filter: 'none' }}>
-                  <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeWidth="1.5" width="32" height="32" color="#ffffff" className="text-white">
-                    <defs>
-                      <style>{`.cls-637a2287b95f902aafde8ff1-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}`}</style>
-                    </defs>
-                    <path className="cls-637a2287b95f902aafde8ff1-1" d="M16.64,19.09h0a5.43,5.43,0,0,1-4.16,2.08h-1a7.41,7.41,0,0,1-5.07-2.08h0C1,12,12,2,12,2l5,7.45A8.29,8.29,0,0,1,16.64,19.09Z"></path>
-                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="11.97" y1="9.3" x2="11.97" y2="23"></line>
-                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="8.32" y1="14.78" x2="11.97" y2="18.43"></line>
-                    <line className="cls-637a2287b95f902aafde8ff1-1" x1="14.71" y1="12.04" x2="11.97" y2="14.78"></line>
+        {/* イベント */}
+        {currentEvents.length > 0 && (
+          <section className="mb-8">
+            <div className="bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-xl p-6 text-white overflow-hidden relative">
+              {/* 幾何学的な背景装飾 */}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* 円形パターン1 */}
+                <div className="absolute top-6 left-10 w-24 h-24 opacity-10">
+                  <div className="w-full h-full border-2 border-white rounded-full"></div>
+                  <div className="absolute top-2 left-2 w-20 h-20 border border-white/50 rounded-full"></div>
+                  <div className="absolute top-4 left-4 w-16 h-16 border border-white/30 rounded-full"></div>
+                </div>
+
+                {/* 六角形パターン */}
+                <div className="absolute top-16 right-16 w-20 h-20 opacity-15">
+                  <div className="w-full h-full border-2 border-yellow-200 transform rotate-12" 
+                       style={{ clipPath: 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)' }}>
+                  </div>
+                </div>
+
+                {/* 円形パターン2 */}
+                <div className="absolute bottom-12 left-20 w-28 h-28 opacity-12">
+                  <div className="w-full h-full border-2 border-pink-200 rounded-full transform rotate-45"></div>
+                  <div className="absolute top-3 left-3 w-22 h-22 border border-pink-200/60 rounded-full"></div>
+                </div>
+
+                {/* ダイヤモンドパターン */}
+                <div className="absolute bottom-20 right-12 w-16 h-16 opacity-15">
+                  <div className="w-full h-full border-2 border-blue-200 transform rotate-45 rounded-sm"></div>
+                  <div className="absolute top-2 left-2 w-12 h-12 border border-blue-200/50 transform rotate-45 rounded-sm"></div>
+                </div>
+
+                {/* 星形パターン */}
+                <div className="absolute top-32 left-6 w-12 h-12 opacity-20">
+                  <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
                   </svg>
                 </div>
-          
-                {/* テキスト部分 */}
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-xl font-bold mb-1 text-gray-900">はじめての方へ</h2>
-                  <p className="text-sm text-gray-700 font-medium">サーバーへの入り方や遊び方はこちらから！</p>
+
+                {/* 三角形パターン */}
+                <div className="absolute top-8 right-32 w-14 h-14 opacity-12">
+                  <div className="w-0 h-0 border-l-7 border-r-7 border-b-12 border-transparent border-b-yellow-200"></div>
+                </div>
+
+                {/* 小さな装飾要素 */}
+                <div className="absolute top-12 right-6 w-2 h-2 bg-white rounded-full opacity-25"></div>
+                <div className="absolute top-24 left-36 w-1.5 h-1.5 bg-yellow-200 rounded-full opacity-30"></div>
+                <div className="absolute bottom-16 left-8 w-2 h-2 bg-pink-200 rounded-full opacity-25"></div>
+                <div className="absolute bottom-8 right-28 w-1.5 h-1.5 bg-blue-200 rounded-full opacity-30"></div>
+                <div className="absolute top-28 left-16 w-1 h-1 bg-white rounded-full opacity-35"></div>
+                
+                {/* グラデーション装飾 */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-white/5 to-transparent rounded-full"></div>
+                <div className="absolute bottom-0 left-0 w-28 h-28 bg-gradient-radial from-pink-200/8 to-transparent rounded-full"></div>
+              </div>
+
+              <div className="relative z-10">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    {/* PC版: 1行表示 */}
+                    <div className="hidden sm:block">
+                      <h2 className="text-2xl font-bold">イベント情報 <span className="text-lg font-normal text-white/80">　開催中・開催予定のイベント</span></h2>
+                    </div>
+                    
+                    {/* モバイル版: 2行表示 */}
+                    <div className="sm:hidden">
+                      <h2 className="text-2xl font-bold">イベント情報</h2>
+                      <p className="text-white/80 text-sm">開催中・開催予定のイベント</p>
+                    </div>
+                  </div>
+                  <div className="hidden sm:block text-sm bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30">
+                    {currentEvents.length}件のイベント
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {currentEvents.map((event) => {
+                    const status = getEventStatus(event.startDate, event.endDate);
+                    const daysRemaining = getDaysRemaining(event.endDate);
+                    const daysToStart = getDaysToStart(event.startDate);
+                    
+                    return (
+                      <div key={event.id} className="bg-white/15 backdrop-blur-sm rounded-xl p-5 hover:bg-white/20 transition-all duration-200 border border-white/20">
+                        <div className="flex items-start justify-between mb-4">
+                          <h3 className="text-lg font-bold text-white leading-tight flex-1">
+                            {event.title}
+                          </h3>
+                          <div className="ml-3 flex-shrink-0">
+                            {status === 'upcoming' ? (
+                              <span className="bg-blue-400 text-blue-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                {daysToStart === 1 ? '明日開始' : `${daysToStart}日後開始`}
+                              </span>
+                            ) : status === 'ongoing' ? (
+                              daysRemaining > 0 ? (
+                                <span className="bg-green-400 text-green-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                  残り{daysRemaining}日
+                                </span>
+                              ) : (
+                                <span className="bg-red-400 text-red-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                  本日終了
+                                </span>
+                              )
+                            ) : (
+                              <span className="bg-gray-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                                終了
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <p className="text-white/90 text-sm mb-4 leading-relaxed">
+                          {event.description}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <div className="text-xs text-white/70 flex items-center space-x-2">
+                            <span className="flex items-center">
+                              {formatEventPeriod(event.startDate, event.endDate)}
+                            </span>
+                            {status === 'upcoming' && (
+                              <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                                開催予定
+                              </span>
+                            )}
+                            {status === 'ongoing' && (
+                              <span className="bg-green-500/30 px-2 py-1 rounded-full text-xs">
+                                開催中
+                              </span>
+                            )}
+                          </div>
+                          <Link href={`/announcements/${event.id}`}>
+                            <button className="text-white hover:text-white/80 text-sm font-medium transition-colors duration-200 flex items-center space-x-1 bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30">
+                              <span>詳細を見る</span>
+                              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                              </svg>
+                            </button>
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-              
-              {/* ボタン部分 - PC版では右端、モバイル版ではアイコンの右側に左揃え */}
-              <div className="sm:flex-shrink-0 ml-16 sm:ml-0">
-                <Link href="/lifestyle/server-rules">
-                  <button className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 py-2 rounded-lg font-bold text-sm hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 border-t border-green-400">
-                   チュートリアルを見る
-                  </button>
-                </Link>
-              </div>
             </div>
-          </div>
-        </header>
+          </section>
+        )}
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
           {/* 左側: お知らせとパッチノート */}
@@ -663,10 +903,41 @@ export default function Home() {
             {/* お知らせリスト */}
             <div className="divide-y divide-gray-200">
               {isLoading ? (
-                // ローディング状態
-                <div className="p-6 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto"></div>
-                  <p className="mt-2 text-gray-500">お知らせを読み込み中...</p>
+                // スケルトンローディング状態
+                <div className="divide-y divide-gray-200">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="p-6 animate-pulse">
+                      {/* モバイル表示のスケルトン */}
+                      <div className="sm:hidden space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="h-6 bg-gray-200 rounded-full w-20"></div>
+                          <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        </div>
+                        <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                        <div className="space-y-2">
+                          <div className="h-4 bg-gray-200 rounded w-full"></div>
+                          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        </div>
+                      </div>
+                      
+                      {/* PC表示のスケルトン */}
+                      <div className="hidden sm:block">
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start space-x-4 flex-1">
+                            <div className="h-6 bg-gray-200 rounded-full w-20 flex-shrink-0"></div>
+                            <div className="flex-1 min-w-0 space-y-2">
+                              <div className="h-6 bg-gray-200 rounded w-3/4"></div>
+                              <div className="space-y-1">
+                                <div className="h-4 bg-gray-200 rounded w-full"></div>
+                                <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="h-4 bg-gray-200 rounded w-16 flex-shrink-0 ml-4"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : announcementError ? (
                 // エラー状態
@@ -786,9 +1057,36 @@ export default function Home() {
             {/* パッチノート内容 */}
             <div className="divide-y divide-gray-200">
               {isPatchNoteLoading ? (
-                <div className="p-6 text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#5b8064] mx-auto"></div>
-                  <p className="mt-2 text-gray-500">パッチノートを読み込み中...</p>
+                // スケルトンローディング状態  
+                <div className="p-6 animate-pulse">
+                  {/* ヘッダーのスケルトン */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="h-6 bg-gray-200 rounded w-32"></div>
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                  </div>
+                  
+                  {/* 説明のスケルトン */}
+                  <div className="space-y-2 mb-6">
+                    <div className="h-4 bg-gray-200 rounded w-full"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                  </div>
+                  
+                  {/* セクションのスケルトン */}
+                  <div className="space-y-4">
+                    {[1, 2].map((i) => (
+                      <div key={i}>
+                        <div className="flex items-center mb-2">
+                          <div className="h-4 bg-gray-200 rounded-full w-4 mr-2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        </div>
+                        <div className="ml-6 space-y-1">
+                          <div className="h-3 bg-gray-200 rounded w-full"></div>
+                          <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+                          <div className="h-3 bg-gray-200 rounded w-3/5"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               ) : patchNoteError ? (
                 // エラー状態
@@ -864,6 +1162,104 @@ export default function Home() {
       </div>
     </div>
   </main>
+
+  {/* フッター */}
+  <footer className="bg-gray-900 text-white">
+    <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* サーバー情報 */}
+        <div>
+          <h3 className="text-lg font-bold mb-4">いねサーバー</h3>
+          <p className="text-gray-300 text-sm mb-4">
+            本格的な経済システムと都市開発が楽しめるMinecraftサーバー
+          </p>
+          <div className="text-sm text-gray-400">
+            <p>サーバーアドレス:</p>
+            <p className="text-green-400 font-mono">1necat.net</p>
+          </div>
+        </div>
+
+        {/* ナビゲーション */}
+        <div>
+          <h3 className="text-lg font-bold mb-4">コンテンツ</h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/economy" className="text-gray-300 hover:text-white transition-colors duration-200">
+                経済システム
+              </Link>
+            </li>
+            <li>
+              <Link href="/tourism" className="text-gray-300 hover:text-white transition-colors duration-200">
+                観光・都市開発
+              </Link>
+            </li>
+            <li>
+              <Link href="/lifestyle" className="text-gray-300 hover:text-white transition-colors duration-200">
+                生活・エンターテイメント
+              </Link>
+            </li>
+            <li>
+              <Link href="/transportation" className="text-gray-300 hover:text-white transition-colors duration-200">
+                交通・運輸
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* サポート */}
+        <div>
+          <h3 className="text-lg font-bold mb-4">サポート</h3>
+          <ul className="space-y-2 text-sm">
+            <li>
+              <Link href="/lifestyle/server-rules" className="text-gray-300 hover:text-white transition-colors duration-200">
+                サーバールール
+              </Link>
+            </li>
+            <li>
+              <Link href="/announcements" className="text-gray-300 hover:text-white transition-colors duration-200">
+                お知らせ
+              </Link>
+            </li>
+            <li>
+              <Link href="/patch-notes" className="text-gray-300 hover:text-white transition-colors duration-200">
+                パッチノート
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        {/* ソーシャル */}
+        <div>
+          <h3 className="text-lg font-bold mb-4">コミュニティ</h3>
+          <div className="space-y-3">
+            <a 
+              href="#" 
+              className="flex items-center space-x-2 text-gray-300 hover:text-white transition-colors duration-200"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419-.0190 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9460 2.4189-2.1568 2.4189Z"/>
+              </svg>
+              <span className="text-sm">Discord</span>
+            </a>
+            <div className="text-sm text-gray-400">
+              <p>バージョン: Java Edition 1.20.x</p>
+              <p>プレイヤー数: 24時間制限なし</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* フッター下部 */}
+      <div className="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+        <div className="text-sm text-gray-400 mb-4 md:mb-0">
+          © 2024 いねサーバー. All rights reserved.
+        </div>
+        <div className="text-sm text-gray-400">
+          Minecraft は Mojang Studios の商標です
+        </div>
+      </div>
+    </div>
+  </footer>
 </div>
   );
 }

@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-blue-200',
   loadingColor: 'border-blue-600',
   emptyIcon: '💰',
+  emptyMessage: '経済に関するコンテンツがまだありません。',
+  pageTitle: '経済 | Ineサーバー',
   backButtonText: '経済一覧に戻る'
 };
 

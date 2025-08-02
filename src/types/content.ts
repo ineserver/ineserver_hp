@@ -20,5 +20,7 @@ export interface ContentPageConfig {
   borderColor: string;
   loadingColor: string;
   emptyIcon: string;
+  emptyMessage: string;
+  pageTitle: string;
   backButtonText: string;
 }

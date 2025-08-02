@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-orange-200',
   loadingColor: 'border-orange-600',
   emptyIcon: '🗺️',
+  emptyMessage: '観光に関するコンテンツがまだありません。',
+  pageTitle: '観光 | Ineサーバー',
   backButtonText: '観光一覧に戻る'
 };
 

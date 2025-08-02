@@ -22,16 +22,17 @@ interface PatchNote {
 
 export default function PatchNotesArchive() {
   const [patchNotes, setPatchNotes] = useState<PatchNote[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
   const [error, setError] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchPatchNotes = async () => {
+      setIsLoading(true);
+      setError(false);
+      
       try {
-        setIsLoading(true);
-        setError(false);
         const response = await fetch('/api/patch-notes', { next: { revalidate: 60 } });
         if (response.ok) {
           const result = await response.json();
@@ -136,9 +137,33 @@ export default function PatchNotesArchive() {
         {/* パッチノート一覧 - タイムライン形式 */}
         <section>
           {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b8064] mx-auto mb-4"></div>
-              <p className="text-gray-600">読み込み中...</p>
+            // スケルトンローディング状態
+            <div className="relative">
+              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+              <div className="space-y-8">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="relative pl-10 animate-pulse">
+                    <div className="absolute left-2.5 w-3 h-3 bg-gray-200 rounded-full -translate-x-1/2"></div>
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="h-6 bg-gray-200 rounded w-32"></div>
+                        <div className="h-5 bg-gray-200 rounded w-20"></div>
+                      </div>
+                      <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                      <div className="space-y-3">
+                        <div className="flex items-center">
+                          <div className="h-4 bg-gray-200 rounded-full w-4 mr-2"></div>
+                          <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        </div>
+                        <div className="ml-6 space-y-1">
+                          <div className="h-3 bg-gray-200 rounded w-full"></div>
+                          <div className="h-3 bg-gray-200 rounded w-4/5"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : error ? (
             // エラー状態

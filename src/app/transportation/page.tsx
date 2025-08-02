@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-blue-200',
   loadingColor: 'border-blue-600',
   emptyIcon: '🚇',
+  emptyMessage: '交通案内に関するコンテンツがまだありません。',
+  pageTitle: '交通案内 | Ineサーバー',
   backButtonText: '交通案内一覧に戻る'
 };
 

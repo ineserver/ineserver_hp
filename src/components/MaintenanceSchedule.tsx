@@ -17,14 +17,16 @@ export interface MaintenanceResponse {
 
 export default function MaintenanceSchedule() {
   const [maintenance, setMaintenance] = useState<MaintenanceInfo | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMaintenance = async () => {
+      setIsLoading(true);
+      setError(null);
+      
       try {
-        setError(null);
         const response = await fetch('/api/maintenance');
         
         if (!response.ok) {
@@ -47,7 +49,12 @@ export default function MaintenanceSchedule() {
       }
     };
 
-    fetchMaintenance();
+    // 少し遅延させてUI表示を優先
+    const timer = setTimeout(() => {
+      fetchMaintenance();
+    }, 200);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   const formatDate = (dateString: string) => {

@@ -16,11 +16,11 @@ export default function ServerStatus({
   refreshInterval = 30000 // 30秒
 }: ServerStatusProps) {
   const [status, setStatus] = useState<ServerStatusType | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // 初期値をfalseに変更
+  const [isLoading, setIsLoading] = useState(false); // 初期値を false に変更
   const [error, setError] = useState<string | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isClient, setIsClient] = useState(false);
-  const [hasInitialLoad, setHasInitialLoad] = useState(false); // 初回ロード完了フラグ
+  const [hasInitialLoad, setHasInitialLoad] = useState(false); // 初回ロード完了フラグを追加
 
   // クライアントサイドでのみ実行
   useEffect(() => {

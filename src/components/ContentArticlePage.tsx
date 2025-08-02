@@ -15,11 +15,14 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
   const params = useParams();
   const slug = params.slug as string;
   const [content, setContent] = useState<ContentItem | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchContent = async () => {
+      setIsLoading(true);
+      setError(null);
+      
       try {
         const response = await fetch(`${config.apiEndpoint}/${slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
@@ -46,9 +49,38 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
       <div className="min-h-screen bg-white">
         <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="text-center py-12">
-            <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${config.loadingColor} mx-auto mb-4`}></div>
-            <p className="text-gray-600">読み込み中...</p>
+          {/* スケルトンローディング */}
+          <div className="animate-pulse">
+            {/* ブレッドクラム */}
+            <div className="flex items-center space-x-2 mb-8">
+              <div className="h-4 bg-gray-200 rounded w-16"></div>
+              <div className="h-4 bg-gray-200 rounded w-1"></div>
+              <div className="h-4 bg-gray-200 rounded w-20"></div>
+              <div className="h-4 bg-gray-200 rounded w-1"></div>
+              <div className="h-4 bg-gray-200 rounded w-32"></div>
+            </div>
+            
+            {/* ヘッダー */}
+            <header className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <div className="h-10 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-8 bg-gray-200 rounded w-20"></div>
+              </div>
+              <div className="h-6 bg-gray-200 rounded w-5/6 mb-4"></div>
+              <div className="flex items-center">
+                <div className="h-4 bg-gray-200 rounded w-4 mr-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-24"></div>
+              </div>
+            </header>
+            
+            {/* コンテンツ */}
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            </div>
           </div>
         </div>
       </div>

@@ -23,12 +23,13 @@ interface PatchNote {
 export default function PatchNoteDetailPage() {
   const params = useParams();
   const [patchNote, setPatchNote] = useState<PatchNote | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
 
   useEffect(() => {
     const fetchPatchNote = async () => {
+      setIsLoading(true);
+      
       try {
-        setIsLoading(true);
         const response = await fetch(`/api/patch-notes/${params.slug}`, { next: { revalidate: 60 } });
         if (response.ok) {
           const patchNote = await response.json();
@@ -116,9 +117,44 @@ export default function PatchNoteDetailPage() {
         <Header />
         <Breadcrumb items={breadcrumbItems} />
         <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#5b8064] mx-auto mb-4"></div>
-            <p className="text-gray-600">読み込み中...</p>
+          {/* スケルトンローディング */}
+          <div className="animate-pulse">
+            {/* ヘッダーのスケルトン */}
+            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
+              <div className="mb-6">
+                <div className="h-6 bg-gray-200 rounded w-24"></div>
+              </div>
+              <div className="mb-6">
+                <div className="h-8 bg-gray-200 rounded w-40"></div>
+              </div>
+              <div className="border-l-4 border-gray-200 pl-6">
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-200 rounded w-full"></div>
+                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+                </div>
+              </div>
+            </div>
+            
+            {/* セクションのスケルトン */}
+            <div className="space-y-6">
+              {[1, 2].map((i) => (
+                <div key={i} className="rounded-lg border p-6 bg-white">
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-gray-200 rounded mr-3"></div>
+                    <div className="h-6 bg-gray-200 rounded w-32"></div>
+                  </div>
+                  <div className="space-y-3">
+                    {[1, 2, 3].map((j) => (
+                      <div key={j} className="flex items-start">
+                        <div className="w-2 h-2 bg-gray-200 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
