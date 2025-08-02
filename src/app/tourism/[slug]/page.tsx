@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-orange-200',
   loadingColor: 'border-orange-600',
   emptyIcon: '🗺️',
+  emptyMessage: '観光に関する記事がありません',
+  pageTitle: '観光・都市開発',
   backButtonText: '観光一覧に戻る'
 };
 

@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-purple-200',
   loadingColor: 'border-purple-600',
   emptyIcon: '🎮',
+  emptyMessage: 'エンターテイメントに関する記事がありません',
+  pageTitle: 'エンターテイメント',
   backButtonText: 'エンタメ一覧に戻る'
 };
 

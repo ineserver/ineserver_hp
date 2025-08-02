@@ -11,6 +11,8 @@ const config = {
   borderColor: 'border-indigo-200',
   loadingColor: 'border-indigo-600',
   emptyIcon: '🚄',
+  emptyMessage: '交通に関する記事がありません',
+  pageTitle: '交通・運輸',
   backButtonText: '交通一覧に戻る'
 };
 
