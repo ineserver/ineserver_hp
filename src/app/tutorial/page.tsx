@@ -239,49 +239,6 @@ export default function TutorialPage() {
                 </div>
               </div>
             </div>
-
-            {/* 3. コミュニティ参加 */}
-            <div className="bg-white rounded-2xl border-2 border-purple-200 hover:border-purple-300 p-6 hover:shadow-lg transition-all duration-300 cursor-pointer group">
-              <div className="flex items-start">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mr-6 shadow-lg group-hover:shadow-xl transition-shadow">
-                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                  </svg>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-xl font-bold text-gray-900 mb-3">コミュニティに参加する（Discord）</h4>
-                  <p className="text-gray-700 mb-4 leading-relaxed">
-                    公式Discordに参加して、他のプレイヤーと交流したり、質問したりできます。
-                    リアルタイムで情報を得たい方や、コミュニティを楽しみたい方におすすめです。
-                  </p>
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                      他のプレイヤーとの交流
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                      リアルタイムでの質問・相談
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <span className="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-                      最新情報やイベント告知
-                    </div>
-                  </div>
-                  <a 
-                    href="https://discord.gg/tdefsEKYhp" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    公式Discordに参加する
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
 
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
@@ -358,7 +315,7 @@ export default function TutorialPage() {
                     </svg>
                     対応エディション
                   </h5>
-                  <p className="text-blue-800 text-sm">Java Edition のみ</p>
+                  <p className="text-blue-800 text-sm"><b>Java Edition のみ</b></p>
                   <p className="text-blue-700 text-xs mt-1">統合版（Bedrock Edition）は接続できません</p>
                 </div>
                 
@@ -570,41 +527,29 @@ export default function TutorialPage() {
                 <div className="flex-1">
                   <h4 className="text-xl font-bold text-gray-900 mb-3">ガイドページでやりたいことから見つける</h4>
                   <p className="text-gray-700 mb-4 leading-relaxed">
-                    各分野別のガイドページから、あなたが興味のある分野を自由に探索できます。
+                    ガイドページから、あなたが興味のある分野を自由に探索できます。
                     特定の分野に興味がある方におすすめです。
                   </p>
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <Link 
-                      href="/economy"
-                      className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
-                    >
+                    <div className="flex items-center text-sm text-gray-600">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                       経済システム
-                    </Link>
-                    <Link 
-                      href="/tourism"
-                      className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
-                    >
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                       観光・建築地
-                    </Link>
-                    <Link 
-                      href="/transportation"
-                      className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
-                    >
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                       交通システム
-                    </Link>
-                    <Link 
-                      href="/entertainment"
-                      className="flex items-center text-sm text-gray-600 hover:text-green-600 transition-colors"
-                    >
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
                       エンターテイメント
-                    </Link>
+                    </div>
                   </div>
                   <Link 
-                    href="/"
+                    href="/guide"
                     className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                   >
                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
