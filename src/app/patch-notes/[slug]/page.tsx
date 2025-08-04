@@ -234,7 +234,7 @@ export default function PatchNoteDetailPage() {
                   <li key={itemIndex} className="flex items-start">
                     <span className="inline-block w-2 h-2 bg-current rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     <div 
-                      className="text-gray-700 leading-relaxed prose-sm max-w-none [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900"
+                      className="text-gray-700 leading-relaxed prose-sm max-w-none markdown-content [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_ul]:list-none [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square]"
                       dangerouslySetInnerHTML={{ 
                         __html: section.itemsHtml && section.itemsHtml[itemIndex] 
                           ? section.itemsHtml[itemIndex] 
