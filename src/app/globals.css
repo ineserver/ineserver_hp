@@ -139,11 +139,32 @@ html, body {
   list-style-type: disc;
 }
 
+/* サブリスト（ネストされたリスト）のスタイル */
+.markdown-content ul ul {
+  list-style-type: circle; /* 白丸 */
+  margin-bottom: 0.5rem;
+}
+
+/* より深いネストのためのスタイル */
+.markdown-content ul ul ul {
+  list-style-type: square; /* 四角 */
+}
+
 .markdown-content ol {
   color: #374151;
   margin-bottom: 1rem;
   padding-left: 1.5rem;
   list-style-type: decimal;
+}
+
+/* サブリスト（ネストされた順序リスト）のスタイル */
+.markdown-content ol ol {
+  list-style-type: lower-alpha; /* a, b, c */
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content ol ol ol {
+  list-style-type: lower-roman; /* i, ii, iii */
 }
 
 .markdown-content li {

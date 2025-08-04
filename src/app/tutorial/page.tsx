@@ -3,10 +3,22 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
+import RecommendedVersion from '@/components/RecommendedVersion';
 import Link from 'next/link';
 
 export default function TutorialPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [showCopyToast, setShowCopyToast] = useState(false);
+
+  const handleCopyAddress = async () => {
+    try {
+      await navigator.clipboard.writeText('1necat.net');
+      setShowCopyToast(true);
+      setTimeout(() => setShowCopyToast(false), 3000);
+    } catch (err) {
+      console.error('コピーに失敗しました:', err);
+    }
+  };
 
   const breadcrumbItems = [
     { label: 'いねさば', href: '/' },
@@ -136,56 +148,94 @@ export default function TutorialPage() {
             </div>
             <p className="text-red-800 leading-relaxed">
               サーバーにログインした時点で、サーバールールに同意したものとみなされます。
-              長いルールを読むのは大変ですが、要点をまとめましたので確認してください。
+              <b>長いルールを読むのは大変だと思いますので、以下に簡単な要点をまとめました。</b>
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-gray-900 flex items-center">
-                <span className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <div className="space-y-4">
+            <div className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                </span>
-                基本的なマナー
-              </h4>
-              <div className="ml-11 space-y-3">
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <p className="text-gray-700 font-medium mb-2">マナーを守りましょう</p>
-                  <p className="text-gray-600 text-sm">他のプレイヤーに迷惑をかける行為、チャットでの暴言・不適切な発言・スパム行為は禁止です。</p>
                 </div>
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <p className="text-gray-700 font-medium mb-2">建築物の保護</p>
-                  <p className="text-gray-600 text-sm">他のプレイヤーの建築物を無断で破壊・改変することは禁止です。</p>
+                <div className="flex-1">
+                  <h5 className="text-lg font-bold text-gray-900 mb-2">マナーを守って楽しくプレイ</h5>
+                  <p className="text-gray-700 mb-3">
+                    他のプレイヤーへの迷惑行為、チャットでの暴言・不適切な発言・スパム行為は禁止です。また、他プレイヤーの建築物を無断で破壊・改変することも禁止されています。
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-lg font-semibold text-gray-900 flex items-center">
-                <span className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <div className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
-                </span>
-                技術的な制限
-              </h4>
-              <div className="ml-11 space-y-3">
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <p className="text-gray-700 font-medium mb-2">許可されたMODのみ使用可能</p>
-                  <p className="text-gray-600 text-sm">
-                    ゲームバランスを害するMODやクライアントは禁止です。
-                    <a href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" 
-                       className="text-blue-600 hover:text-blue-700 underline ml-1" 
-                       target="_blank" rel="noopener noreferrer">
-                      許可MOD一覧はこちら
-                    </a>
+                </div>
+                <div className="flex-1">
+                  <h5 className="text-lg font-bold text-gray-900 mb-2">許可MOD・クライアントについて</h5>
+                  <p className="text-gray-700 mb-3">
+                    ゲームバランスを変えるMODやクライアントの使用は禁止されています。OptiFineやReplayModなど、プレイを補助するMODは許可されています。
+                  </p>
+                  <a 
+                    href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" 
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 font-medium text-sm"
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    許可MOD一覧を確認
+                  </a>
+                  <p className="text-sm text-gray-500 mt-2">※不明な場合は運営までお問い合わせください</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L12 12m6.364 6.364L12 12m0 0L5.636 5.636M12 12l6.364-6.364M12 12l-6.364 6.364" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h5 className="text-lg font-bold text-gray-900 mb-2">トラップタワーの禁止</h5>
+                  <p className="text-gray-700 mb-3">
+                    経済サーバーと資材ワールドでは、トラップタワー全般の作成及び使用が禁止されています。これはサーバー負荷軽減とゲームバランス維持のための重要なルールです。
                   </p>
                 </div>
-                <div className="bg-white rounded-lg border border-gray-200 p-4">
-                  <p className="text-gray-700 font-medium mb-2">自動システムの管理</p>
-                  <p className="text-gray-600 text-sm">自動で動くもの（回路・畑）は、ログアウト時には停止させてください。トラップタワーの作成は禁止です。</p>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-lg border border-gray-200 p-5 hover:shadow-lg transition-all duration-200">
+              <div className="flex items-start space-x-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h5 className="text-lg font-bold text-gray-900 mb-2">建築制限区域について</h5>
+                  <p className="text-gray-700 mb-3">
+                    環状1号線より内側及び白椿駅付近では、土地を看板から購入する必要があります。また、購入後1ヶ月間利用されない場合は取り消される場合があります。
+                  </p>
+                  <Link 
+                    href="/lifestyle/rule"
+                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg transition-all duration-200 font-medium text-sm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                    詳細なルールを確認
+                  </Link>
                 </div>
               </div>
             </div>
@@ -202,8 +252,10 @@ export default function TutorialPage() {
               上記は要点のみです。より詳細なルールについては、以下のリンクから確認できます。
             </p>
             <Link 
-              href="/lifestyle/server-rules"
+              href="/lifestyle/rule"
               className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white rounded-lg transition-all duration-200 font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -242,7 +294,7 @@ export default function TutorialPage() {
               </div>
             </div>
             <p className="text-gray-700 leading-relaxed">
-              Minecraftを起動して、いねさばサーバーに接続してみましょう。
+              Minecraftを起動して、いねさばに接続してみましょう。
               以下の手順に従って進めてください。
             </p>
           </div>
@@ -255,27 +307,21 @@ export default function TutorialPage() {
                 <h4 className="text-lg font-semibold text-gray-900">必要な環境を確認</h4>
               </div>
               <div className="ml-11">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                    <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      対応エディション
-                    </h5>
-                    <p className="text-blue-800 text-sm">Java Edition のみ</p>
-                    <p className="text-blue-700 text-xs mt-1">統合版（Bedrock Edition）は接続できません</p>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                    <h5 className="font-semibold text-green-900 mb-2 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                      </svg>
-                      推奨バージョン
-                    </h5>
-                    <p className="text-green-800 text-sm">1.21.4 (推奨)</p>
-                    <p className="text-green-700 text-xs mt-1">対応範囲: 1.21.3 - 1.21.6</p>
-                  </div>
+                {/* 対応エディション情報 */}
+                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-4">
+                  <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
+                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    対応エディション
+                  </h5>
+                  <p className="text-blue-800 text-sm">Java Edition のみ</p>
+                  <p className="text-blue-700 text-xs mt-1">統合版（Bedrock Edition）は接続できません</p>
+                </div>
+                
+                {/* 推奨バージョン表示コンポーネント */}
+                <div className="mb-4">
+                  <RecommendedVersion />
                 </div>
               </div>
             </div>
@@ -307,7 +353,7 @@ export default function TutorialPage() {
                         <span className="text-gray-600 text-sm w-24">アドレス:</span>
                         <code className="bg-yellow-200 px-2 py-1 rounded text-sm font-mono font-bold">1necat.net</code>
                         <button 
-                          onClick={() => navigator.clipboard.writeText('1necat.net')}
+                          onClick={handleCopyAddress}
                           className="ml-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors flex items-center"
                         >
                           <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -315,6 +361,18 @@ export default function TutorialPage() {
                           </svg>
                           コピー
                         </button>
+                      </div>
+                      <div className="flex items-start pt-2 border-t border-gray-200">
+                        <span className="text-gray-600 text-sm w-24 mt-1">リソースパック:</span>
+                        <div className="flex-1">
+                          <div className="flex items-center mb-1">
+                            <code className="bg-green-200 px-2 py-1 rounded text-sm font-mono font-bold text-green-800">有効</code>
+                            <span className="text-red-600 text-xs ml-2 font-medium">（必ず有効にしてください）</span>
+                          </div>
+                          <p className="text-gray-600 text-xs">
+                            いねさばオリジナルのアイテムやブロックが追加されます
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -329,18 +387,6 @@ export default function TutorialPage() {
                 <h4 className="text-lg font-semibold text-gray-900">サーバーに接続</h4>
               </div>
               <div className="ml-11 space-y-4">
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
-                  <h5 className="font-semibold mb-2 flex items-center text-blue-700">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                    リソースパックについて
-                  </h5>
-                  <p className="text-gray-700 text-sm">
-                    リソースパックを有効にすることをおすすめします。
-                    いねさばオリジナルのアイテムやブロックが追加されており、より楽しい体験ができます！
-                  </p>
-                </div>
                 <p className="text-gray-700">
                   サーバーリストに追加できたら、ダブルクリックまたは「サーバーに接続」ボタンでログインしてみましょう！
                 </p>
@@ -676,6 +722,18 @@ export default function TutorialPage() {
           </div>
         </div>
       </div>
+      
+      {/* コピー完了トースト */}
+      {showCopyToast && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300">
+          <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            クリップボードにコピーしました
+          </div>
+        </div>
+      )}
     </div>
   );
 }

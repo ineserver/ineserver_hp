@@ -9,17 +9,20 @@ interface McSrvStatResponse {
   port: number;
   hostname?: string;
   version?: string;
-  protocol?: number;
+  protocol?: number | {
+    version: number;
+    name: string;
+  };
   players?: {
     online: number;
     max: number;
     list?: string[];
   };
   motd?: {
-    raw?: string;
-    clean?: string;
-    html?: string;
-  };
+    raw?: string | string[];
+    clean?: string | string[];
+    html?: string | string[];
+  } | string | string[];
   icon?: string;
   software?: string;
   debug?: {
@@ -67,6 +70,32 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
     
     console.log(`mcsrvstat.us API response in ${ping}ms:`, data);
     
+    // プロトコルバージョンの処理
+    let protocolVersion: number | undefined;
+    if (typeof data.protocol === 'number') {
+      protocolVersion = data.protocol;
+    } else if (typeof data.protocol === 'object' && data.protocol?.version) {
+      protocolVersion = data.protocol.version;
+    }
+    
+    // MOTDの処理
+    let motdText = 'Minecraft Server';
+    if (typeof data.motd === 'string') {
+      motdText = data.motd;
+    } else if (Array.isArray(data.motd)) {
+      motdText = data.motd.join(' ');
+    } else if (typeof data.motd === 'object' && data.motd) {
+      if (typeof data.motd.clean === 'string') {
+        motdText = data.motd.clean;
+      } else if (Array.isArray(data.motd.clean)) {
+        motdText = data.motd.clean.join(' ');
+      } else if (typeof data.motd.raw === 'string') {
+        motdText = data.motd.raw;
+      } else if (Array.isArray(data.motd.raw)) {
+        motdText = data.motd.raw.join(' ');
+      }
+    }
+    
     return {
       online: data.online,
       players: {
@@ -74,7 +103,8 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
         max: data.players?.max || 0
       },
       version: data.version || 'Unknown',
-      motd: data.motd?.clean || data.motd?.raw || 'Minecraft Server',
+      protocol: protocolVersion,
+      motd: motdText,
       ping: ping,
       lastChecked: new Date().toISOString()
     };
@@ -90,6 +120,7 @@ async function fetchMinecraftServerStatus(address: string): Promise<ServerStatus
         max: 0
       },
       version: 'Unknown',
+      protocol: undefined,
       motd: 'Connection Failed',
       ping: Date.now() - startTime,
       lastChecked: new Date().toISOString()
@@ -118,6 +149,7 @@ export async function GET(request: NextRequest) {
       online: false,
       players: { online: 0, max: 0 },
       version: 'Unknown',
+      protocol: undefined,
       motd: 'API Error',
       ping: 0,
       lastChecked: new Date().toISOString()

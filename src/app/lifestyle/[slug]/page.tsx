@@ -1,7 +1,7 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
 
 const config = {
-  title: 'くらし・生活',
+  title: '生活・くらし',
   description: 'サーバーでの生活に関する情報やルールについて説明します',
   apiEndpoint: '/api/lifestyle',
   basePath: '/lifestyle',
@@ -13,7 +13,7 @@ const config = {
   emptyIcon: '🏠',
   emptyMessage: '生活に関する記事がありません',
   pageTitle: '生活・エンターテイメント',
-  backButtonText: 'くらし・生活一覧に戻る'
+  backButtonText: '生活・くらし一覧に戻る'
 };
 
 export default function LifestyleArticlePage() {

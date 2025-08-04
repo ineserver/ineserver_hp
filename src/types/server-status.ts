@@ -7,6 +7,7 @@ export interface ServerStatus {
     max: number;
   };
   version: string;
+  protocol?: number;
   motd: string;
   icon?: string;
   ping?: number;
