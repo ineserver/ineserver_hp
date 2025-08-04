@@ -5,7 +5,7 @@ export default function Footer() {
         {/* フッター下部 */}
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="text-sm text-gray-400 mb-4 md:mb-0">
-            © 2024 いねさば. All rights reserved.
+            © 2025 いねさば. All rights reserved.
           </div>
           <div className="text-sm text-gray-400">
             Minecraft は Mojang Studios の商標です
