@@ -352,7 +352,7 @@ export default function ServerStatus({
 
         {/* 寄付ページ */}
         <a 
-          href="#" 
+          href="/support" 
           target="_blank" 
           rel="noopener noreferrer"
           className="group block bg-white rounded-lg border border-gray-200 p-4 bg-pink-50 border-pink-200 hover:bg-pink-100 active:bg-pink-100 transition-all duration-300 cursor-pointer overflow-visible relative"
