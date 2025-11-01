@@ -1,4 +1,6 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
+import { getLifestyleData } from '../../../../lib/content';
+import { notFound } from 'next/navigation';
 
 const config = {
   title: '生活・くらし',
@@ -16,7 +18,28 @@ const config = {
   backButtonText: '生活・くらし一覧に戻る'
 };
 
-export default function LifestyleArticlePage() {
-  return <ContentArticlePage config={config} />;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function LifestyleArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+  const contentData = await getLifestyleData(slug);
+  
+  if (!contentData) {
+    notFound();
+  }
+  
+  // contentDataをContentItem型に変換
+  const content = {
+    id: contentData.id,
+    title: (contentData as any).title || '',
+    description: (contentData as any).description || '',
+    date: (contentData as any).date || '',
+    content: contentData.content,
+    category: (contentData as any).category,
+  };
+  
+  return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
 

@@ -1,4 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
+import { getLifestyleFiles } from '../../../lib/content';
 
 const config = {
   title: '生活・くらし',
@@ -13,9 +14,28 @@ const config = {
   emptyIcon: '🏠',
   emptyMessage: '生活・くらし情報がまだありません。',
   pageTitle: '生活・くらし | Ineサーバー',
-  backButtonText: '生活・くらし一覧に戻る'
+  backButtonText: '生活・くらし一覧に戻る',
+  enableGrouping: true,
+  groupLabels: {
+    rule: 'サーバールール',
+    protection: '保護',
+    other: 'その他'
+  }
 };
 
-export default function LifestylePage() {
-  return <ContentListPage config={config} />;
+export default async function LifestylePage() {
+  const filesData = await getLifestyleFiles();
+  
+  // contentHtml を content に変換
+  const content = filesData.map((item: any) => ({
+    id: item.id,
+    title: item.title || '',
+    description: item.description || '',
+    date: item.date || '',
+    content: item.contentHtml,
+    category: item.category,
+    type: item.type,
+  }));
+  
+  return <ContentListPage config={config} content={content} />;
 }

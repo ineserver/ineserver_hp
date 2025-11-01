@@ -1,4 +1,6 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
+import { getTransportationData } from '../../../../lib/content';
+import { notFound } from 'next/navigation';
 
 const config = {
   title: '交通',
@@ -16,6 +18,26 @@ const config = {
   backButtonText: '交通一覧に戻る'
 };
 
-export default function TransportationArticlePage() {
-  return <ContentArticlePage config={config} />;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function TransportationArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+  const contentData = await getTransportationData(slug);
+  
+  if (!contentData) {
+    notFound();
+  }
+  
+  const content = {
+    id: contentData.id,
+    title: (contentData as any).title || '',
+    description: (contentData as any).description || '',
+    date: (contentData as any).date || '',
+    content: contentData.content,
+    category: (contentData as any).category,
+  };
+  
+  return <ContentArticlePage config={config} content={content} showToc={true} />;
 }

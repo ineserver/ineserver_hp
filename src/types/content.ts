@@ -7,6 +7,7 @@ export interface ContentItem {
   content: string;
   date: string;
   category?: string;
+  type?: string;
 }
 
 export interface ContentPageConfig {
@@ -23,4 +24,6 @@ export interface ContentPageConfig {
   emptyMessage: string;
   pageTitle: string;
   backButtonText: string;
+  enableGrouping?: boolean;
+  groupLabels?: Record<string, string>;
 }

@@ -3,12 +3,19 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ChevronRightIcon, FileTextIcon, ShieldIcon, TrendingUpIcon, TrendingDownIcon, ChevronDownIcon } from './Icons';
 
 const Header = () => {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showGoTop, setShowGoTop] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
+
+  // 現在のパスがどのカテゴリに属しているかを判定
+  const isActive = (path: string) => {
+    return pathname.startsWith(path);
+  };
 
   // スクロール位置を監視してGo Topボタンの表示を制御
   useEffect(() => {
@@ -220,7 +227,7 @@ const Header = () => {
         <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4">
           <nav className="flex relative">
             <div className="flex-1 relative group">
-              <Link href="/lifestyle" className="block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200">
+              <Link href="/lifestyle" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/lifestyle') ? 'active-menu-item' : ''}`}>
                 生活・くらし
                 <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
               </Link>
@@ -254,7 +261,7 @@ const Header = () => {
             </div>
             
             <div className="flex-1 relative group">
-              <Link href="/economy" className="block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200">
+              <Link href="/economy" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/economy') ? 'active-menu-item' : ''}`}>
                 経済
                 <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
               </Link>
@@ -290,7 +297,7 @@ const Header = () => {
             </div>
             
             <div className="flex-1 relative group">
-              <Link href="/entertainment" className="block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200">
+              <Link href="/entertainment" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/entertainment') ? 'active-menu-item' : ''}`}>
                 娯楽
                 <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
               </Link>
@@ -308,7 +315,7 @@ const Header = () => {
             </div>
             
             <div className="flex-1 relative group">
-              <Link href="/tourism" className="block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200">
+              <Link href="/tourism" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/tourism') ? 'active-menu-item' : ''}`}>
                 観光
                 <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
               </Link>
@@ -324,7 +331,7 @@ const Header = () => {
             </div>
             
             <div className="flex-1 relative group">
-              <Link href="/transportation" className="block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center transition-colors duration-200">
+              <Link href="/transportation" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center transition-colors duration-200 ${isActive('/transportation') ? 'active-menu-item' : ''}`}>
                 交通
               </Link>
               

@@ -1,6 +1,8 @@
 ---
 title: サーバールール
 published: true
+type: rule
+description: いねさばの基本ルールについて説明します
 ---
 # Ⅰ はじめに 
 

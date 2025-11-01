@@ -1,4 +1,6 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
+import { getEconomyData } from '../../../../lib/content';
+import { notFound } from 'next/navigation';
 
 const config = {
   title: '経済',
@@ -16,6 +18,26 @@ const config = {
   backButtonText: '経済一覧に戻る'
 };
 
-export default function EconomyArticlePage() {
-  return <ContentArticlePage config={config} />;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function EconomyArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+  const contentData = await getEconomyData(slug);
+  
+  if (!contentData) {
+    notFound();
+  }
+  
+  const content = {
+    id: contentData.id,
+    title: (contentData as any).title || '',
+    description: (contentData as any).description || '',
+    date: (contentData as any).date || '',
+    content: contentData.content,
+    category: (contentData as any).category,
+  };
+  
+  return <ContentArticlePage config={config} content={content} showToc={true} />;
 }

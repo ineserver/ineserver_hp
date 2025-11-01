@@ -15,6 +15,9 @@ const config = {
           DEFAULT: '#5b8064',
           hover: '#4a6b55',
         },
+        gray: {
+          900: '#333333',
+        },
       },
       fontFamily: {
         sans: ['var(--font-noto-sans-jp)', 'system-ui', 'sans-serif'],

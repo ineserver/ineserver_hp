@@ -1,93 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
+import { useEffect, useState } from 'react';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
+  content: ContentItem | null;
+  showDate?: boolean;
+  showToc?: boolean;
 }
 
-export default function ContentArticlePage({ config }: ContentArticlePageProps) {
-  const params = useParams();
-  const slug = params.slug as string;
-  const [content, setContent] = useState<ContentItem | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
-  const [error, setError] = useState<string | null>(null);
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+export default function ContentArticlePage({ config, content, showDate = false, showToc = false }: ContentArticlePageProps) {
+  const [tocItems, setTocItems] = useState<TocItem[]>([]);
+  const [isTocOpen, setIsTocOpen] = useState(false);
 
   useEffect(() => {
-    const fetchContent = async () => {
-      setIsLoading(true);
-      setError(null);
+    if (!showToc || !content) return;
+
+    // HTMLから見出しを抽出
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content.content, 'text/html');
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    const items: TocItem[] = [];
+    headings.forEach((heading, index) => {
+      const level = parseInt(heading.tagName.substring(1));
+      const text = heading.textContent || '';
+      const id = `heading-${index}`;
       
-      try {
-        const response = await fetch(`${config.apiEndpoint}/${slug}`, { next: { revalidate: 60 } });
-        if (response.ok) {
-          const data = await response.json();
-          setContent(data);
-        } else {
-          setError('記事が見つかりませんでした');
-        }
-      } catch (error) {
-        console.error('Error fetching content:', error);
-        setError('記事の読み込みに失敗しました');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      // 元のHTMLにIDを追加（実際のDOMには影響しない）
+      heading.id = id;
+      
+      items.push({ id, text, level });
+    });
+    
+    setTocItems(items);
 
-    if (slug) {
-      fetchContent();
-    }
-  }, [slug, config.apiEndpoint]);
+    // 実際のDOMにIDを追加
+    const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6');
+    actualHeadings.forEach((heading, index) => {
+      heading.id = `heading-${index}`;
+    });
+  }, [content, showToc]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          {/* スケルトンローディング */}
-          <div className="animate-pulse">
-            {/* ブレッドクラム */}
-            <div className="flex items-center space-x-2 mb-8">
-              <div className="h-4 bg-gray-200 rounded w-16"></div>
-              <div className="h-4 bg-gray-200 rounded w-1"></div>
-              <div className="h-4 bg-gray-200 rounded w-20"></div>
-              <div className="h-4 bg-gray-200 rounded w-1"></div>
-              <div className="h-4 bg-gray-200 rounded w-32"></div>
-            </div>
-            
-            {/* ヘッダー */}
-            <header className="mb-12">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-10 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-8 bg-gray-200 rounded w-20"></div>
-              </div>
-              <div className="h-6 bg-gray-200 rounded w-5/6 mb-4"></div>
-              <div className="flex items-center">
-                <div className="h-4 bg-gray-200 rounded w-4 mr-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-              </div>
-            </header>
-            
-            {/* コンテンツ */}
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/5"></div>
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !content) {
+  if (!content) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -95,7 +60,7 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">❌</div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">記事が見つかりません</h3>
-            <p className="text-gray-600">{error}</p>
+            <p className="text-gray-600">指定された記事は存在しません</p>
           </div>
         </div>
       </div>
@@ -127,13 +92,70 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
           {content.description && (
             <p className="text-xl text-gray-600 leading-relaxed">{content.description}</p>
           )}
-          <div className="flex items-center text-sm text-gray-500 mt-4">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            {content.date}
-          </div>
+          {showDate && content.date && (
+            <div className="flex items-center text-sm text-gray-500 mt-4">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {new Date(content.date).toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              }).replace(/\//g, '-')}
+            </div>
+          )}
         </header>
+
+        {/* 目次 */}
+        {showToc && tocItems.length > 0 && (
+          <nav className="mb-12 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setIsTocOpen(!isTocOpen)}
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200"
+              aria-expanded={isTocOpen}
+              aria-controls="table-of-contents"
+            >
+              <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                目次
+              </h2>
+              <svg 
+                className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${isTocOpen ? 'transform rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div 
+              id="table-of-contents"
+              className={`overflow-hidden transition-all duration-300 ${isTocOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+            >
+              <ul className="px-6 pt-4 pb-4 space-y-2">
+                {tocItems.map((item) => (
+                  <li 
+                    key={item.id} 
+                    style={{ marginLeft: `${(item.level - 1) * 1}rem` }}
+                    className="text-sm"
+                  >
+                    <a 
+                      href={`#${item.id}`}
+                      className="text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        )}
 
         {/* コンテンツ */}
         <article className="max-w-none">

@@ -1,10 +1,8 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
+import { getPatchNoteBySlug } from '@/lib/patch-notes';
+import { notFound } from 'next/navigation';
 
 interface PatchNote {
   id: string;
@@ -20,63 +18,17 @@ interface PatchNote {
   }[];
 }
 
-export default function PatchNoteDetailPage() {
-  const params = useParams();
-  const [patchNote, setPatchNote] = useState<PatchNote | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
 
-  useEffect(() => {
-    const fetchPatchNote = async () => {
-      setIsLoading(true);
-      
-      try {
-        const response = await fetch(`/api/patch-notes/${params.slug}`, { next: { revalidate: 60 } });
-        if (response.ok) {
-          const patchNote = await response.json();
-          setPatchNote(patchNote);
-        } else {
-          // サンプルデータ（slugに応じて適切なデータを返す）
-          const samplePatchNote: PatchNote = {
-            id: params.slug as string,
-            version: '4.19.0.1',
-            date: '2025年4月25日',
-            description: 'サーバーの安定性向上とバグ修正を含むアップデートを実施しました。このアップデートでは、プレイヤーデータの処理に関する重要な修正と、システム全体のパフォーマンス向上が含まれています。',
-            sections: [
-              {
-                type: 'fixes',
-                title: '不具合修正',
-                items: [
-                  'CCPlayerDataが利用不可時のデフォルト値設定を修正',
-                  'プロトコルライブラリの無効化機能がエラーで停止する問題を修正',
-                  'プレイヤーデータの同期処理における競合状態を解決',
-                  'メモリリークの原因となっていたキャッシュ処理を改善'
-                ]
-              },
-              {
-                type: 'other',
-                title: 'その他',
-                items: [
-                  'コミット詳細リンクが間違ったリポジトリを指す問題を修正',
-                  'ビルドプロセスの最適化により、デプロイ時間を30%短縮',
-                  'テストカバレッジレポートの生成処理を改善'
-                ]
-              }
-            ]
-          };
-          setPatchNote(samplePatchNote);
-        }
-      } catch (error) {
-        console.error('Error fetching patch note:', error);
-        setPatchNote(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (params.slug) {
-      fetchPatchNote();
-    }
-  }, [params.slug]);
+export default async function PatchNoteDetailPage({ params }: PageProps) {
+  const { slug } = await params;
+  const patchNote = await getPatchNoteBySlug(slug);
+  
+  if (!patchNote) {
+    notFound();
+  }
 
   // セクションのスタイル取得
   const getSectionIcon = (type: string) => {
@@ -108,78 +60,8 @@ export default function PatchNoteDetailPage() {
   const breadcrumbItems = [
     { label: 'いねさば', href: '/' },
     { label: 'パッチノート', href: '/patch-notes' },
-    { label: patchNote?.version || 'パッチノート詳細' }
+    { label: patchNote.version || 'パッチノート詳細' }
   ];
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <Breadcrumb items={breadcrumbItems} />
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          {/* スケルトンローディング */}
-          <div className="animate-pulse">
-            {/* ヘッダーのスケルトン */}
-            <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-              <div className="mb-6">
-                <div className="h-6 bg-gray-200 rounded w-24"></div>
-              </div>
-              <div className="mb-6">
-                <div className="h-8 bg-gray-200 rounded w-40"></div>
-              </div>
-              <div className="border-l-4 border-gray-200 pl-6">
-                <div className="space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-full"></div>
-                  <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-200 rounded w-4/5"></div>
-                </div>
-              </div>
-            </div>
-            
-            {/* セクションのスケルトン */}
-            <div className="space-y-6">
-              {[1, 2].map((i) => (
-                <div key={i} className="rounded-lg border p-6 bg-white">
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-gray-200 rounded mr-3"></div>
-                    <div className="h-6 bg-gray-200 rounded w-32"></div>
-                  </div>
-                  <div className="space-y-3">
-                    {[1, 2, 3].map((j) => (
-                      <div key={j} className="flex items-start">
-                        <div className="w-2 h-2 bg-gray-200 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!patchNote) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <Breadcrumb items={breadcrumbItems} />
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          <div className="text-center py-12">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">パッチノートが見つかりません</h1>
-            <p className="text-gray-600 mb-8">指定されたパッチノートは存在しないか、削除された可能性があります。</p>
-            <Link href="/patch-notes">
-              <button className="px-6 py-3 bg-[#5b8064] text-white rounded-lg hover:bg-[#4a6b55] transition-colors duration-200">
-                パッチノート一覧に戻る
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
