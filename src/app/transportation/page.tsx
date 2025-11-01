@@ -1,5 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
-import { getTransportationFiles } from '../../../lib/content';
+import { getTransportationFiles, ContentData } from '../../../lib/content';
 
 const config = {
   title: "交通案内",
@@ -20,12 +20,12 @@ const config = {
 export default async function TransportationPage() {
   const filesData = await getTransportationFiles();
   
-  const content = filesData.map((item: any) => ({
+  const content = filesData.map((item: ContentData) => ({
     id: item.id,
     title: item.title || '',
     description: item.description || '',
     date: item.date || '',
-    content: item.contentHtml,
+    content: item.contentHtml || '',
     category: item.category,
   }));
   

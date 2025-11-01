@@ -33,11 +33,11 @@ export default async function LifestyleArticlePage({ params }: PageProps) {
   // contentDataをContentItem型に変換
   const content = {
     id: contentData.id,
-    title: (contentData as any).title || '',
-    description: (contentData as any).description || '',
-    date: (contentData as any).date || '',
-    content: contentData.content,
-    category: (contentData as any).category,
+    title: contentData.title || '',
+    description: contentData.description || '',
+    date: contentData.date || '',
+    content: contentData.content || '',
+    category: contentData.category,
   };
   
   return <ContentArticlePage config={config} content={content} showToc={true} />;

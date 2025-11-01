@@ -1,5 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
-import { getLifestyleFiles } from '../../../lib/content';
+import { getLifestyleFiles, ContentData } from '../../../lib/content';
 
 const config = {
   title: '生活・くらし',
@@ -27,12 +27,12 @@ export default async function LifestylePage() {
   const filesData = await getLifestyleFiles();
   
   // contentHtml を content に変換
-  const content = filesData.map((item: any) => ({
+  const content = filesData.map((item: ContentData) => ({
     id: item.id,
     title: item.title || '',
     description: item.description || '',
     date: item.date || '',
-    content: item.contentHtml,
+    content: item.contentHtml || '',
     category: item.category,
     type: item.type,
   }));

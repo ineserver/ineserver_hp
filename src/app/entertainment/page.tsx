@@ -1,5 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
-import { getEntertainmentFiles } from '../../../lib/content';
+import { getEntertainmentFiles, ContentData } from '../../../lib/content';
 
 const config = {
   title: 'エンタメ',
@@ -20,12 +20,12 @@ const config = {
 export default async function EntertainmentPage() {
   const filesData = await getEntertainmentFiles();
   
-  const content = filesData.map((item: any) => ({
+  const content = filesData.map((item: ContentData) => ({
     id: item.id,
     title: item.title || '',
     description: item.description || '',
     date: item.date || '',
-    content: item.contentHtml,
+    content: item.contentHtml || '',
     category: item.category,
   }));
   

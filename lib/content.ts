@@ -6,7 +6,21 @@ import html from 'remark-html'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
-export async function getAnnouncementFiles() {
+// Content data types
+export interface ContentData {
+  id: string;
+  contentHtml?: string;
+  content?: string;
+  title?: string;
+  description?: string;
+  date?: string;
+  category?: string;
+  type?: string;
+  order?: number;
+  [key: string]: unknown;
+}
+
+export async function getAnnouncementFiles(): Promise<ContentData[]> {
   const announcementDir = path.join(contentDirectory, 'announcements')
   
   if (!fs.existsSync(announcementDir)) {
@@ -54,7 +68,7 @@ export async function getAnnouncementFiles() {
   });
 }
 
-export async function getAnnouncementData(id: string) {
+export async function getAnnouncementData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'announcements', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
@@ -77,7 +91,7 @@ export async function getAnnouncementData(id: string) {
   }
 }
 
-export async function getRulesFiles() {
+export async function getRulesFiles(): Promise<ContentData[]> {
   const rulesDir = path.join(contentDirectory, 'rules')
   
   if (!fs.existsSync(rulesDir)) {
@@ -119,7 +133,7 @@ export async function getRulesFiles() {
   })
 }
 
-export async function getEconomyFiles() {
+export async function getEconomyFiles(): Promise<ContentData[]> {
   const economyDir = path.join(contentDirectory, 'economy')
   
   if (!fs.existsSync(economyDir)) {
@@ -162,7 +176,7 @@ export async function getEconomyFiles() {
 }
 
 // 生活・くらしのコンテンツを取得
-export async function getLifestyleFiles() {
+export async function getLifestyleFiles(): Promise<ContentData[]> {
   const lifestyleDir = path.join(contentDirectory, 'lifestyle')
   
   if (!fs.existsSync(lifestyleDir)) {
@@ -206,7 +220,7 @@ export async function getLifestyleFiles() {
 }
 
 // 観光コンテンツを取得
-export async function getTourismFiles() {
+export async function getTourismFiles(): Promise<ContentData[]> {
   const tourismDir = path.join(contentDirectory, 'tourism')
   
   if (!fs.existsSync(tourismDir)) {
@@ -250,7 +264,7 @@ export async function getTourismFiles() {
 }
 
 // 交通コンテンツを取得
-export async function getTransportationFiles() {
+export async function getTransportationFiles(): Promise<ContentData[]> {
   const transportationDir = path.join(contentDirectory, 'transportation')
   
   if (!fs.existsSync(transportationDir)) {
@@ -294,7 +308,7 @@ export async function getTransportationFiles() {
 }
 
 // 娯楽コンテンツを取得
-export async function getEntertainmentFiles() {
+export async function getEntertainmentFiles(): Promise<ContentData[]> {
   const entertainmentDir = path.join(contentDirectory, 'entertainment')
   
   if (!fs.existsSync(entertainmentDir)) {
@@ -338,7 +352,7 @@ export async function getEntertainmentFiles() {
 }
 
 // 個別データ取得関数
-export async function getLifestyleData(id: string) {
+export async function getLifestyleData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'lifestyle', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
@@ -360,7 +374,7 @@ export async function getLifestyleData(id: string) {
   }
 }
 
-export async function getTourismData(id: string) {
+export async function getTourismData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'tourism', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
@@ -382,7 +396,7 @@ export async function getTourismData(id: string) {
   }
 }
 
-export async function getTransportationData(id: string) {
+export async function getTransportationData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'transportation', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
@@ -404,7 +418,7 @@ export async function getTransportationData(id: string) {
   }
 }
 
-export async function getEconomyData(id: string) {
+export async function getEconomyData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'economy', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
@@ -426,7 +440,7 @@ export async function getEconomyData(id: string) {
   }
 }
 
-export async function getEntertainmentData(id: string) {
+export async function getEntertainmentData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'entertainment', `${id}.md`)
   
   if (!fs.existsSync(fullPath)) {
