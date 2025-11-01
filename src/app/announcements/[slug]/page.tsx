@@ -32,11 +32,11 @@ export default async function AnnouncementArticlePage({ params }: PageProps) {
   
   const content = {
     id: contentData.id,
-    title: (contentData as any).title || '',
-    description: (contentData as any).description || '',
-    date: (contentData as any).date || '',
-    content: contentData.content,
-    category: (contentData as any).category,
+    title: contentData.title || '',
+    description: contentData.description || '',
+    date: contentData.date || '',
+    content: contentData.content || '',
+    category: contentData.category,
   };
   
   return <ContentArticlePage config={config} content={content} showDate={true} />;

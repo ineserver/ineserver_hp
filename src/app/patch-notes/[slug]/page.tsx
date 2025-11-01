@@ -4,20 +4,6 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { getPatchNoteBySlug } from '@/lib/patch-notes';
 import { notFound } from 'next/navigation';
 
-interface PatchNote {
-  id: string;
-  version: string;
-  date: string;
-  description: string;
-  isLatest?: boolean;
-  sections: {
-    type: 'fixes' | 'features' | 'other';
-    title: string;
-    items: string[];
-    itemsHtml?: string[];
-  }[];
-}
-
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

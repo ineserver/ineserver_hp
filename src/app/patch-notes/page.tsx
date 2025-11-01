@@ -3,21 +3,6 @@ import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { getAllPatchNotes } from '@/lib/patch-notes';
 
-interface PatchNote {
-  id: string;
-  slug?: string;
-  version: string;
-  date: string;
-  description: string;
-  isLatest?: boolean;
-  sections: {
-    type: 'fixes' | 'features' | 'other';
-    title: string;
-    items: string[];
-    itemsHtml?: string[];
-  }[];
-}
-
 export default async function PatchNotesArchive() {
   const allPatchNotes = await getAllPatchNotes();
   const patchNotes = allPatchNotes || [];
@@ -58,7 +43,6 @@ export default async function PatchNotesArchive() {
   ];
 
   // ページネーション
-  const totalPages = Math.ceil((patchNotes?.length || 0) / itemsPerPage);
   const currentPatchNotes = (patchNotes || []).slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage

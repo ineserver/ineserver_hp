@@ -1,5 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
-import { getEconomyFiles } from '../../../lib/content';
+import { getEconomyFiles, ContentData } from '../../../lib/content';
 
 const config = {
   title: '経済',
@@ -26,12 +26,12 @@ const config = {
 export default async function EconomyPage() {
   const filesData = await getEconomyFiles();
   
-  const content = filesData.map((item: any) => ({
+  const content = filesData.map((item: ContentData) => ({
     id: item.id,
     title: item.title || '',
     description: item.description || '',
     date: item.date || '',
-    content: item.contentHtml,
+    content: item.contentHtml || '',
     category: item.category,
     type: item.type,
   }));
