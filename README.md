@@ -15,3 +15,17 @@ Minecraftサーバー「いねさば」の公式ホームページです。Next.
 ## 注意事項
 - masterブランチにpushすると、GitHub Actionsが作動し、ビルドが開始されます。
 - 作業中はdevブランチにpushしてください。
+
+## 記事を書く時に読んでください
+
+### カテゴリ
+
+### イベントはpickup
+イベント情報を乗っけるときはannouncementsフォルダ内にて
+```
+type: pickup
+eventStartDate: yyyy-mm-ddThh:mm:ss+09:00 # 開始時間
+eventEndDate: yyyy-mm-ddThh:mm:ss+09:00 #終了時間
+description: # イベントの概要
+```
+にして投稿してください。
