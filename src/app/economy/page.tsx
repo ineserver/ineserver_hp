@@ -14,7 +14,13 @@ const config = {
   emptyIcon: '💰',
   emptyMessage: '経済に関するコンテンツがまだありません。',
   pageTitle: '経済 | Ineサーバー',
-  backButtonText: '経済一覧に戻る'
+  backButtonText: '経済一覧に戻る',
+  enableGrouping: true,
+  groupLabels: {
+    income: 'ineを貯める',
+    expenditure: 'ineを使う',
+    other: 'その他'
+  }
 };
 
 export default async function EconomyPage() {
@@ -27,6 +33,7 @@ export default async function EconomyPage() {
     date: item.date || '',
     content: item.contentHtml,
     category: item.category,
+    type: item.type,
   }));
   
   return <ContentListPage config={config} content={content} />;

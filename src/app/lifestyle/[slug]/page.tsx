@@ -40,6 +40,6 @@ export default async function LifestyleArticlePage({ params }: PageProps) {
     category: (contentData as any).category,
   };
   
-  return <ContentArticlePage config={config} content={content} />;
+  return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
 

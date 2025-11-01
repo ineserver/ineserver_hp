@@ -1,14 +1,57 @@
+'use client';
+
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
+import { useEffect, useState } from 'react';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
   content: ContentItem | null;
+  showDate?: boolean;
+  showToc?: boolean;
 }
 
-export default function ContentArticlePage({ config, content }: ContentArticlePageProps) {
+interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+export default function ContentArticlePage({ config, content, showDate = false, showToc = false }: ContentArticlePageProps) {
+  const [tocItems, setTocItems] = useState<TocItem[]>([]);
+  const [isTocOpen, setIsTocOpen] = useState(false);
+
+  useEffect(() => {
+    if (!showToc || !content) return;
+
+    // HTMLから見出しを抽出
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(content.content, 'text/html');
+    const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    
+    const items: TocItem[] = [];
+    headings.forEach((heading, index) => {
+      const level = parseInt(heading.tagName.substring(1));
+      const text = heading.textContent || '';
+      const id = `heading-${index}`;
+      
+      // 元のHTMLにIDを追加（実際のDOMには影響しない）
+      heading.id = id;
+      
+      items.push({ id, text, level });
+    });
+    
+    setTocItems(items);
+
+    // 実際のDOMにIDを追加
+    const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6');
+    actualHeadings.forEach((heading, index) => {
+      heading.id = `heading-${index}`;
+    });
+  }, [content, showToc]);
+
   if (!content) {
     return (
       <div className="min-h-screen bg-white">
@@ -49,13 +92,70 @@ export default function ContentArticlePage({ config, content }: ContentArticlePa
           {content.description && (
             <p className="text-xl text-gray-600 leading-relaxed">{content.description}</p>
           )}
-          <div className="flex items-center text-sm text-gray-500 mt-4">
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            {content.date}
-          </div>
+          {showDate && content.date && (
+            <div className="flex items-center text-sm text-gray-500 mt-4">
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              {new Date(content.date).toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              }).replace(/\//g, '-')}
+            </div>
+          )}
         </header>
+
+        {/* 目次 */}
+        {showToc && tocItems.length > 0 && (
+          <nav className="mb-12 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
+            <button
+              onClick={() => setIsTocOpen(!isTocOpen)}
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200"
+              aria-expanded={isTocOpen}
+              aria-controls="table-of-contents"
+            >
+              <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                目次
+              </h2>
+              <svg 
+                className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${isTocOpen ? 'transform rotate-180' : ''}`}
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div 
+              id="table-of-contents"
+              className={`overflow-hidden transition-all duration-300 ${isTocOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+            >
+              <ul className="px-6 pt-4 pb-4 space-y-2">
+                {tocItems.map((item) => (
+                  <li 
+                    key={item.id} 
+                    style={{ marginLeft: `${(item.level - 1) * 1}rem` }}
+                    className="text-sm"
+                  >
+                    <a 
+                      href={`#${item.id}`}
+                      className="text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
+                    >
+                      {item.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        )}
 
         {/* コンテンツ */}
         <article className="max-w-none">

@@ -17,8 +17,23 @@ Minecraftサーバー「いねさば」の公式ホームページです。Next.
 - 作業中はdevブランチにpushしてください。
 
 ## 記事を書く時に読んでください
-
 ### カテゴリ
+#### お知らせ(/announcements)
+|type|どのカテゴリに表示されるか|
+|---|---|
+|important|重要なお知らせ|
+|normal|お知らせ|
+|pickup|ピックアップ※下記も参照|
+#### 生活・くらし(/lifestyle)
+|type|どのカテゴリに表示されるか|
+|---|---|
+|rule|サーバールール|
+|protection|保護|
+#### 経済
+|type|どのカテゴリに表示されるか|
+|---|---|
+|income|ineを貯める|
+|expenditure|ineを使う|
 
 ### イベントはpickup
 イベント情報を乗っけるときはannouncementsフォルダ内にて

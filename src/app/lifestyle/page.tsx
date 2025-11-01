@@ -14,7 +14,13 @@ const config = {
   emptyIcon: '🏠',
   emptyMessage: '生活・くらし情報がまだありません。',
   pageTitle: '生活・くらし | Ineサーバー',
-  backButtonText: '生活・くらし一覧に戻る'
+  backButtonText: '生活・くらし一覧に戻る',
+  enableGrouping: true,
+  groupLabels: {
+    rule: 'サーバールール',
+    protection: '保護',
+    other: 'その他'
+  }
 };
 
 export default async function LifestylePage() {
@@ -28,6 +34,7 @@ export default async function LifestylePage() {
     date: item.date || '',
     content: item.contentHtml,
     category: item.category,
+    type: item.type,
   }));
   
   return <ContentListPage config={config} content={content} />;
