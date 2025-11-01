@@ -1,4 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
+import { getEconomyFiles } from '../../../lib/content';
 
 const config = {
   title: '経済',
@@ -16,6 +17,17 @@ const config = {
   backButtonText: '経済一覧に戻る'
 };
 
-export default function EconomyPage() {
-  return <ContentListPage config={config} />;
+export default async function EconomyPage() {
+  const filesData = await getEconomyFiles();
+  
+  const content = filesData.map((item: any) => ({
+    id: item.id,
+    title: item.title || '',
+    description: item.description || '',
+    date: item.date || '',
+    content: item.contentHtml,
+    category: item.category,
+  }));
+  
+  return <ContentListPage config={config} content={content} />;
 }

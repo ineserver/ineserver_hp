@@ -1,4 +1,6 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
+import { getTourismData } from '../../../../lib/content';
+import { notFound } from 'next/navigation';
 
 const config = {
   title: '観光',
@@ -16,6 +18,26 @@ const config = {
   backButtonText: '観光一覧に戻る'
 };
 
-export default function TourismArticlePage() {
-  return <ContentArticlePage config={config} />;
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function TourismArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+  const contentData = await getTourismData(slug);
+  
+  if (!contentData) {
+    notFound();
+  }
+  
+  const content = {
+    id: contentData.id,
+    title: (contentData as any).title || '',
+    description: (contentData as any).description || '',
+    date: (contentData as any).date || '',
+    content: contentData.content,
+    category: (contentData as any).category,
+  };
+  
+  return <ContentArticlePage config={config} content={content} />;
 }

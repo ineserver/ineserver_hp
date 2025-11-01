@@ -1,4 +1,5 @@
 import ContentListPage from '@/components/ContentListPage';
+import { getAnnouncementFiles } from '../../../lib/content';
 
 const config = {
   title: 'お知らせ',
@@ -16,6 +17,17 @@ const config = {
   backButtonText: 'お知らせ一覧に戻る'
 };
 
-export default function AnnouncementsPage() {
-  return <ContentListPage config={config} />;
+export default async function AnnouncementsPage() {
+  const filesData = await getAnnouncementFiles();
+  
+  const content = filesData.map((item: any) => ({
+    id: item.id,
+    title: item.title || '',
+    description: item.description || '',
+    date: item.date || '',
+    content: item.contentHtml,
+    category: item.category,
+  }));
+  
+  return <ContentListPage config={config} content={content} />;
 }

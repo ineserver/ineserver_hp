@@ -1,93 +1,15 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
+  content: ContentItem | null;
 }
 
-export default function ContentArticlePage({ config }: ContentArticlePageProps) {
-  const params = useParams();
-  const slug = params.slug as string;
-  const [content, setContent] = useState<ContentItem | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // 初期状態を false に変更
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchContent = async () => {
-      setIsLoading(true);
-      setError(null);
-      
-      try {
-        const response = await fetch(`${config.apiEndpoint}/${slug}`, { next: { revalidate: 60 } });
-        if (response.ok) {
-          const data = await response.json();
-          setContent(data);
-        } else {
-          setError('記事が見つかりませんでした');
-        }
-      } catch (error) {
-        console.error('Error fetching content:', error);
-        setError('記事の読み込みに失敗しました');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (slug) {
-      fetchContent();
-    }
-  }, [slug, config.apiEndpoint]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white">
-        <Header />
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          {/* スケルトンローディング */}
-          <div className="animate-pulse">
-            {/* ブレッドクラム */}
-            <div className="flex items-center space-x-2 mb-8">
-              <div className="h-4 bg-gray-200 rounded w-16"></div>
-              <div className="h-4 bg-gray-200 rounded w-1"></div>
-              <div className="h-4 bg-gray-200 rounded w-20"></div>
-              <div className="h-4 bg-gray-200 rounded w-1"></div>
-              <div className="h-4 bg-gray-200 rounded w-32"></div>
-            </div>
-            
-            {/* ヘッダー */}
-            <header className="mb-12">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-10 bg-gray-200 rounded w-3/4"></div>
-                <div className="h-8 bg-gray-200 rounded w-20"></div>
-              </div>
-              <div className="h-6 bg-gray-200 rounded w-5/6 mb-4"></div>
-              <div className="flex items-center">
-                <div className="h-4 bg-gray-200 rounded w-4 mr-2"></div>
-                <div className="h-4 bg-gray-200 rounded w-24"></div>
-              </div>
-            </header>
-            
-            {/* コンテンツ */}
-            <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/5"></div>
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !content) {
+export default function ContentArticlePage({ config, content }: ContentArticlePageProps) {
+  if (!content) {
     return (
       <div className="min-h-screen bg-white">
         <Header />
@@ -95,7 +17,7 @@ export default function ContentArticlePage({ config }: ContentArticlePageProps) 
           <div className="text-center py-12">
             <div className="text-gray-400 text-6xl mb-4">❌</div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">記事が見つかりません</h3>
-            <p className="text-gray-600">{error}</p>
+            <p className="text-gray-600">指定された記事は存在しません</p>
           </div>
         </div>
       </div>
