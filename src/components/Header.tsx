@@ -241,9 +241,15 @@ const Header = () => {
                       サーバールール
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/housing-guide" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      <li><Link href="/lifestyle/allowed-mods" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
-                      <li><Link href="/lifestyle/prohibited-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム</Link></li>
+                      <li><Link href="/lifestyle/building_restrictions" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
+                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧
+                      <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg></Link></li>
+                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム
+                      <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg></Link></li>
                     </ul>
                   </div>
                   <div>
@@ -375,28 +381,34 @@ const Header = () => {
                   </button>
                 </div>
                 {openSubMenu === 'lifestyle' && (
-                  <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3 space-y-2">
-                    <div className="text-gray-700 text-base font-bold mb-3 flex items-center">
+                  <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
+                    <div className="text-base font-bold mb-3 flex items-center">
                       <FileTextIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       サーバールール
                     </div>
-                    <div className="pl-2 space-y-1">
-                      <Link href="/lifestyle/building_restrictions" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                    <div className="pl-4 space-y-1">
+                      <Link href="/lifestyle/building_restrictions" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         中心地の土地利用について
                       </Link>
-                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="flex items-center py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         許可MOD一覧
+                        <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                       </Link>
-                      <Link href="/lifestyle/prohibited-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="flex items-center py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         流通禁止アイテム
+                        <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
                       </Link>
                     </div>
                     
-                    <div className="text-gray-700 text-base font-bold mb-3 mt-4 flex items-center">
+                    <div className="text-base font-bold mb-3 mt-4 flex items-center">
                       <ShieldIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
                       保護
                     </div>
-                    <div className="pl-2 space-y-1">
+                    <div className="pl-4 space-y-1">
                       <Link href="/lifestyle/land-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         土地の保護
                       </Link>

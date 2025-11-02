@@ -9,19 +9,6 @@
   --foreground: #333333;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-}
-
-/* ダークモードのカラーパレットをコメントアウト */
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}*/
-
 html {
   scroll-behavior: smooth;
 }
@@ -89,8 +76,8 @@ html, body {
 
 @media (min-width: 1024px) {
   .markdown-content h1 {
-    margin-left: -1rem;
-    margin-right: -1rem;
+    margin-left: -1.5rem;
+    margin-right: -0.5rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -109,16 +96,17 @@ html, body {
   margin-right: 0;
   line-height: 1.3;
   padding-bottom: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
   border-bottom: 3px solid #5b8064;
   scroll-margin-top: 5rem; /* モバイル: 80px */
 }
 
 @media (min-width: 1024px) {
   .markdown-content h2 {
-    margin-left: -1rem;
-    margin-right: -1rem;
+    margin-left: -1.5rem;
+    margin-right: -0.5rem;
+    padding-left: 1.5rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -131,16 +119,14 @@ html, body {
   margin-bottom: 0.75rem;
   margin-left: 0;
   margin-right: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
   line-height: 1.4;
   scroll-margin-top: 5rem; /* モバイル: 80px */
 }
 
 @media (min-width: 1024px) {
   .markdown-content h3 {
-    margin-left: -1rem;
-    margin-right: -1rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -153,16 +139,14 @@ html, body {
   margin-bottom: 0.5rem;
   margin-left: 0;
   margin-right: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
   line-height: 1.4;
   scroll-margin-top: 5rem; /* モバイル: 80px */
 }
 
 @media (min-width: 1024px) {
   .markdown-content h4 {
-    margin-left: -1rem;
-    margin-right: -1rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -175,16 +159,14 @@ html, body {
   margin-bottom: 0.5rem;
   margin-left: 0;
   margin-right: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
   line-height: 1.4;
   scroll-margin-top: 5rem; /* モバイル: 80px */
 }
 
 @media (min-width: 1024px) {
   .markdown-content h5 {
-    margin-left: -1rem;
-    margin-right: -1rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -197,16 +179,14 @@ html, body {
   margin-bottom: 0.5rem;
   margin-left: 0;
   margin-right: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
   line-height: 1.4;
   scroll-margin-top: 5rem; /* モバイル: 80px */
 }
 
 @media (min-width: 1024px) {
   .markdown-content h6 {
-    margin-left: -1rem;
-    margin-right: -1rem;
     scroll-margin-top: 8.5rem; /* PC: 136px (ヘッダー56px + メニュー56px + 余白24px) */
   }
 }
@@ -259,12 +239,12 @@ html, body {
 }
 
 .markdown-content a {
-  color: #2563eb;
+  color: #5b8064;
   text-decoration: underline;
 }
 
 .markdown-content a:hover {
-  color: #1d4ed8;
+  color: #4a6b54;
 }
 
 .markdown-content blockquote {
