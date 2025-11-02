@@ -713,7 +713,7 @@ export default function TutorialPage() {
       <Header />
       <Breadcrumb items={breadcrumbItems} />
       
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* プログレスバー */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
@@ -770,7 +770,7 @@ export default function TutorialPage() {
         </div>
 
         {/* メインコンテンツ */}
-        <div className="bg-white rounded-3xl border border-gray-200 p-8 mb-8">
+        <div className="bg-white rounded-3xl border border-gray-200 p-6 sm:p-8 lg:p-12 mb-8">
           <div className="mb-8">
             <div className="flex items-center mb-4">
               <div className="w-2 h-8 bg-gradient-to-b from-[#5b8064] to-[#4a6b55] rounded-full mr-4" />
