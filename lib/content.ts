@@ -2,7 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { parseFrontMatter } from './front-matter-parser'
 import { remark } from 'remark'
-import html from 'remark-html'
+import remarkRehype from 'remark-rehype'
+import rehypeSlug from 'rehype-slug'
+import rehypeStringify from 'rehype-stringify'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
@@ -40,7 +42,9 @@ export async function getAnnouncementFiles(): Promise<ContentData[]> {
         
         // Markdownを HTMLに変換
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -80,7 +84,9 @@ export async function getAnnouncementData(id: string): Promise<ContentData | nul
 
   // Markdownを HTMLに変換
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -110,7 +116,9 @@ export async function getRulesFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -152,7 +160,9 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -195,7 +205,9 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -239,7 +251,9 @@ export async function getTourismFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -283,7 +297,9 @@ export async function getTransportationFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -327,7 +343,9 @@ export async function getEntertainmentFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -363,7 +381,9 @@ export async function getLifestyleData(id: string): Promise<ContentData | null> 
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -385,7 +405,9 @@ export async function getTourismData(id: string): Promise<ContentData | null> {
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -407,7 +429,9 @@ export async function getTransportationData(id: string): Promise<ContentData | n
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -429,7 +453,9 @@ export async function getEconomyData(id: string): Promise<ContentData | null> {
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -451,7 +477,9 @@ export async function getEntertainmentData(id: string): Promise<ContentData | nu
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 

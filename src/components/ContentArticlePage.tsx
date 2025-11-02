@@ -32,24 +32,18 @@ export default function ContentArticlePage({ config, content, showDate = false, 
     const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
     
     const items: TocItem[] = [];
-    headings.forEach((heading, index) => {
+    headings.forEach((heading) => {
       const level = parseInt(heading.tagName.substring(1));
       const text = heading.textContent || '';
-      const id = `heading-${index}`;
+      // rehype-slugで自動生成されたIDを使用
+      const id = heading.id || '';
       
-      // 元のHTMLにIDを追加（実際のDOMには影響しない）
-      heading.id = id;
-      
-      items.push({ id, text, level });
+      if (id) {
+        items.push({ id, text, level });
+      }
     });
     
     setTocItems(items);
-
-    // 実際のDOMにIDを追加
-    const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6');
-    actualHeadings.forEach((heading, index) => {
-      heading.id = `heading-${index}`;
-    });
   }, [content, showToc]);
 
   if (!content) {

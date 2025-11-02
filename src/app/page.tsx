@@ -1257,11 +1257,11 @@ export default function Home() {
             <section>
               <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             {/* ヘッダー */}
-            <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-2xl font-bold text-white">パッチノート</h2>
+            <div className="bg-white p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between mb-2">
+                <h2 className="text-2xl font-bold text-gray-900">パッチノート</h2>
                 <Link href="/patch-notes">
-                  <button className="inline-flex items-center px-3 py-2 bg-white/20 text-white rounded-md text-sm font-medium hover:bg-white/30 transition-all duration-200 backdrop-blur-sm">
+                  <button className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-200 transition-all duration-200 border border-gray-300">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
                     </svg>
@@ -1271,7 +1271,7 @@ export default function Home() {
               </div>
               
               <div className="flex items-center justify-between">
-                <p className="text-green-100">最新のアップデート情報</p>
+                <p className="text-gray-600">最新のアップデート情報</p>
               </div>
             </div>
             
