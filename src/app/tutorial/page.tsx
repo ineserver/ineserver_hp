@@ -140,7 +140,7 @@ export default function TutorialPage() {
                     環状1号線より内側及び白椿駅付近では、土地を購入する必要があります。制限区域など、詳しいルールについては以下のボタンからご確認ください。
                   </p>
                   <Link 
-                    href="/lifestyle/rule"
+                    href="/lifestyle/building_restrictions"
                     className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium text-sm"
                     target="_blank"
                     rel="noopener noreferrer"
