@@ -86,7 +86,7 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
                 
                 return (
                   <div key={type}>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center">
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">
                       {GroupIcon && <GroupIcon className="text-gray-800 mr-3" size={28} />}
                       {groupLabel}
                     </h1>
