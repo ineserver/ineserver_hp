@@ -56,7 +56,7 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
       <Header />
       <Breadcrumb items={breadcrumbItems} />
       
-      <article className="max-w-4xl mx-auto px-6 py-8">
+      <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">

@@ -14,7 +14,7 @@ interface BreadcrumbProps {
 const Breadcrumb = ({ items }: BreadcrumbProps) => {
   return (
     <nav className="bg-white">
-      <div className="max-w-4xl mx-auto px-6 py-4">
+      <div className="max-w-4xl mx-auto px-5 py-4">
         <div className="flex items-center space-x-2 text-sm overflow-x-auto scrollbar-hide">
           <div className="bg-[#5b8064] text-white px-3 py-1 rounded text-xs font-medium flex-shrink-0">
             現在のページ

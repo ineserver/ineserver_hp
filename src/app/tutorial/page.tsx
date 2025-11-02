@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import RecommendedVersion from '@/components/RecommendedVersion';
@@ -32,10 +33,12 @@ export default function TutorialPage() {
       content: (
         <div className="markdown-content">
           <div className="rounded-2xl overflow-hidden mb-6">
-            <img 
+            <Image 
               src="https://i.gyazo.com/a4b5d73c97c288bff8c5c86c3d8f859a.jpg" 
               alt="いねさばへようこそ" 
               className="w-full h-auto object-cover"
+              width={1200}
+              height={675}
             />
           </div>
           <h1>
@@ -64,122 +67,92 @@ export default function TutorialPage() {
       id: 1,
       title: "守ってほしいこと",
       content: (
-        <div className="space-y-6">
-          {/* 画像配置エリア */}
-          <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 text-center">
-            <div className="space-y-2">
-              <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <p className="text-sm text-gray-500">サーバールール説明画像を配置予定</p>
-            </div>
-          </div>
-
+        <div className="space-y-8">
           <div className="bg-red-50 rounded-xl p-6 border border-red-200">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-start space-x-4 mb-2">
+                <svg className="w-8 h-8 text-red-700 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
-              </div>
               <div>
-                <h3 className="text-xl font-bold text-red-900">ルールを守って楽しくプレイしましょう</h3>
+                <h3 className="text-xl font-bold text-red-700">ルール・マナーを守って楽しくプレイしましょう</h3>
               </div>
             </div>
-            <p className="text-red-800 leading-relaxed">
-              サーバーにログインした時点で、サーバールールに同意したものとみなされます。
-              <b>長いルールを読むのは大変だと思いますので、以下に簡単な要点をまとめました。</b>
-            </p>
+            <p className="leading-relaxed">当サーバーにも例に漏れず、長いルールや利用規約があります。しかし、そんな長い文章を読むのは正直大変だと思います。</p>
+            <p className="leading-relaxed font-bold">そのため、他のサーバーに無いようなマイナーなルールや特に守ってほしいことをピックアップしました！</p>
           </div>
 
-          <div className="space-y-4">
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <div className="space-y-8 px-4">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
-                </div>
                 <div className="flex-1">
-                  <h5 className="text-lg font-bold text-gray-900 mb-2">マナーを守って楽しくプレイ</h5>
-                  <p className="text-gray-700 mb-3">
-                    他のプレイヤーへの迷惑行為、チャットでの暴言・不適切な発言・スパム行為は禁止です。また、他プレイヤーの建築物を無断で破壊・改変することも禁止されています。
+                  <h5 className="text-xl font-bold mb-2">マナーを守って楽しくプレイ</h5>
+                  <p>
+                    他のプレイヤーへの迷惑行為、チャットでの不適切な発言・スパム行為、他プレイヤーの建築物を無断で破壊・改変することは禁止です。
                   </p>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
-                </div>
                 <div className="flex-1">
-                  <h5 className="text-lg font-bold text-gray-900 mb-2">許可MOD・クライアントについて</h5>
-                  <p className="text-gray-700 mb-3">
-                    ゲームバランスを変えるMODやクライアントの使用は禁止されています。OptiFineやReplayModなど、プレイを補助するMODは許可されています。
+                  <h5 className="text-xl font-bold mb-2">許可MOD・クライアントについて</h5>
+                  <p className="mb-2">
+                    ゲームバランスを変えるものでなければ、MODやクライアントの利用は可能です。許可されているMOD・クライアントについては、以下のボタンから許可MOD一覧をご確認ください。
                   </p>
                   <a 
                     href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" 
-                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg transition-all duration-200 font-medium text-sm"
+                    className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium text-sm"
                     target="_blank" 
                     rel="noopener noreferrer"
                   >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    許可MOD一覧を確認 
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
-                    許可MOD一覧を確認
                   </a>
-                  <p className="text-sm text-gray-500 mt-2">※不明な場合は運営までお問い合わせください</p>
+                  <p className="text-sm text-gray-500 mt-2">※ 明記されていないMOD・クライアントで不安な場合は運営までお問い合わせください</p>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L12 12m6.364 6.364L12 12m0 0L5.636 5.636M12 12l6.364-6.364M12 12l-6.364 6.364" />
+                  <svg className="w-8 h-8 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="11" strokeWidth={2} /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M6 18L18 6" />
                   </svg>
-                </div>
                 <div className="flex-1">
-                  <h5 className="text-lg font-bold text-gray-900 mb-2">トラップタワーの禁止</h5>
-                  <p className="text-gray-700 mb-3">
-                    経済サーバーと資材ワールドでは、トラップタワー全般の作成及び使用が禁止されています。これはサーバー負荷軽減とゲームバランス維持のための重要なルールです。
+                  <h5 className="text-xl font-bold mb-2">トラップタワーの禁止</h5>
+                  <p>
+                    トラップタワー全般の作成及び使用は禁止です。ただし、自動畑などは<b>一つのスイッチで停止できる機構がある場合に限り、ログアウト時に作動を停止させれば</b>作成可能です。
                   </p>
                 </div>
               </div>
-            </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
               <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-8 h-8 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
-                </div>
                 <div className="flex-1">
-                  <h5 className="text-lg font-bold text-gray-900 mb-2">建築制限区域について</h5>
-                  <p className="text-gray-700 mb-3">
-                    環状1号線より内側及び白椿駅付近では、土地を看板から購入する必要があります。また、購入後1ヶ月間利用されない場合は取り消される場合があります。
+                  <h5 className="text-xl font-bold mb-2">建築制限区域について</h5>
+                  <p className="mb-2">
+                    環状1号線より内側及び白椿駅付近では、土地を購入する必要があります。制限区域など、詳しいルールについては以下のボタンからご確認ください。
                   </p>
                   <Link 
                     href="/lifestyle/rule"
-                    className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-lg transition-all duration-200 font-medium text-sm"
+                    className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium text-sm"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                    </svg>
                     詳細なルールを確認
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
                   </Link>
                 </div>
               </div>
             </div>
-          </div>
 
           <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
             <div className="flex items-center mb-3">
