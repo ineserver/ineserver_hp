@@ -60,7 +60,7 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
           {/* 一覧に戻るボタン - モバイル優先で上部に配置 */}
           <div className="mb-6 -ml-4">
             <Link href="/patch-notes">
-              <button className="flex items-center px-4 py-2 text-[#5b8064] hover:text-[#4a6b55] transition-colors duration-200">
+              <button className="flex items-center px-4 py-2 text-[#5b8064] hover:text-[#4a6b55] transition-colors duration-200 cursor-pointer">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -123,7 +123,7 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
               このパッチノートは {patchNote.date} に公開されました
             </div>
             <Link href="/patch-notes" className="order-1 sm:order-2">
-              <button className="w-full sm:w-auto px-6 py-3 bg-[#5b8064] text-white rounded-lg hover:bg-[#4a6b55] transition-colors duration-200">
+              <button className="w-full sm:w-auto px-6 py-3 bg-[#5b8064] text-white rounded-lg hover:bg-[#4a6b55] transition-colors duration-200 cursor-pointer">
                 他のパッチノートを見る
               </button>
             </Link>

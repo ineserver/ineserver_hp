@@ -108,7 +108,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           <nav className="mb-12 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
             <button
               onClick={() => setIsTocOpen(!isTocOpen)}
-              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200"
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
               aria-expanded={isTocOpen}
               aria-controls="table-of-contents"
             >

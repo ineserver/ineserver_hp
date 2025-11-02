@@ -54,7 +54,6 @@ export default function Home() {
   const [patchNoteError, setPatchNoteError] = useState(false);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedSlideInfo, setSelectedSlideInfo] = useState<null | number>(null);
   
   // タブのref
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
@@ -135,25 +134,7 @@ export default function Home() {
       description: "17種類の職業・リアルタイムレートの物価と市場取引・地価システムでリアルな経済を体験",
       bgColor: "bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600",
       icon: "💰",
-      features: ["17種類の職業", "リアルタイム市場取引", "地価システム"],
-      detailInfo: {
-        title: "経済システムについて",
-        description: "いねさばの経済システムは現実世界の経済に近い体験を提供します。",
-        sections: [
-          {
-            title: "職業システム",
-            content: "17種類の多様な職業から選択し、それぞれ独自のスキルと収入源を持ちます。農業、商業、工業など、様々な分野で活躍できます。"
-          },
-          {
-            title: "市場取引",
-            content: "リアルタイムで変動する物価システムにより、需要と供給に基づいた本格的な経済活動が楽しめます。プレイヤー間での活発な取引が経済を動かします。"
-          },
-          {
-            title: "地価システム",
-            content: "土地の価値は立地や開発状況により変動します。戦略的な土地投資で資産を増やすことも可能です。"
-          }
-        ]
-      }
+      features: ["17種類の職業", "リアルタイム市場取引", "地価システム"]
     },
     {
       id: 2,
@@ -162,25 +143,7 @@ export default function Home() {
       description: "計画的な都市計画・各地の名産品・鉄道網と列車の自動運転で都市開発に参加しよう",
       bgColor: "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600",
       icon: "🏙️",
-      features: ["計画的な都市計画", "各地の名産品", "鉄道網・自動運転"],
-      detailInfo: {
-        title: "都市開発について",
-        description: "プレイヤーと一緒に作り上げる、活気あふれる都市開発システムです。",
-        sections: [
-          {
-            title: "都市計画",
-            content: "各地域には独自の特色があり、住宅地、商業地、工業地などを計画的に配置できます。プレイヤー同士で協力して理想の街を作り上げましょう。"
-          },
-          {
-            title: "地域特産品",
-            content: "各市町村には固有の名産品があり、地域間の貿易が活発に行われます。特産品を活用した経済活動で地域を発展させることができます。"
-          },
-          {
-            title: "交通インフラ",
-            content: "充実した鉄道網と自動運転システムにより、各地域を効率的に移動できます。物流の最適化により経済活動がより活発になります。"
-          }
-        ]
-      }
+      features: ["計画的な都市計画", "各地の名産品", "鉄道網・自動運転"]
     },
     {
       id: 3,
@@ -189,25 +152,7 @@ export default function Home() {
       description: "340種類を超える追加アイテム・McMMOシステム・最大4人のPvEアリーナで充実した生活を",
       bgColor: "bg-gradient-to-br from-orange-500 via-red-500 to-pink-600",
       icon: "🎮",
-      features: ["340種類超の追加アイテム", "McMMOシステム", "PvEアリーナ"],
-      detailInfo: {
-        title: "生活要素について",
-        description: "マインクラフトライフをより豊かにする多彩なコンテンツを用意しています。",
-        sections: [
-          {
-            title: "追加アイテム",
-            content: "340種類を超える独自アイテムにより、バニラとは一味違った体験ができます。装備品、食べ物、建築資材など、生活を彩る様々なアイテムが追加されています。"
-          },
-          {
-            title: "スキルシステム",
-            content: "McMMOによる本格的なスキルシステムで、様々な活動を通じてキャラクターを成長させることができます。採掘、戦闘、農業など、多彩なスキルをレベルアップしましょう。"
-          },
-          {
-            title: "PvEコンテンツ",
-            content: "最大4人で挑戦できるPvEアリーナでは、協力して様々な敵と戦うことができます。チームワークを駆使して強敵を倒し、貴重な報酬を獲得しましょう。"
-          }
-        ]
-      }
+      features: ["340種類超の追加アイテム", "McMMOシステム", "PvEアリーナ"]
     },
     {
       id: 4,
@@ -216,37 +161,9 @@ export default function Home() {
       description: "地形・ブロック保護機能・透明性のある運営・即日サポート対応で安心してプレイできます",
       bgColor: "bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600",
       icon: "🛡️",
-      features: ["保護機能完備", "透明性のある運営", "即日サポート対応"],
-      detailInfo: {
-        title: "安心・安全について",
-        description: "すべてのプレイヤーが安心してプレイできる環境作りに取り組んでいます。",
-        sections: [
-          {
-            title: "保護システム",
-            content: "地形保護やブロック保護機能により、あなたの建築物や財産をしっかりと守ります。グリーフィングの心配なく、安心して建築や開発に集中できます。"
-          },
-          {
-            title: "透明性のある運営",
-            content: "サーバールールの明確化、運営方針の公開など、透明性を重視した運営を行っています。プレイヤーの皆様との信頼関係を大切にしています。"
-          },
-          {
-            title: "サポート体制",
-            content: "問題が発生した際は即日対応を心がけており、迅速なサポートを提供します。Discord等を通じて、いつでもお気軽にお声かけください。"
-          }
-        ]
-      }
+      features: ["保護機能完備", "透明性のある運営", "即日サポート対応"]
     }
   ];
-
-  // ポップアップを開く関数
-  const openSlideInfo = (slideId: number) => {
-    setSelectedSlideInfo(slideId);
-  };
-
-  // ポップアップを閉じる関数
-  const closeSlideInfo = () => {
-    setSelectedSlideInfo(null);
-  };
 
   const nextSlide = useCallback(() => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -275,28 +192,12 @@ export default function Home() {
         if (slideIndex < slides.length) {
           setCurrentSlide(slideIndex);
         }
-      } else if (event.key === 'Escape' && selectedSlideInfo) {
-        closeSlideInfo();
       }
     };
 
     window.addEventListener('keydown', handleKeyPress);
     return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [slides.length, nextSlide, prevSlide, selectedSlideInfo]);
-
-  // ポップアップが開いている時のbodyスクロールを無効化
-  useEffect(() => {
-    if (selectedSlideInfo) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    // クリーンアップ
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [selectedSlideInfo]);
+  }, [slides.length, nextSlide, prevSlide]);
 
   // 初期データの設定（サーバーから取得する前のフォールバック）
   useEffect(() => {
@@ -580,7 +481,10 @@ export default function Home() {
             <div 
               className="h-full flex relative overflow-hidden"
               style={{
-                backgroundImage: `url('/slider/slider${slide.id}.png')`,
+                backgroundImage: slide.id === 1 ? `url('https://i.gyazo.com/9f879fc11c65db9e9cfe536244c72546.jpg')` :
+                                 slide.id === 2 ? `url('https://i.gyazo.com/c1af2bfcb3a0004bb4c4b9c94b1a6dce.jpg')` :
+                                 slide.id === 3 ? `url('https://i.gyazo.com/839b6d5d9584120e81c4fb874ad780d8.jpg')` :
+                                 slide.id === 4 ? `url('https://i.gyazo.com/d23b15bc802aef4b645617eed52c2b51.jpg')` : '',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'
@@ -669,16 +573,17 @@ export default function Home() {
                   {/* ボタン */}
                   <div className="flex flex-col gap-3">
                     <Link href="/tutorial">
-                      <button className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-md text-white px-6 py-3 rounded-lg font-bold text-sm hover:from-green-600/90 hover:to-emerald-700/90 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30">
+                      <button className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-md text-white px-6 py-3 rounded-lg font-bold text-sm hover:from-green-600/90 hover:to-emerald-700/90 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30 cursor-pointer">
                         チュートリアルを見る
                       </button>
                     </Link>
-                    <button
-                      onClick={() => openSlideInfo(slide.id)}
-                      className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                    >
-                      詳しく見る
-                    </button>
+                    <Link href="/lp">
+                      <button
+                        className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer"
+                      >
+                        詳しく見る
+                      </button>
+                    </Link>
                   </div>
                 </div>
 
@@ -687,16 +592,17 @@ export default function Home() {
                   {/* ボタン */}
                   <div className="flex flex-col gap-3">
                     <Link href="/tutorial">
-                      <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30">
+                      <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30 cursor-pointer">
                         チュートリアルを見る
                       </button>
                     </Link>
-                    <button
-                      onClick={() => openSlideInfo(slide.id)}
-                      className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-base hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                    >
-                      詳しく見る
-                    </button>
+                    <Link href="/lp">
+                      <button
+                        className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-base hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer"
+                      >
+                        詳しく見る
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -708,7 +614,7 @@ export default function Home() {
         {/* モバイル版：従来通り中央部分に左右のボタンを配置 */}
         <button
           onClick={prevSlide}
-          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden"
+          className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden cursor-pointer"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
@@ -717,7 +623,7 @@ export default function Home() {
         
         <button
           onClick={nextSlide}
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden"
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden cursor-pointer"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -730,7 +636,7 @@ export default function Home() {
           {/* 前へボタン */}
           <button
             onClick={prevSlide}
-            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn"
+            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn cursor-pointer"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
@@ -743,7 +649,7 @@ export default function Home() {
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 border ${
+                className={`w-3 h-3 rounded-full transition-all duration-300 border cursor-pointer ${
                   index === currentSlide 
                     ? 'bg-white border-white scale-125' 
                     : 'bg-transparent border-white/60 hover:border-white hover:scale-110'
@@ -755,7 +661,7 @@ export default function Home() {
           {/* 次へボタン */}
           <button
             onClick={nextSlide}
-            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn"
+            className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn cursor-pointer"
           >
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -773,109 +679,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* 詳細情報ポップアップ */}
-      {selectedSlideInfo && (
-        <div 
-          className="fixed inset-0 bg-black/60 backdrop-blur-md flex items-center justify-center z-50 p-4"
-          onClick={closeSlideInfo}
-        >
-          <div 
-            className="bg-gradient-to-br from-white via-gray-50 to-gray-100 rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-y-auto shadow-2xl border border-gray-200/50"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {(() => {
-              const selectedSlide = slides.find(slide => slide.id === selectedSlideInfo);
-              if (!selectedSlide) return null;
-              
-              return (
-                <>
-                  {/* ヘッダー */}
-                  <div className="sticky top-0 bg-gradient-to-r from-[#5b8064] via-[#4a6b55] to-[#5b8064] text-white p-8 rounded-t-2xl shadow-lg z-10">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div className="text-white drop-shadow-lg">
-                          {selectedSlide.id === 1 && <CashIcon className="w-12 h-12" />}
-                          {selectedSlide.id === 2 && <MapIcon className="w-12 h-12" />}
-                          {selectedSlide.id === 3 && <HomeIcon className="w-12 h-12" />}
-                          {selectedSlide.id === 4 && <ShieldIcon className="w-12 h-12" />}
-                        </div>
-                        <div>
-                          <h2 className="text-3xl font-bold drop-shadow-sm">{selectedSlide.detailInfo.title}</h2>
-                          <p className="text-green-100 text-base mt-1">{selectedSlide.subtitle}</p>
-                        </div>
-                      </div>
-                      <button
-                        onClick={closeSlideInfo}
-                        className="text-green-100 hover:text-white transition-colors duration-200 p-2 hover:bg-white/10 rounded-full"
-                      >
-                        <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* コンテンツ */}
-                  <div className="p-8">
-                    {/* 概要 */}
-                    <div className="mb-8">
-                      <div className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm">
-                        <p className="text-gray-700 leading-relaxed text-lg">{selectedSlide.detailInfo.description}</p>
-                      </div>
-                    </div>
-
-                    {/* 特徴タグ */}
-                    <div className="flex flex-wrap gap-3 mb-8">
-                      {selectedSlide.features.map((feature, idx) => (
-                        <div key={idx} className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-shadow duration-200">
-                          {feature}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* 詳細セクション */}
-                    <div className="space-y-6">
-                      {selectedSlide.detailInfo.sections.map((section, idx) => (
-                        <div key={idx} className="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-gray-200/50 shadow-sm hover:shadow-md transition-shadow duration-200">
-                          <div className="flex items-center mb-4">
-                            <div className="w-1 h-8 bg-gradient-to-b from-[#5b8064] to-[#4a6b55] rounded-full mr-4"></div>
-                            <h3 className="text-xl font-bold text-gray-900">{section.title}</h3>
-                          </div>
-                          <p className="text-gray-700 leading-relaxed text-base">{section.content}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* アクションボタン */}
-                    <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                      <Link 
-                        href={
-                          selectedSlide.id === 1 ? "/economy" :
-                          selectedSlide.id === 2 ? "/tourism" :
-                          selectedSlide.id === 3 ? "/lifestyle" :
-                          "/lifestyle"
-                        }
-                        className="flex-1"
-                      >
-                        <button className="w-full bg-gradient-to-r from-[#5b8064] to-[#4a6b55] text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-[#4a6b55] hover:to-[#5b8064] transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl">
-                          詳細ページを見る
-                        </button>
-                      </Link>
-                      <button
-                        onClick={closeSlideInfo}
-                        className="flex-1 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-8 py-4 rounded-xl font-bold text-lg hover:from-gray-200 hover:to-gray-300 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-                      >
-                        閉じる
-                      </button>
-                    </div>
-                  </div>
-                </>
-              );
-            })()}
-          </div>
-        </div>
-      )}
 
       {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
@@ -1009,7 +812,7 @@ export default function Home() {
                             )}
                           </div>
                           <Link href={`/announcements/${event.id}`}>
-                            <button className="text-white hover:text-white/80 text-sm font-medium transition-colors duration-200 flex items-center space-x-1 bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30">
+                            <button className="text-white hover:text-white/80 text-sm font-medium transition-colors duration-200 flex items-center space-x-1 bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30 cursor-pointer">
                               <span>詳細を見る</span>
                               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
@@ -1057,7 +860,7 @@ export default function Home() {
                       key={tab.id}
                       ref={(el) => { tabRefs.current[tab.id] = el; }}
                       onClick={() => handleTabChange(tab.id)}
-                      className={`relative z-10 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 whitespace-nowrap ${
+                      className={`relative z-10 px-4 py-2 text-sm font-medium rounded-md transition-colors duration-300 whitespace-nowrap cursor-pointer ${
                         activeTab === tab.id 
                           ? 'text-white' 
                           : 'text-gray-600 hover:text-gray-900'
@@ -1072,7 +875,7 @@ export default function Home() {
                 <div className="sm:hidden w-full relative" ref={containerRef}>
                   <button
                     onClick={toggleDropdown}
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-base font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#5b8064] focus:border-[#5b8064] transition-all duration-200 flex items-center justify-between"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-base font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#5b8064] focus:border-[#5b8064] transition-all duration-200 flex items-center justify-between cursor-pointer"
                   >
                     <span>{tabs.find(tab => tab.id === activeTab)?.label || '選択してください'}</span>
                     <svg 
@@ -1097,7 +900,7 @@ export default function Home() {
                       <button
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
-                        className={`w-full px-4 py-3 text-left text-base font-medium transition-colors duration-200 ${
+                        className={`w-full px-4 py-3 text-left text-base font-medium transition-colors duration-200 cursor-pointer ${
                           activeTab === tab.id
                             ? 'bg-[#5b8064] text-white'
                             : 'text-gray-700 hover:bg-gray-50 hover:text-[#5b8064]'
@@ -1242,7 +1045,7 @@ export default function Home() {
             {/* もっと見るボタン */}
             <div className="p-6 border-t border-gray-200 text-center">
               <Link href="/announcements">
-                <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
+                <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
                   もっと見る
                   <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
@@ -1261,7 +1064,7 @@ export default function Home() {
               <div className="flex items-center justify-between mb-2">
                 <h2 className="text-2xl font-bold text-gray-900">パッチノート</h2>
                 <Link href="/patch-notes">
-                  <button className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-200 transition-all duration-200 border border-gray-300">
+                  <button className="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-md text-sm font-medium hover:bg-gray-200 transition-all duration-200 border border-gray-300 cursor-pointer">
                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
                     </svg>
@@ -1328,7 +1131,7 @@ export default function Home() {
                       <h3 className="text-xl font-bold text-gray-900">{latestPatchNote.date}</h3>
                     </div>
                     <Link href={`/patch-notes/${latestPatchNote.slug || latestPatchNote.id}`}>
-                      <button className="text-[#5b8064] hover:text-[#4a6b55] text-sm font-medium transition-colors duration-200">
+                      <button className="text-[#5b8064] hover:text-[#4a6b55] text-sm font-medium transition-colors duration-200 cursor-pointer">
                         詳細を見る →
                       </button>
                     </Link>
