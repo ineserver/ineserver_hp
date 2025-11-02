@@ -191,7 +191,7 @@ const Header = () => {
               {/* ハンバーガーメニュー */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100"
+                className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100 cursor-pointer"
                 aria-label="メニューを開く"
               >
                 <div className={`relative w-7 h-7 flex flex-col justify-center items-center transition-all duration-300 group`}>
@@ -366,7 +366,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('lifestyle')}
-                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
                     aria-label="生活・くらしのサブメニューを開く"
                   >
                     <ChevronDownIcon 
@@ -381,10 +381,10 @@ const Header = () => {
                       サーバールール
                     </div>
                     <div className="pl-2 space-y-1">
-                      <Link href="/lifestyle/housing-guide" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/lifestyle/building_restrictions" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         中心地の土地利用について
                       </Link>
-                      <Link href="/lifestyle/allowed-mods" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         許可MOD一覧
                       </Link>
                       <Link href="/lifestyle/prohibited-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
@@ -420,7 +420,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('economy')}
-                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
                     aria-label="経済のサブメニューを開く"
                   >
                     <ChevronDownIcon 
@@ -480,7 +480,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('entertainment')}
-                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
                     aria-label="娯楽のサブメニューを開く"
                   >
                     <ChevronDownIcon 
@@ -517,7 +517,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('tourism')}
-                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
                     aria-label="観光のサブメニューを開く"
                   >
                     <ChevronDownIcon 
@@ -546,7 +546,7 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={() => toggleSubMenu('transportation')}
-                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200"
+                    className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
                     aria-label="交通のサブメニューを開く"
                   >
                     <ChevronDownIcon 
@@ -644,7 +644,7 @@ const Header = () => {
       {showGoTop && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-[100] bg-[#5b8064] hover:bg-[#3b5c47] text-white rounded-full shadow-lg p-3 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b8064]"
+          className="fixed bottom-6 right-6 z-[100] bg-[#5b8064] hover:bg-[#3b5c47] text-white rounded-full shadow-lg p-3 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#5b8064] cursor-pointer"
           aria-label="トップへ戻る"
           style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}
         >

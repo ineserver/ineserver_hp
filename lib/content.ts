@@ -2,7 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import { parseFrontMatter } from './front-matter-parser'
 import { remark } from 'remark'
-import html from 'remark-html'
+import remarkGfm from 'remark-gfm'
+import remarkRehype from 'remark-rehype'
+import rehypeSlug from 'rehype-slug'
+import rehypeStringify from 'rehype-stringify'
 
 const contentDirectory = path.join(process.cwd(), 'content')
 
@@ -40,7 +43,10 @@ export async function getAnnouncementFiles(): Promise<ContentData[]> {
         
         // Markdownを HTMLに変換
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -80,7 +86,10 @@ export async function getAnnouncementData(id: string): Promise<ContentData | nul
 
   // Markdownを HTMLに変換
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -110,7 +119,10 @@ export async function getRulesFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -152,7 +164,10 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -164,15 +179,41 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
       })
   )
 
-  // 順序でソート
-  return allEconomyData.sort((a, b) => {
-    function hasOrder(obj: unknown): obj is { order?: number } {
-      return typeof obj === 'object' && obj !== null && 'order' in obj;
-    }
-    const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
-    const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
-    return orderA - orderB;
-  });
+  return allEconomyData
+    .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
+    .sort((a, b) => {
+      // typeの型ガード
+      function hasType(obj: unknown): obj is { type?: string } {
+        return typeof obj === 'object' && obj !== null && 'type' in obj;
+      }
+      // numberの型ガード
+      function hasNumber(obj: unknown): obj is { number?: number } {
+        return typeof obj === 'object' && obj !== null && 'number' in obj;
+      }
+      
+      const typeA = hasType(a) && typeof a.type === 'string' ? a.type : 'other';
+      const typeB = hasType(b) && typeof b.type === 'string' ? b.type : 'other';
+      
+      // typeの優先順位を定義
+      const typeOrder: Record<string, number> = {
+        'income': 1,
+        'expenditure': 2,
+        'other': 999
+      };
+      
+      const orderA = typeOrder[typeA] || 999;
+      const orderB = typeOrder[typeB] || 999;
+      
+      // まずtypeの優先順位で比較
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // 同じtypeの場合、numberで比較
+      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
+      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
+      return numberA - numberB;
+    });
 }
 
 // 生活・くらしのコンテンツを取得
@@ -195,7 +236,10 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -210,12 +254,37 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
   return allLifestyleData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      function hasOrder(obj: unknown): obj is { order?: number } {
-        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      // typeの型ガード
+      function hasType(obj: unknown): obj is { type?: string } {
+        return typeof obj === 'object' && obj !== null && 'type' in obj;
       }
-      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
-      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
-      return orderA - orderB;
+      // numberの型ガード
+      function hasNumber(obj: unknown): obj is { number?: number } {
+        return typeof obj === 'object' && obj !== null && 'number' in obj;
+      }
+      
+      const typeA = hasType(a) && typeof a.type === 'string' ? a.type : 'other';
+      const typeB = hasType(b) && typeof b.type === 'string' ? b.type : 'other';
+      
+      // typeの優先順位を定義
+      const typeOrder: Record<string, number> = {
+        'rule': 1,
+        'protection': 2,
+        'other': 999
+      };
+      
+      const orderA = typeOrder[typeA] || 999;
+      const orderB = typeOrder[typeB] || 999;
+      
+      // まずtypeの優先順位で比較
+      if (orderA !== orderB) {
+        return orderA - orderB;
+      }
+      
+      // 同じtypeの場合、numberで比較
+      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
+      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
+      return numberA - numberB;
     })
 }
 
@@ -239,7 +308,10 @@ export async function getTourismFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -254,12 +326,12 @@ export async function getTourismFiles(): Promise<ContentData[]> {
   return allTourismData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      function hasOrder(obj: unknown): obj is { order?: number } {
-        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      function hasNumber(obj: unknown): obj is { number?: number } {
+        return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
-      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
-      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
-      return orderA - orderB;
+      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
+      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
+      return numberA - numberB;
     })
 }
 
@@ -283,7 +355,10 @@ export async function getTransportationFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -298,12 +373,12 @@ export async function getTransportationFiles(): Promise<ContentData[]> {
   return allTransportationData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      function hasOrder(obj: unknown): obj is { order?: number } {
-        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      function hasNumber(obj: unknown): obj is { number?: number } {
+        return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
-      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
-      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
-      return orderA - orderB;
+      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
+      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
+      return numberA - numberB;
     })
 }
 
@@ -327,7 +402,10 @@ export async function getEntertainmentFiles(): Promise<ContentData[]> {
         const matterResult = parseFrontMatter(fileContents)
         
         const processedContent = await remark()
-          .use(html)
+          .use(remarkGfm)
+          .use(remarkRehype)
+          .use(rehypeSlug)
+          .use(rehypeStringify)
           .process(matterResult.content)
         const contentHtml = processedContent.toString()
 
@@ -342,12 +420,12 @@ export async function getEntertainmentFiles(): Promise<ContentData[]> {
   return allEntertainmentData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      function hasOrder(obj: unknown): obj is { order?: number } {
-        return typeof obj === 'object' && obj !== null && 'order' in obj;
+      function hasNumber(obj: unknown): obj is { number?: number } {
+        return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
-      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : 0;
-      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : 0;
-      return orderA - orderB;
+      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
+      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
+      return numberA - numberB;
     });
 }
 
@@ -363,7 +441,10 @@ export async function getLifestyleData(id: string): Promise<ContentData | null> 
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -385,7 +466,10 @@ export async function getTourismData(id: string): Promise<ContentData | null> {
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -407,7 +491,10 @@ export async function getTransportationData(id: string): Promise<ContentData | n
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -429,7 +516,10 @@ export async function getEconomyData(id: string): Promise<ContentData | null> {
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 
@@ -451,7 +541,10 @@ export async function getEntertainmentData(id: string): Promise<ContentData | nu
   const matterResult = parseFrontMatter(fileContents)
   
   const processedContent = await remark()
-    .use(html)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeStringify)
     .process(matterResult.content)
   const contentHtml = processedContent.toString()
 

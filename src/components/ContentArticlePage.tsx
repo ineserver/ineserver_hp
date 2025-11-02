@@ -32,24 +32,18 @@ export default function ContentArticlePage({ config, content, showDate = false, 
     const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
     
     const items: TocItem[] = [];
-    headings.forEach((heading, index) => {
+    headings.forEach((heading) => {
       const level = parseInt(heading.tagName.substring(1));
       const text = heading.textContent || '';
-      const id = `heading-${index}`;
+      // rehype-slugで自動生成されたIDを使用
+      const id = heading.id || '';
       
-      // 元のHTMLにIDを追加（実際のDOMには影響しない）
-      heading.id = id;
-      
-      items.push({ id, text, level });
+      if (id) {
+        items.push({ id, text, level });
+      }
     });
     
     setTocItems(items);
-
-    // 実際のDOMにIDを追加
-    const actualHeadings = document.querySelectorAll('.markdown-content h1, .markdown-content h2, .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6');
-    actualHeadings.forEach((heading, index) => {
-      heading.id = `heading-${index}`;
-    });
   }, [content, showToc]);
 
   if (!content) {
@@ -78,7 +72,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
       <Header />
       <Breadcrumb items={breadcrumbItems} />
       
-      <article className="max-w-4xl mx-auto px-6 py-8">
+      <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center justify-between mb-6">
@@ -114,7 +108,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           <nav className="mb-12 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
             <button
               onClick={() => setIsTocOpen(!isTocOpen)}
-              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200"
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
               aria-expanded={isTocOpen}
               aria-controls="table-of-contents"
             >
