@@ -8,6 +8,7 @@ export interface ContentItem {
   date: string;
   category?: string;
   type?: string;
+  externalLink?: string;
 }
 
 export interface ContentPageConfig {
