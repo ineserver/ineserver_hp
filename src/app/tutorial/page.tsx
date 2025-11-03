@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Header from '@/components/Header';
-import Breadcrumb from '@/components/Breadcrumb';
 import RecommendedVersion from '@/components/RecommendedVersion';
 import Link from 'next/link';
 
@@ -20,11 +19,6 @@ export default function TutorialPage() {
       console.error('コピーに失敗しました:', err);
     }
   };
-
-  const breadcrumbItems = [
-    { label: 'いねさば', href: '/' },
-    { label: 'チュートリアル' }
-  ];
 
   const steps = [
     {
@@ -711,7 +705,6 @@ export default function TutorialPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      <Breadcrumb items={breadcrumbItems} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* プログレスバー */}
