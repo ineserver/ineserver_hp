@@ -2,7 +2,7 @@
 title: 中心地の土地利用について
 published: true
 type: rule
-number: 2
+number: 3
 ---
 # 中心地ってどこ？
 

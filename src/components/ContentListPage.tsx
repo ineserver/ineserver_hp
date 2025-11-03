@@ -37,19 +37,43 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
       }, {} as Record<string, ContentItem[]>)
     : { all: content };
 
-  const renderContentItem = (item: ContentItem) => (
-    <div key={item.id} className="py-2 pl-4">
-      <Link
-        href={`${config.basePath}/${item.id}`}
-        className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
-      >
+  const renderContentItem = (item: ContentItem) => {
+    const linkContent = (
+      <>
         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
         <span className="text-lg font-medium">{item.title}</span>
-      </Link>
-    </div>
-  );
+        {item.externalLink && (
+          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        )}
+      </>
+    );
+
+    return (
+      <div key={item.id} className="py-2 pl-0">
+        {item.externalLink ? (
+          <a
+            href={item.externalLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
+          >
+            {linkContent}
+          </a>
+        ) : (
+          <Link
+            href={`${config.basePath}/${item.id}`}
+            className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
+          >
+            {linkContent}
+          </Link>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white">

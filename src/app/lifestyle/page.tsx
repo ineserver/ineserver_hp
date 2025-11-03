@@ -35,6 +35,7 @@ export default async function LifestylePage() {
     content: item.contentHtml || '',
     category: item.category,
     type: item.type,
+    externalLink: item.externalLink as string | undefined,
   }));
   
   return <ContentListPage config={config} content={content} />;

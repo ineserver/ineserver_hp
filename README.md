@@ -17,6 +17,22 @@ Minecraftサーバー「いねさば」の公式ホームページです。Next.
 - 作業中はdevブランチにpushしてください。
 
 ## 記事を書く時に読んでください
+
+### 共通のMaekdownの書き方
+
+ファイル1行目からこれを記述してください。
+
+```
+---
+title: # タイトル（必須）
+published: true # true/false 公開するかどうか（必須）
+type: # 以下のtypeを確認（必須）
+number: # type内何番目に表示するか。数字が若いほうが上（必須）
+externalLink: <URL> # ここにURLがあるとそこへの直リンクとなる。（必要な場合のみ記載）
+---
+```
+※ ファイル名＝URL名になります。スペースはアンダーバーで代用をお願いします。
+
 ### カテゴリ
 #### お知らせ(/announcements)
 |type|どのカテゴリに表示されるか|
@@ -39,6 +55,7 @@ Minecraftサーバー「いねさば」の公式ホームページです。Next.
 イベント情報を乗っけるときはannouncementsフォルダ内にて
 ```
 type: pickup
+# 以下を上のテンプレに追加してください
 eventStartDate: yyyy-mm-ddThh:mm:ss+09:00 # 開始時間
 eventEndDate: yyyy-mm-ddThh:mm:ss+09:00 #終了時間
 description: # イベントの概要

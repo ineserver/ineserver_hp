@@ -238,15 +238,15 @@ const Header = () => {
                   <div className="mb-4">
                     <h4 className="text-gray-800 font-semibold mb-2 flex items-center">
                       <FileTextIcon className="w-4 h-4 mr-2 text-[#5b8064]" />
-                      サーバールール
+                      <Link href="/lifestyle/rule" className="hover:text-[#5b8064]">サーバールール</Link>
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/building_restrictions" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧
+                      <li><Link href="/lifestyle/building_restrictions" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
+                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E8%A8%B1%E5%8F%AFMOD%E4%B8%80%E8%A6%A7" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧
                       <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg></Link></li>
-                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム
+                      <li><Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム
                       <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg></Link></li>
@@ -258,8 +258,8 @@ const Header = () => {
                       保護
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/land-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
-                      <li><Link href="/lifestyle/block-protection" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
+                      <li><Link href="/lifestyle/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
+                      <li><Link href="/lifestyle/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -281,9 +281,9 @@ const Header = () => {
                       ineを貯める
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/jobs" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
-                      <li><Link href="/economy/item-market" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/shops" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />就職</Link></li>
+                      <li><Link href="/economy/item-market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/shops" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                   <div>
@@ -292,10 +292,10 @@ const Header = () => {
                       ineを使う
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/economy/item-market-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
-                      <li><Link href="/economy/land-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
-                      <li><Link href="/economy/command-purchase" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
-                      <li><Link href="/economy/shop-usage" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/item-market-usage" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
+                      <li><Link href="/economy/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
+                      <li><Link href="/economy/command-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                      <li><Link href="/economy/shop-usage" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -312,9 +312,9 @@ const Header = () => {
               <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="p-4">
                   <ul className="space-y-2">
-                    <li><Link href="/entertainment/arena" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
-                    <li><Link href="/entertainment/additional-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
-                    <li><Link href="/entertainment/hidden-items" className="text-gray-600 hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
+                    <li><Link href="/entertainment/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
+                    <li><Link href="/entertainment/additional-items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />追加アイテム一覧</Link></li>
+                    <li><Link href="/entertainment/hidden-items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム</Link></li>
                   </ul>
                 </div>
               </div>
@@ -396,7 +396,7 @@ const Header = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </Link>
-                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="flex items-center py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="https://github.com/ineserver/ineserver-Public/wiki/%E6%B5%81%E9%80%9A%E7%A6%81%E6%AD%A2%E3%82%A2%E3%82%A4%E3%83%86%E3%83%A0%E4%B8%80%E8%A6%A7" className="flex items-center py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         流通禁止アイテム
                         <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -409,10 +409,10 @@ const Header = () => {
                       保護
                     </div>
                     <div className="pl-4 space-y-1">
-                      <Link href="/lifestyle/land-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/lifestyle/land-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         土地の保護
                       </Link>
-                      <Link href="/lifestyle/block-protection" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/lifestyle/block-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         ブロック保護
                       </Link>
                     </div>
@@ -447,13 +447,13 @@ const Header = () => {
                       ineを貯める
                     </div>
                     <div className="pl-2 space-y-1">
-                      <Link href="/economy/jobs" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/jobs" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         就職
                       </Link>
-                      <Link href="/economy/item-market" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/item-market" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         アイテム市場取引
                       </Link>
-                      <Link href="/economy/shops" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/shops" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         お店を作る・お店で買う
                       </Link>
                     </div>
@@ -463,16 +463,16 @@ const Header = () => {
                       ineを使う
                     </div>
                     <div className="pl-2 space-y-1">
-                      <Link href="/economy/item-market-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/item-market-usage" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         アイテム市場取引
                       </Link>
-                      <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         土地の購入
                       </Link>
-                      <Link href="/economy/command-purchase" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/command-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         コマンドの購入
                       </Link>
-                      <Link href="/economy/shop-usage" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/economy/shop-usage" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         お店を作る・お店で買う
                       </Link>
                     </div>
@@ -503,13 +503,13 @@ const Header = () => {
                 {openSubMenu === 'entertainment' && (
                   <div className="ml-3 mt-1 mb-3 bg-gray-50 rounded-lg p-3">
                     <div className="pl-2 space-y-1">
-                      <Link href="/entertainment/arena" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/entertainment/arena" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         アリーナ
                       </Link>
-                      <Link href="/entertainment/additional-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/entertainment/additional-items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         追加アイテム一覧
                       </Link>
-                      <Link href="/entertainment/hidden-items" className="block py-2 px-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                      <Link href="/entertainment/hidden-items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                         隠しアイテム
                       </Link>
                     </div>
@@ -584,7 +584,7 @@ const Header = () => {
                   href="https://minecraft.jp/servers/67de4f4ce22bc84120000007" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
+                  className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -596,7 +596,7 @@ const Header = () => {
                 </a>
                 <a 
                   href="https://stats.uptimerobot.com/Rw0L1innjO" 
-                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
+                  className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -609,7 +609,7 @@ const Header = () => {
                 </a>
                 <a 
                   href="https://market.1necat.net" 
-                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
+                  className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -623,7 +623,7 @@ const Header = () => {
                   href="https://map.1necat.net" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center px-3 py-3 text-sm text-gray-600 hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
+                  className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                 >
                   <svg className="w-4 h-4 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
