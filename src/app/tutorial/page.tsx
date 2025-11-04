@@ -41,7 +41,7 @@ export default function TutorialPage() {
           <p>このチュートリアルでは、<b>いねさばの基本的な遊び方やサーバールール</b>について説明します。</p>
           <p>はじめましての方や、お久しぶりの方向けに、<b>サーバーへのログイン方法からログイン後の流れ・基本的な遊び方まで</b>をわかりやすくご紹介します！</p>
           <p>「この部分だけ知りたい」という方は上部にある各セクション番号をクリックしてジャンプしてください。</p>
-          <nav className="bg-gray-50 border border-gray-200 rounded-lg">
+          <nav className="bg-gray-100 rounded-lg">
             <p className="text-2xl font-bold text-gray-800 px-4 pt-4 pb-0">いねさばではどんなことができるの？</p>
             <p className="px-4">いねさばは<b>「経済 + 都市開発 + 生活サーバー」</b>です！</p>
             <p className="px-4">お金を使ってのプレイヤーとの取引はもちろん、多様な種類のある「職業」、今の需要と供給のバランスがリアルタイムでわかる「物価と取引市場」、中心地では「地価」が設定されているなど、多様な追加要素を盛り込んでいます。</p>
@@ -64,15 +64,12 @@ export default function TutorialPage() {
         <div className="space-y-8">
           <div className="bg-red-50 rounded-xl p-6 border border-red-200">
             <div className="flex items-start space-x-4 mb-2">
-                <svg className="w-8 h-8 text-red-700 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                </svg>
               <div>
-                <h3 className="text-xl font-bold text-red-700">ルール・マナーを守って楽しくプレイしましょう</h3>
+                <h3 className="text-xl font-bold text-red-700">ルールについて</h3>
               </div>
             </div>
-            <p className="leading-relaxed">当サーバーにも例に漏れず、長いルールや利用規約があります。しかし、そんな長い文章を読むのは正直大変だと思います。</p>
-            <p className="leading-relaxed font-bold">そのため、他のサーバーに無いようなマイナーなルールや特に守ってほしいことをピックアップしました！</p>
+            <p className="leading-relaxed">当サーバーも例に漏れず、長いルールや利用規約があります。しかし、そんな長い文章を読むのは正直大変だと思います。</p>
+            <p className="leading-relaxed font-bold">そのため、他のサーバーに無いようなマイナーなルールや特に守ってほしいことを4つピックアップしました！</p>
           </div>
 
           <div className="space-y-8 px-4">
@@ -81,7 +78,7 @@ export default function TutorialPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                   </svg>
                 <div className="flex-1">
-                  <h5 className="text-xl font-bold mb-2">マナーを守って楽しくプレイ</h5>
+                  <h5 className="text-xl font-bold mb-2">マナーを守ろう</h5>
                   <p>
                     他のプレイヤーへの迷惑行為、チャットでの不適切な発言・スパム行為、他プレイヤーの建築物を無断で破壊・改変することは禁止です。
                   </p>
@@ -93,7 +90,7 @@ export default function TutorialPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
                   </svg>
                 <div className="flex-1">
-                  <h5 className="text-xl font-bold mb-2">許可MOD・クライアントについて</h5>
+                  <h5 className="text-xl font-bold mb-2">MOD・クライアントについて</h5>
                   <p className="mb-2">
                     ゲームバランスを変えるものでなければ、MODやクライアントの利用は可能です。許可されているMOD・クライアントについては、以下のボタンから許可MOD一覧をご確認ください。
                   </p>
@@ -117,7 +114,7 @@ export default function TutorialPage() {
                     <circle cx="12" cy="12" r="11" strokeWidth={2} /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 6l12 12M6 18L18 6" />
                   </svg>
                 <div className="flex-1">
-                  <h5 className="text-xl font-bold mb-2">トラップタワーの禁止</h5>
+                  <h5 className="text-xl font-bold mb-2">トラップタワーの禁止・自動収穫機の制限があります</h5>
                   <p>
                     トラップタワー全般の作成及び使用は禁止です。ただし、自動畑などは<b>一つのスイッチで停止できる機構がある場合に限り、ログアウト時に作動を停止させれば</b>作成可能です。
                   </p>
@@ -129,7 +126,7 @@ export default function TutorialPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
                 <div className="flex-1">
-                  <h5 className="text-xl font-bold mb-2">建築制限区域について</h5>
+                  <h5 className="text-xl font-bold mb-2">建築制限区域があります</h5>
                   <p className="mb-2">
                     環状1号線より内側及び白椿駅付近では、土地を購入する必要があります。制限区域など、詳しいルールについては以下のボタンからご確認ください。
                   </p>
@@ -139,7 +136,7 @@ export default function TutorialPage() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    詳細なルールを確認
+                    中心地の土地利用について
                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -148,26 +145,34 @@ export default function TutorialPage() {
               </div>
             </div>
 
-          <div className="bg-yellow-50 rounded-xl p-6 border border-yellow-200">
-            <div className="flex items-center mb-3">
-              <svg className="w-6 h-6 text-yellow-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <h4 className="text-lg font-semibold text-yellow-900">詳細なルールについて</h4>
-            </div>
-            <p className="text-yellow-800 mb-4">
-              上記は要点のみです。より詳細なルールについては、以下のリンクから確認できます。
+          <div className="bg-gray-100 rounded-xl p-6">
+            <p className="mb-4">
+              なお、<b>サーバーにログインした時点で、下記のサーバールール及び利用規約に同意したものとみなします。</b>
+            </p>
+            <p className="mb-4">
+              実際の処罰は以下のルールに則って行われますのでご注意ください。
             </p>
             <Link 
               href="/lifestyle/rule"
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white rounded-lg transition-all duration-200 font-medium"
+              className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              サーバールール
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
-              詳細なサーバールールを見る
+            </Link>
+            <Link 
+              href="/lifestyle/terms_of_service"
+              className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium ml-4"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              利用規約
+              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </Link>
           </div>
         </div>
