@@ -180,63 +180,22 @@ export default function TutorialPage() {
     },
     {
       id: 2,
-      title: "ログイン方法",
-      subtitle: "いねさばに接続してみましょう",
+      title: "ログインしてみよう",
       content: (
         <div className="space-y-6">
-          {/* 画像配置エリア */}
-          <div className="bg-gray-50 rounded-xl p-8 border-2 border-dashed border-gray-300 text-center">
-            <div className="space-y-2">
-              <svg className="w-16 h-16 mx-auto text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <p className="text-sm text-gray-500">Minecraftランチャーのスクリーンショットを配置予定</p>
-            </div>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-blue-500">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">サーバーに接続しましょう！</h3>
-              </div>
-            </div>
-            <p className="text-gray-700 leading-relaxed">
-              Minecraftを起動して、いねさばに接続してみましょう。
-              以下の手順に従って進めてください。
-            </p>
-          </div>
-
+        <p>それでは、早速いねさばにログインしてみましょう！</p>
           <div className="space-y-6">
-            {/* ステップ1: 必要環境 */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center mb-4">
-                <span className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">1</span>
-                <h4 className="text-lg font-semibold text-gray-900">必要な環境を確認</h4>
-              </div>
-              <div className="ml-11">
-                {/* 対応エディション情報 */}
-                <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 mb-4">
-                  <h5 className="font-semibold text-blue-900 mb-2 flex items-center">
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    対応エディション
-                  </h5>
-                  <p className="text-blue-800 text-sm"><b>Java Edition のみ</b></p>
-                  <p className="text-blue-700 text-xs mt-1">統合版（Bedrock Edition）は接続できません</p>
+                <div className="flex items-baseline mb-4">
+                  <div className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">1</div>
+                  <p className="text-lg font-semibold"><b>Java版からの接続のみ対応しています。</b>BE版（統合版）からはアクセス出来ません。</p>
                 </div>
-                
-                {/* 推奨バージョン表示コンポーネント */}
+                <div className="flex items-baseline mb-4">
+                  <div className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">2</div>
+                  <p className="text-lg font-semibold">対応バージョンは以下のとおりです</p>
+                </div>
                 <div className="mb-4">
                   <RecommendedVersion />
                 </div>
-              </div>
-            </div>
 
             {/* ステップ2: サーバー追加 */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
