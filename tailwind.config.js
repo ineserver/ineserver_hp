@@ -1,4 +1,4 @@
-import { Config } from 'tailwindcss';
+import { Config } from 'tailwindcss'
 
 const config = {
   content: [
@@ -11,17 +11,16 @@ const config = {
       colors: {
         background: 'var(--color-background)',
         foreground: 'var(--color-foreground)',
-        primary: {
-          DEFAULT: '#5b8064',
-          hover: '#4a6b55',
+        text: {
+          DEFAULT: 'var(--color-text-primary)',
         },
-        gray: {
-          900: '#333333',
+        primary: {
+          DEFAULT: 'var(--color-accent)',
+          hover: 'var(--color-accent-hover)',
         },
       },
       fontFamily: {
-        sans: ['var(--font-noto-sans-jp)', 'system-ui', 'sans-serif'],
-        mono: ['var(--font-mono)', 'monospace'],
+        DEFAULT: 'var(--font-family)',
       },
     },
   },

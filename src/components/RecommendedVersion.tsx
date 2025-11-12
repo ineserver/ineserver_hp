@@ -45,7 +45,7 @@ const RecommendedVersion: React.FC = () => {
   const supportedRange = serverStatus?.version || (error ? '取得に失敗しました' : '取得中...');
   
   return (
-      <div className="ml-13 flex flex-col md:flex-row gap-3">
+      <div className="ml-14 flex flex-col md:flex-row gap-3">
         {/* 推奨バージョン（環境変数で設定） */}
         <div className="bg-green-50 rounded-lg p-3 border border-green-200 flex-1 min-w-0 md:w-1/2">
           <div className="flex items-center mb-1">

@@ -184,11 +184,13 @@ export default function TutorialPage() {
       content: (
         <div className="space-y-6">
         <p>それでは、早速いねさばにログインしてみましょう！</p>
+
           <div className="space-y-6">
                 <div className="flex items-baseline mb-4">
                   <div className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">1</div>
                   <p className="text-lg font-semibold"><b>Java版からの接続のみ対応しています。</b>BE版（統合版）からはアクセス出来ません。</p>
                 </div>
+                
                 <div className="flex items-baseline mb-4">
                   <div className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">2</div>
                   <p className="text-lg font-semibold">対応バージョンは以下のとおりです</p>
@@ -197,15 +199,15 @@ export default function TutorialPage() {
                   <RecommendedVersion />
                 </div>
 
-            {/* ステップ2: サーバー追加 */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center mb-4">
-                <span className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">2</span>
-                <h4 className="text-lg font-semibold text-gray-900">サーバーをリストに追加</h4>
+              <div className="flex items-baseline mb-1">
+                <span className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">3</span>
+                <h4 className="text-lg font-semibold">サーバーを追加</h4>
               </div>
-              <div className="ml-11 space-y-4">
-                <div className="space-y-3">
-                  <p className="text-gray-700">Minecraftを起動し、「マルチプレイ」を選択してください。</p>
+                <div className="ml-14">
+                  <div className="space-y-1 mb-4">
+                    <p>Minecraftを起動し、「マルチプレイ」を選択、右下にある「サーバーを追加」をクリックしてください。</p>
+                    <p>以下の情報を該当箇所に入力してください。</p>
+                  </div>
                   <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
                     <h5 className="font-semibold text-gray-900 mb-2 flex items-center">
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,8 +250,6 @@ export default function TutorialPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
             {/* ステップ3: 接続 */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
