@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/npm/yakuhanjp@4.1.1/dist/css/yakuhanjp.css");
 
 :root {
   --background: #ffffff;
@@ -7,7 +8,7 @@
   --color-accent: #5b8064;
   --radius-card: 0.75rem;
   --space-section-y: 2.5rem;
-  --font-family: "Noto Sans", "YakuHanJPs", -apple-system, "Noto Sans JP", sans-serif;
+  --font-family: "Noto Sans", -apple-system, "YakuHanJPs", "Noto Sans JP", sans-serif;
   --font-family-code: ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
   --font-size-base: 1rem;
   --font-weight-base: 500;
