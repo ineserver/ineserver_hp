@@ -28,7 +28,7 @@ export default function TutorialPage() {
         <div className="markdown-content">
           <div className="rounded-2xl overflow-hidden mb-6">
             <Image 
-              src="https://i.gyazo.com/a4b5d73c97c288bff8c5c86c3d8f859a.jpg" 
+              src="https://img.1necat.net/a4b5d73c97c288bff8c5c86c3d8f859a.jpg" 
               alt="いねさばへようこそ" 
               className="w-full h-auto object-cover"
               width={1200}
@@ -205,95 +205,74 @@ export default function TutorialPage() {
               </div>
                 <div className="ml-14">
                   <div className="space-y-1 mb-4">
-                    <p>Minecraftを起動し、「マルチプレイ」を選択、右下にある「サーバーを追加」をクリックしてください。</p>
-                    <p>以下の情報を該当箇所に入力してください。</p>
-                  </div>
-                  <div className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
-                    <h5 className="font-semibold text-gray-900 mb-2 flex items-center">
-                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      サーバー情報
-                    </h5>
-                    <div className="space-y-2">
-                      <div className="flex items-center">
-                        <span className="text-gray-600 text-sm w-24">サーバー名:</span>
-                        <code className="bg-gray-200 px-2 py-1 rounded text-sm font-mono">いねさば</code>
-                        <span className="text-gray-500 text-xs ml-2">（任意の名前でOK）</span>
-                      </div>
-                      <div className="flex items-center">
-                        <span className="text-gray-600 text-sm w-24">アドレス:</span>
-                        <code className="bg-yellow-200 px-2 py-1 rounded text-sm font-mono font-bold">1necat.net</code>
-                        <button 
-                          onClick={handleCopyAddress}
-                          className="ml-2 px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors flex items-center cursor-pointer"
-                        >
-                          <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                          </svg>
-                          コピー
-                        </button>
-                      </div>
-                      <div className="flex items-start pt-2 border-t border-gray-200">
-                        <span className="text-gray-600 text-sm w-24 mt-1">リソースパック:</span>
-                        <div className="flex-1">
-                          <div className="flex items-center mb-1">
-                            <code className="bg-green-200 px-2 py-1 rounded text-sm font-mono font-bold text-green-800">有効</code>
-                            <span className="text-red-600 text-xs ml-2 font-medium">（必ず有効にしてください）</span>
-                          </div>
-                          <p className="text-gray-600 text-xs">
-                            いねさばオリジナルのアイテムやブロックが追加されます
-                          </p>
-                        </div>
-                      </div>
+                    <p>Minecraftを起動し、「マルチプレイ」を選択してください。</p>
+                    <div className="rounded-2xl overflow-hidden mb-6">
+                      <Image 
+                        src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.40.png" 
+                        alt="Minecraftメイン画面" 
+                        className="w-full h-auto object-cover"
+                        width={1200}
+                        height={675}
+                      />
+                    </div>
+                    <p>右下にある「サーバーを追加」をクリックしてください。</p>
+                    <div className="rounded-2xl overflow-hidden mb-6">
+                    <Image 
+                        src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.48.png" 
+                        alt="Minecraftマルチ選択画面" 
+                        className="w-full h-auto object-cover"
+                        width={1200}
+                        height={675}
+                      />
+                    </div>
+                    <p>サーバー名にわかりやすい名前（例：いねさば）を、<b className="text-red-600">サーバーアドレスに「1necat.net」</b>を、<b className="text-red-600">リソースパックは「有効」</b>に設定してください。</p>
+                    <div className="rounded-2xl overflow-hidden mb-6">
+                    <Image 
+                        src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2016.00.01.png" 
+                        alt="Minecraftマルチプレイ追加画面" 
+                        className="w-full h-auto object-cover"
+                        width={1200}
+                        height={675}
+                      />
                     </div>
                   </div>
                 </div>
 
-            {/* ステップ3: 接続 */}
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <div className="flex items-center mb-4">
-                <span className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">3</span>
-                <h4 className="text-lg font-semibold text-gray-900">サーバーに接続</h4>
+              <div className="flex items-baseline mb-1">
+                <span className="w-10 h-10 flex-shrink-0 bg-[#5b8064] rounded-full flex items-center justify-center text-white text-sm font-bold mr-3">4</span>
+                <h4 className="text-lg font-semibold">サーバーに接続</h4>
               </div>
-              <div className="ml-11 space-y-4">
-                <p className="text-gray-700">
+              <div className="ml-14">
+                <p className="space-y-1 mb-4">
                   サーバーリストに追加できたら、ダブルクリックまたは「サーバーに接続」ボタンでログインしてみましょう！
                 </p>
               </div>
-            </div>
           </div>
 
-          <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
-            <div className="flex items-center mb-3">
-              <svg className="w-6 h-6 text-blue-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <h4 className="text-lg font-semibold text-blue-900">初回ログイン時の流れ</h4>
+          <div className="markdown-content">
+            <h1>いねさばに接続できました！</h1>
+            <p>続いてメインのサーバーである、経済サーバーに移動してみましょう！</p>
+            <h2>最初にログインしたサーバーは「ロビーサーバー」です</h2>
+            <p>ロビーサーバーは、経済サーバーがメンテナンス時などの待機場になります。</p>
+            <div className="rounded-2xl overflow-hidden mb-6">
+              <Image 
+                src="https://img.1necat.net/2025-11-19_14.46.59.png" 
+                alt="いねさばロビー" 
+                className="w-full h-auto object-cover"
+                width={1200}
+                height={675}
+              />
             </div>
-            <div className="space-y-3 text-blue-800">
-              <div className="flex items-start">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3 mt-0.5 bg-blue-500">1</span>
-                <div>
-                  <p className="font-medium">ロビーサーバーに接続</p>
-                  <p className="text-sm text-blue-700">初回ログイン時は「ロビーサーバー」に接続されます</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3 mt-0.5 bg-blue-500">2</span>
-                <div>
-                  <p className="font-medium">経済サーバーへ移動</p>
-                  <p className="text-sm text-blue-700">真っ直ぐ進むとメインの「経済サーバー」に接続できます</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <span className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3 mt-0.5 bg-blue-500">3</span>
-                <div>
-                  <p className="font-medium">初期資金をゲット！</p>
-                  <p className="text-sm text-blue-700">新規プレイヤーには2000ineがプレゼントされます</p>
-                </div>
-              </div>
+            <h2>目の前の水に入ると「経済サーバー」に移動できます！</h2>
+            <p>いねさばのメインのサーバーはこの「経済サーバー」です。これから解説していくものはすべて「経済サーバー」内のものになります。</p>
+            <div className="rounded-2xl overflow-hidden mb-6">
+              <Image 
+                src="https://img.1necat.net/2025-11-19_23.48.55.png" 
+                alt="いねさば経済サーバー" 
+                className="w-full h-auto object-cover"
+                width={1200}
+                height={675}
+              />
             </div>
           </div>
         </div>
@@ -302,39 +281,20 @@ export default function TutorialPage() {
     {
       id: 3,
       title: "いねさばへようこそ！",
-      subtitle: "無事にログインできました！これからやりたいことを選んでみましょう",
       content: (
         <div className="space-y-6">
-          {/* 画像配置エリア */}
-          <div className="bg-gradient-to-r from-green-50 via-emerald-50 to-teal-50 rounded-2xl p-8 border-2 border-dashed border-green-300 text-center mb-6">
-            <div className="space-y-3">
-              <div className="w-20 h-20 rounded-2xl mx-auto flex items-center justify-center bg-gradient-to-br from-green-500 to-emerald-600">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-700">いねさばの街並み</h3>
-              <p className="text-sm font-medium text-green-600">プレイヤーが作った美しい建築画像をここに配置予定</p>
-            </div>
-          </div>
+          {/* 画像配置 */}
 
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6 border border-green-200">
-            <div className="flex items-center mb-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center mr-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                </svg>
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-gray-900">おめでとうございます！</h3>
-              </div>
-            </div>
-            <p className="text-gray-700 leading-relaxed">
-              無事にいねさばに到着しました！ここからは、あなたがやりたいことに合わせて進めることができます。
-              以下の3つの選択肢から、興味のあるものを選んでみてください。
-            </p>
+          <div className="markdown-content">
+            <h1>チュートリアルクリアおめでとうございます！</h1>
+            <p> 無事にいねさばに到着しました！ここからは、自由に行動をすることが出来ます！</p>
+            <p> ...と、「いきなり言われても、、、」だと思いますので、「知っておくと便利なこと」と「やっておいた方が良いこと」をご紹介します！</p>
+            <h1>まずは、観光から</h1>
+            <p>いねさばには（まだ少ないですが）観光スポットが幾つかあります！目の前の「白椿駅」から電車の旅に出るのも良し、スポーン地点周辺を散策するも良し、気になる場所を訪れてみましょう！</p>
+            <p>いねさばではサイト上で確認できるマップを用意しています。→　
+              <Link className="inline-flex items-center" href="https://map.1necat.net"target="_blank" rel="noopener noreferrer">マップはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link></p>
           </div>
-
           <h4 className="text-xl font-bold text-gray-900 text-center mb-6">次にやりたいことを選んでください</h4>
 
           <div className="grid grid-cols-1 gap-6">
@@ -808,18 +768,6 @@ export default function TutorialPage() {
           </div>
         </div>
       </div>
-      
-      {/* コピー完了トースト */}
-      {showCopyToast && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 transition-all duration-300">
-          <div className="bg-gradient-to-r from-[#5b8064] to-[#4a6b55] text-white px-6 py-3 rounded-lg flex items-center">
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            クリップボードにコピーしました
-          </div>
-        </div>
-      )}
     </div>
   );
 }

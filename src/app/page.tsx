@@ -481,10 +481,10 @@ export default function Home() {
             <div 
               className="h-full flex relative overflow-hidden"
               style={{
-                backgroundImage: slide.id === 1 ? `url('https://i.gyazo.com/9f879fc11c65db9e9cfe536244c72546.jpg')` :
-                                 slide.id === 2 ? `url('https://i.gyazo.com/c1af2bfcb3a0004bb4c4b9c94b1a6dce.jpg')` :
-                                 slide.id === 3 ? `url('https://i.gyazo.com/839b6d5d9584120e81c4fb874ad780d8.jpg')` :
-                                 slide.id === 4 ? `url('https://i.gyazo.com/d23b15bc802aef4b645617eed52c2b51.jpg')` : '',
+                backgroundImage: slide.id === 1 ? `url('https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg')` :
+                                 slide.id === 2 ? `url('https://img.1necat.net/c1af2bfcb3a0004bb4c4b9c94b1a6dce.jpg')` :
+                                 slide.id === 3 ? `url('https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg')` :
+                                 slide.id === 4 ? `url('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg')` : '',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat'
