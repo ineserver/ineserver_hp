@@ -378,3 +378,11 @@ html, body {
     margin-right: -0.5rem;
   }
 }
+
+/* 色指定 */
+.text-red{
+  color: #bf5550;
+}
+.text-red-accent{
+  color: #d64541;
+}

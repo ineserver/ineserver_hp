@@ -5,20 +5,10 @@ import Image from 'next/image';
 import Header from '@/components/Header';
 import RecommendedVersion from '@/components/RecommendedVersion';
 import Link from 'next/link';
+import CommandCode from '@/components/CommandCode';
 
 export default function TutorialPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [showCopyToast, setShowCopyToast] = useState(false);
-
-  const handleCopyAddress = async () => {
-    try {
-      await navigator.clipboard.writeText('1necat.net');
-      setShowCopyToast(true);
-      setTimeout(() => setShowCopyToast(false), 3000);
-    } catch (err) {
-      console.error('コピーに失敗しました:', err);
-    }
-  };
 
   const steps = [
     {
@@ -289,10 +279,43 @@ export default function TutorialPage() {
             <h1>チュートリアルクリアおめでとうございます！</h1>
             <p> 無事にいねさばに到着しました！ここからは、自由に行動をすることが出来ます！</p>
             <p> ...と、「いきなり言われても、、、」だと思いますので、「知っておくと便利なこと」と「やっておいた方が良いこと」をご紹介します！</p>
-            <h1>まずは、観光から</h1>
+            <h1>まずは観光から</h1>
             <p>いねさばには（まだ少ないですが）観光スポットが幾つかあります！目の前の「白椿駅」から電車の旅に出るのも良し、スポーン地点周辺を散策するも良し、気になる場所を訪れてみましょう！</p>
             <p>いねさばではサイト上で確認できるマップを用意しています。→　
               <Link className="inline-flex items-center" href="https://map.1necat.net"target="_blank" rel="noopener noreferrer">マップはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link></p>
+            <p>また、<CommandCode>/spawn</CommandCode>コマンドで、スポーン地点に戻ることができます。道に迷ったら、/spawnを使いましょう！</p>
+            <h1>お腹が空いたら</h1>
+            <p>散策中、お腹が減ると思います。</p>
+            <p>そんなときには、<b className="text-red">市場取引機能</b>を利用しましょう！</p>
+            <p><CommandCode>/market</CommandCode>コマンドで、取引画面を開くことができます。</p>
+            <p>カテゴリを選ぶ</p>
+            {/* 画像配置 */}
+            <p>購入する</p>
+            {/* 画像配置 */}
+            <p>これで食料を購入できました！</p>
+            <p>市場取引では食料以外でも、<b>建材や鉱石</b>も購入することができます。</p>
+            <p>ホームページ上からも最新の物価を確認できます。→　
+              <Link className="inline-flex items-center" href="https://market.1necat.net"target="_blank" rel="noopener noreferrer">市場状況はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link></p>
+            <p>ちなみに、初回ログイン時に<b className="text-red">全員に2000ine(ineは通貨名)をプレゼントしております！</b>"ine"は、市場取引の他に他の住民のショップから物を買ったり、土地を購入したり、車を買ったりなど様々なことに使えます！</p>
+            <h1>拠点を決めよう</h1>
+            <p>次に、生活の拠点となる自宅を決めましょう！</p>
+            <p>いねさばでは、<b className='text-red'>賃貸に住む・土地代を払って中心地に家を建てる・土地代無料の郊外に家を建てる</b>など、さまざまな選択肢があります。</p>
+            <p>以下では、それぞれの特徴や実際の自宅の建て方をご案内します。自分の好きなやり方を選んでください！</p>
+            <h2>おすすめ！　選択肢① 郊外に自宅をつくる</h2>
+            <p>最も一般的な、Minecraftらしい選択肢です。</p>
+            <p>いねさばの <Link className="inline-flex items-center" href="lifestyle/building_restrictions"target="_blank" rel="noopener noreferrer">中心地エリア<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link> 以外では基本的に無料で建築ができます。</p>
+            <p><Link className="inline-flex items-center" href=""target="_blank" rel="noopener noreferrer">おすすめの住宅街はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link> </p>
+            <p>なお、郊外エリアは保護がされていません。<b className="text-red">保護はご自身で忘れずにおかけください！</b>→ <Link className="inline-flex items-center" href=""target="_blank" rel="noopener noreferrer">保護のやり方はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg></Link></p>
+            <h2>選択肢② 賃貸に住む</h2>
+            <p>中心地エリアに住みたいけど、高い土地代を払いたくない方向けの選択肢です。</p>
+            <p>いねさばには賃貸がいくつかあります。賃貸には土地代がかからず、初期費用を抑えて中心地に住むことができます。</p> 
+            <p>ただし、決められた期間ごとに家賃を払う必要があります。家賃が払われないと<b>家の中に置いていたものが全て消されてしまいます</b>。ご注意ください。</p>
+            <p><Link className="inline-flex items-center" href=""target="_blank" rel="noopener noreferrer">賃貸について詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link></p>
           </div>
           <h4 className="text-xl font-bold text-gray-900 text-center mb-6">次にやりたいことを選んでください</h4>
