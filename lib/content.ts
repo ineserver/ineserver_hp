@@ -23,6 +23,45 @@ export interface ContentData {
   [key: string]: unknown;
 }
 
+// 軽量版: メタデータのみ取得（HTMLレンダリングなし）
+export function getAnnouncementFilesLight(): ContentData[] {
+  const announcementDir = path.join(contentDirectory, 'announcements')
+  
+  if (!fs.existsSync(announcementDir)) {
+    return []
+  }
+  
+  const fileNames = fs.readdirSync(announcementDir)
+  
+  const allAnnouncementsData = fileNames
+    .filter(name => name.endsWith('.md'))
+    .map((fileName) => {
+      const id = fileName.replace(/\.md$/, '')
+      const fullPath = path.join(announcementDir, fileName)
+      const fileContents = fs.readFileSync(fullPath, 'utf8')
+      const matterResult = parseFrontMatter(fileContents)
+      
+      return {
+        id,
+        ...matterResult.data,
+      }
+    })
+
+  // 日付でソート（新しい順）
+  function hasDate(obj: unknown): obj is { date: string } {
+    return typeof obj === 'object' && obj !== null && 'date' in obj && typeof (obj as { date?: unknown }).date === 'string';
+  }
+  return allAnnouncementsData.sort((a, b) => {
+    const dateA = hasDate(a) ? a.date : '';
+    const dateB = hasDate(b) ? b.date : '';
+    if (dateA < dateB) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+}
+
 export async function getAnnouncementFiles(): Promise<ContentData[]> {
   const announcementDir = path.join(contentDirectory, 'announcements')
   

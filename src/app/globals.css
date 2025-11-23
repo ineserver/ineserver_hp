@@ -19,7 +19,8 @@ html {
   scroll-behavior: smooth;
 }
 
-html, body {
+html,
+body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family);
@@ -30,11 +31,13 @@ html, body {
 
 /* サーバーステータス用のカスタムアニメーション */
 @keyframes pulse-green {
+
   0%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.1);
@@ -50,6 +53,7 @@ html, body {
   0% {
     width: 0%;
   }
+
   100% {
     width: var(--progress-width);
   }
@@ -61,11 +65,15 @@ html, body {
 
 /* スクロールバーを隠す */
 .scrollbar-hide {
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
 }
-.scrollbar-hide::-webkit-scrollbar { 
-  display: none;  /* Safari and Chrome */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
 }
 
 /* Markdownコンテンツのスタイル */
@@ -79,7 +87,8 @@ html, body {
   padding: 0.75rem 1rem;
   border-left: 6px solid var(--color-accent);
   background-color: #f0f4f1;
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content h1:first-child {
@@ -95,7 +104,8 @@ html, body {
   line-height: 1.3;
   padding-bottom: 0.5rem;
   border-bottom: 3px solid var(--color-accent);
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content h3 {
@@ -105,7 +115,8 @@ html, body {
   margin-top: 1.25rem;
   margin-bottom: 0.75rem;
   line-height: 1.4;
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content h4 {
@@ -115,7 +126,8 @@ html, body {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.4;
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content h5 {
@@ -125,7 +137,8 @@ html, body {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.4;
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content h6 {
@@ -135,7 +148,8 @@ html, body {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.4;
-  scroll-margin-top: 5rem; /* モバイル: 80px */
+  scroll-margin-top: 5rem;
+  /* モバイル: 80px */
 }
 
 .markdown-content p {
@@ -153,13 +167,15 @@ html, body {
 
 /* サブリスト（ネストされたリスト）のスタイル */
 .markdown-content ul ul {
-  list-style-type: circle; /* 白丸 */
+  list-style-type: circle;
+  /* 白丸 */
   margin-bottom: 0.5rem;
 }
 
 /* より深いネストのためのスタイル */
 .markdown-content ul ul ul {
-  list-style-type: square; /* 四角 */
+  list-style-type: square;
+  /* 四角 */
 }
 
 .markdown-content ol {
@@ -171,12 +187,14 @@ html, body {
 
 /* サブリスト（ネストされた順序リスト）のスタイル */
 .markdown-content ol ol {
-  list-style-type: lower-alpha; /* a, b, c */
+  list-style-type: lower-alpha;
+  /* a, b, c */
   margin-bottom: 0.5rem;
 }
 
 .markdown-content ol ol ol {
-  list-style-type: lower-roman; /* i, ii, iii */
+  list-style-type: lower-roman;
+  /* i, ii, iii */
 }
 
 .markdown-content li {
@@ -302,6 +320,7 @@ html, body {
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -313,6 +332,7 @@ html, body {
     transform: translateX(-100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -324,6 +344,7 @@ html, body {
     transform: translateY(30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -364,15 +385,21 @@ html, body {
     margin-right: -0.5rem;
     scroll-margin-top: 8.5rem;
   }
+
   .markdown-content h2 {
     margin-left: -1.5rem;
     margin-right: -0.5rem;
     padding-left: 1.5rem;
     scroll-margin-top: 8.5rem;
   }
-  .markdown-content h3, .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+
+  .markdown-content h3,
+  .markdown-content h4,
+  .markdown-content h5,
+  .markdown-content h6 {
     scroll-margin-top: 8.5rem;
   }
+
   .markdown-content hr {
     margin-left: -1.5rem;
     margin-right: -0.5rem;
@@ -380,9 +407,10 @@ html, body {
 }
 
 /* 色指定 */
-.text-red{
+.text-red {
   color: #bf5550;
 }
-.text-red-accent{
+
+.text-red-accent {
   color: #d64541;
 }

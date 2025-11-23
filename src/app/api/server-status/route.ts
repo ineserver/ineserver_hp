@@ -2,6 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ServerStatus } from '@/types/server-status';
 
+// 30秒ごとにキャッシュを再検証（サーバーステータスは頻繁に変わる可能性があるため短めに設定）
+export const revalidate = 30;
+
 // mcsrvstat.us APIのレスポンス型
 interface McSrvStatResponse {
   online: boolean;

@@ -214,14 +214,20 @@ export default function Home() {
       // 並列でデータ取得を実行
       const [announcementsResult, patchNotesResult] = await Promise.allSettled([
         // お知らせデータを取得
-        fetch('/api/announcements', { next: { revalidate: 60 } }).then(async (response) => {
+        fetch('/api/announcements', { 
+          cache: 'force-cache',
+          next: { revalidate: 60 } 
+        }).then(async (response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch announcements');
           }
           return response.json();
         }),
-        // パッチノートデータを取得
-        fetch('/api/patch-notes', { next: { revalidate: 60 } }).then(async (response) => {
+        // パッチノートデータを取得（最新1件のみ）
+        fetch('/api/patch-notes?latest=true', { 
+          cache: 'force-cache',
+          next: { revalidate: 120 } 
+        }).then(async (response) => {
           if (!response.ok) {
             throw new Error('Failed to fetch patch notes');
           }
