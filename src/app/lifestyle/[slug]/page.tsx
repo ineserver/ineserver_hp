@@ -25,11 +25,11 @@ interface PageProps {
 export default async function LifestyleArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const contentData = await getLifestyleData(slug);
-  
+
   if (!contentData) {
     notFound();
   }
-  
+
   // contentDataをContentItem型に変換
   const content = {
     id: contentData.id,
@@ -39,7 +39,7 @@ export default async function LifestyleArticlePage({ params }: PageProps) {
     content: contentData.content || '',
     category: contentData.category,
   };
-  
+
   return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
 

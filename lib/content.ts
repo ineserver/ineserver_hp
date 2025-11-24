@@ -5,6 +5,8 @@ import { remark } from 'remark'
 import remarkGfm from 'remark-gfm'
 import remarkRehype from 'remark-rehype'
 import rehypeSlug from 'rehype-slug'
+import remarkDirective from 'remark-directive'
+import remarkCustomDirectives from './remark-custom-directives'
 import rehypeStringify from 'rehype-stringify'
 
 const contentDirectory = path.join(process.cwd(), 'content')
@@ -26,13 +28,13 @@ export interface ContentData {
 // 軽量版: メタデータのみ取得（HTMLレンダリングなし）
 export function getAnnouncementFilesLight(): ContentData[] {
   const announcementDir = path.join(contentDirectory, 'announcements')
-  
+
   if (!fs.existsSync(announcementDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(announcementDir)
-  
+
   const allAnnouncementsData = fileNames
     .filter(name => name.endsWith('.md'))
     .map((fileName) => {
@@ -40,7 +42,7 @@ export function getAnnouncementFilesLight(): ContentData[] {
       const fullPath = path.join(announcementDir, fileName)
       const fileContents = fs.readFileSync(fullPath, 'utf8')
       const matterResult = parseFrontMatter(fileContents)
-      
+
       return {
         id,
         ...matterResult.data,
@@ -64,13 +66,13 @@ export function getAnnouncementFilesLight(): ContentData[] {
 
 export async function getAnnouncementFiles(): Promise<ContentData[]> {
   const announcementDir = path.join(contentDirectory, 'announcements')
-  
+
   if (!fs.existsSync(announcementDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(announcementDir)
-  
+
   const allAnnouncementsData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -79,10 +81,12 @@ export async function getAnnouncementFiles(): Promise<ContentData[]> {
         const fullPath = path.join(announcementDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         // Markdownを HTMLに変換
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -115,11 +119,11 @@ export async function getAnnouncementFiles(): Promise<ContentData[]> {
 
 export async function getAnnouncementData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'announcements', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
 
@@ -141,13 +145,13 @@ export async function getAnnouncementData(id: string): Promise<ContentData | nul
 
 export async function getRulesFiles(): Promise<ContentData[]> {
   const rulesDir = path.join(contentDirectory, 'rules')
-  
+
   if (!fs.existsSync(rulesDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(rulesDir)
-  
+
   const allRulesData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -156,9 +160,11 @@ export async function getRulesFiles(): Promise<ContentData[]> {
         const fullPath = path.join(rulesDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -186,13 +192,13 @@ export async function getRulesFiles(): Promise<ContentData[]> {
 
 export async function getEconomyFiles(): Promise<ContentData[]> {
   const economyDir = path.join(contentDirectory, 'economy')
-  
+
   if (!fs.existsSync(economyDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(economyDir)
-  
+
   const allEconomyData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -201,9 +207,11 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
         const fullPath = path.join(economyDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -229,25 +237,25 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
       function hasNumber(obj: unknown): obj is { number?: number } {
         return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
-      
+
       const typeA = hasType(a) && typeof a.type === 'string' ? a.type : 'other';
       const typeB = hasType(b) && typeof b.type === 'string' ? b.type : 'other';
-      
+
       // typeの優先順位を定義
       const typeOrder: Record<string, number> = {
         'income': 1,
         'expenditure': 2,
         'other': 999
       };
-      
+
       const orderA = typeOrder[typeA] || 999;
       const orderB = typeOrder[typeB] || 999;
-      
+
       // まずtypeの優先順位で比較
       if (orderA !== orderB) {
         return orderA - orderB;
       }
-      
+
       // 同じtypeの場合、numberで比較
       const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
       const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
@@ -258,13 +266,13 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
 // 生活・くらしのコンテンツを取得
 export async function getLifestyleFiles(): Promise<ContentData[]> {
   const lifestyleDir = path.join(contentDirectory, 'lifestyle')
-  
+
   if (!fs.existsSync(lifestyleDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(lifestyleDir)
-  
+
   const allLifestyleData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -273,9 +281,11 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
         const fullPath = path.join(lifestyleDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -301,25 +311,25 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
       function hasNumber(obj: unknown): obj is { number?: number } {
         return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
-      
+
       const typeA = hasType(a) && typeof a.type === 'string' ? a.type : 'other';
       const typeB = hasType(b) && typeof b.type === 'string' ? b.type : 'other';
-      
+
       // typeの優先順位を定義
       const typeOrder: Record<string, number> = {
         'rule': 1,
         'protection': 2,
         'other': 999
       };
-      
+
       const orderA = typeOrder[typeA] || 999;
       const orderB = typeOrder[typeB] || 999;
-      
+
       // まずtypeの優先順位で比較
       if (orderA !== orderB) {
         return orderA - orderB;
       }
-      
+
       // 同じtypeの場合、numberで比較
       const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
       const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
@@ -330,13 +340,13 @@ export async function getLifestyleFiles(): Promise<ContentData[]> {
 // 観光コンテンツを取得
 export async function getTourismFiles(): Promise<ContentData[]> {
   const tourismDir = path.join(contentDirectory, 'tourism')
-  
+
   if (!fs.existsSync(tourismDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(tourismDir)
-  
+
   const allTourismData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -345,9 +355,11 @@ export async function getTourismFiles(): Promise<ContentData[]> {
         const fullPath = path.join(tourismDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -377,13 +389,13 @@ export async function getTourismFiles(): Promise<ContentData[]> {
 // 交通コンテンツを取得
 export async function getTransportationFiles(): Promise<ContentData[]> {
   const transportationDir = path.join(contentDirectory, 'transportation')
-  
+
   if (!fs.existsSync(transportationDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(transportationDir)
-  
+
   const allTransportationData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -392,9 +404,11 @@ export async function getTransportationFiles(): Promise<ContentData[]> {
         const fullPath = path.join(transportationDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -424,13 +438,13 @@ export async function getTransportationFiles(): Promise<ContentData[]> {
 // 娯楽コンテンツを取得
 export async function getEntertainmentFiles(): Promise<ContentData[]> {
   const entertainmentDir = path.join(contentDirectory, 'entertainment')
-  
+
   if (!fs.existsSync(entertainmentDir)) {
     return []
   }
-  
+
   const fileNames = fs.readdirSync(entertainmentDir)
-  
+
   const allEntertainmentData = await Promise.all(
     fileNames
       .filter(name => name.endsWith('.md'))
@@ -439,9 +453,11 @@ export async function getEntertainmentFiles(): Promise<ContentData[]> {
         const fullPath = path.join(entertainmentDir, fileName)
         const fileContents = fs.readFileSync(fullPath, 'utf8')
         const matterResult = parseFrontMatter(fileContents)
-        
+
         const processedContent = await remark()
           .use(remarkGfm)
+          .use(remarkDirective)
+          .use(remarkCustomDirectives)
           .use(remarkRehype)
           .use(rehypeSlug)
           .use(rehypeStringify)
@@ -471,16 +487,18 @@ export async function getEntertainmentFiles(): Promise<ContentData[]> {
 // 個別データ取得関数
 export async function getLifestyleData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'lifestyle', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
-  
+
   const processedContent = await remark()
     .use(remarkGfm)
+    .use(remarkDirective)
+    .use(remarkCustomDirectives)
     .use(remarkRehype)
     .use(rehypeSlug)
     .use(rehypeStringify)
@@ -496,14 +514,14 @@ export async function getLifestyleData(id: string): Promise<ContentData | null> 
 
 export async function getTourismData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'tourism', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
-  
+
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype)
@@ -521,14 +539,14 @@ export async function getTourismData(id: string): Promise<ContentData | null> {
 
 export async function getTransportationData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'transportation', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
-  
+
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype)
@@ -546,14 +564,14 @@ export async function getTransportationData(id: string): Promise<ContentData | n
 
 export async function getEconomyData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'economy', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
-  
+
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype)
@@ -571,14 +589,14 @@ export async function getEconomyData(id: string): Promise<ContentData | null> {
 
 export async function getEntertainmentData(id: string): Promise<ContentData | null> {
   const fullPath = path.join(contentDirectory, 'entertainment', `${id}.md`)
-  
+
   if (!fs.existsSync(fullPath)) {
     return null
   }
-  
+
   const fileContents = fs.readFileSync(fullPath, 'utf8')
   const matterResult = parseFrontMatter(fileContents)
-  
+
   const processedContent = await remark()
     .use(remarkGfm)
     .use(remarkRehype)
