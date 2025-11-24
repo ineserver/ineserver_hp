@@ -258,8 +258,8 @@ const Header = () => {
                       保護
                     </h4>
                     <ul className="ml-4 space-y-1">
-                      <li><Link href="/lifestyle/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
-                      <li><Link href="/lifestyle/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
+                      <li><Link href="/lifestyle/area_protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
+                      <li><Link href="/lifestyle/block_protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
                     </ul>
                   </div>
                 </div>

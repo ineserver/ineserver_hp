@@ -74,20 +74,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
       if (domNode instanceof Element && domNode.attribs) {
-        // CommandCode
         if (domNode.attribs.class && domNode.attribs.class.includes('command-code')) {
-          // テキストコンテンツを取得 (子要素がテキストノードであることを想定)
-          // remark-custom-directivesで生成される構造に依存
-          // <div class="command-code">...content...</div>
-          // domToReactを使って子要素をレンダリングし、それをCommandCodeに渡す。
-          // ただしCommandCodeは children: string を期待している。
-
-          // 単純にtextContentを取得する。
-          // ここではシンプルにtextContentを取得したいが、domNodeから直接取得するのは少し面倒。
-          // domToReact(domNode.children) で子要素をレンダリングし、それをCommandCodeに渡す。
-          // ただしCommandCodeは children: string を期待している。
-
-          // テキストコンテンツを再帰的に取得するヘルパー関数
           const extractText = (node: any): string => {
             if (node instanceof Element || (node.type === 'tag' && node.children)) {
               return node.children.map(extractText).join('');
@@ -168,6 +155,17 @@ export default function ContentArticlePage({ config, content, showDate = false, 
             </div>
           )}
         </header>
+
+        {/* アイキャッチ画像 */}
+        {content.image && (
+          <div className="mb-12 lg:-mx-[1.5rem]">
+            <img
+              src={content.image}
+              alt={content.title}
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        )}
 
         {/* 目次 */}
         {showToc && tocItems.length > 0 && (

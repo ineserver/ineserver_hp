@@ -38,6 +38,7 @@ export default async function LifestyleArticlePage({ params }: PageProps) {
     date: contentData.date || '',
     content: contentData.content || '',
     category: contentData.category,
+    image: contentData.image as string | undefined,
   };
 
   return <ContentArticlePage config={config} content={content} showToc={true} />;

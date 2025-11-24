@@ -9,6 +9,7 @@ export interface ContentItem {
   category?: string;
   type?: string;
   externalLink?: string;
+  image?: string;
 }
 
 export interface ContentPageConfig {
