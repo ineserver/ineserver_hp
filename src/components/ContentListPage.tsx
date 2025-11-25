@@ -7,9 +7,10 @@ import { ContentItem, ContentPageConfig } from '@/types/content';
 interface ContentListPageProps {
   config: ContentPageConfig;
   content: ContentItem[];
+  children?: React.ReactNode;
 }
 
-export default function ContentListPage({ config, content = [] }: ContentListPageProps) {
+export default function ContentListPage({ config, content = [], children }: ContentListPageProps) {
   const IconComponent = iconMap[config.icon];
 
   const breadcrumbItems = [
@@ -23,18 +24,20 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
     '保護': 'shield',
     'ineを貯める': 'trendingUp',
     'ineを使う': 'trendingDown',
+    'アイテム取引': 'package',
+    '土地・ライセンス': 'landmark',
   };
 
   // typeに基づいてグループ分け
   const groupedContent = config.enableGrouping
     ? content.reduce((acc, item) => {
-        const type = item.type || 'other';
-        if (!acc[type]) {
-          acc[type] = [];
-        }
-        acc[type].push(item);
-        return acc;
-      }, {} as Record<string, ContentItem[]>)
+      const type = item.type || 'other';
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(item);
+      return acc;
+    }, {} as Record<string, ContentItem[]>)
     : { all: content };
 
   const renderContentItem = (item: ContentItem) => {
@@ -79,7 +82,7 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
     <div className="min-h-screen bg-white">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
-      
+
       <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
@@ -94,6 +97,12 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
           </div>
         </header>
 
+        {children && (
+          <div className="mb-12">
+            {children}
+          </div>
+        )}
+
         {/* コンテンツ一覧 */}
         <section>
           {content.length === 0 ? (
@@ -107,7 +116,7 @@ export default function ContentListPage({ config, content = [] }: ContentListPag
               {Object.entries(groupedContent).map(([type, items]) => {
                 const groupLabel = config.groupLabels?.[type] || type;
                 const GroupIcon = groupIconMap[groupLabel] ? iconMap[groupIconMap[groupLabel]] : null;
-                
+
                 return (
                   <div key={type}>
                     <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
@@ -74,12 +75,13 @@ export default function ContentArticlePage({ config, content, showDate = false, 
   const options: HTMLReactParserOptions = {
     replace: (domNode) => {
       if (domNode instanceof Element && domNode.attribs) {
+        // ブロック形式のコマンド
         if (domNode.attribs.class && domNode.attribs.class.includes('command-code')) {
-          const extractText = (node: any): string => {
-            if (node instanceof Element || (node.type === 'tag' && node.children)) {
-              return node.children.map(extractText).join('');
+          const extractText = (node: DOMNode): string => {
+            if (node instanceof Element && node.children) {
+              return node.children.map((child) => extractText(child as DOMNode)).join('');
             }
-            if (node.data) {
+            if ('data' in node && typeof node.data === 'string') {
               return node.data;
             }
             return '';
@@ -93,6 +95,22 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           );
         }
 
+        // インライン形式のコマンド
+        if (domNode.name === 'code' && domNode.attribs.class && domNode.attribs.class.includes('command-inline')) {
+          const extractText = (node: DOMNode): string => {
+            if (node instanceof Element && node.children) {
+              return node.children.map((child) => extractText(child as DOMNode)).join('');
+            }
+            if ('data' in node && typeof node.data === 'string') {
+              return node.data;
+            }
+            return '';
+          };
+
+          const textContent = extractText(domNode);
+          return <CommandCode>{textContent.trim()}</CommandCode>;
+        }
+
         // CollapsibleDetail
         if (domNode.name === 'details' && domNode.attribs.class && domNode.attribs.class.includes('collapsible-detail')) {
           // summaryタグを探してtitleを取得
@@ -102,7 +120,10 @@ export default function ContentArticlePage({ config, content, showDate = false, 
 
           let title = '詳細';
           if (summaryNode && summaryNode.children.length > 0) {
-            title = (summaryNode.children[0] as any)?.data || '詳細';
+            const firstChild = summaryNode.children[0];
+            if ('data' in firstChild && typeof firstChild.data === 'string') {
+              title = firstChild.data;
+            }
           }
 
           // summary以外の要素をchildrenとして渡す
@@ -159,10 +180,13 @@ export default function ContentArticlePage({ config, content, showDate = false, 
         {/* アイキャッチ画像 */}
         {content.image && (
           <div className="mb-12 lg:-mx-[1.5rem]">
-            <img
+            <Image
               src={content.image}
               alt={content.title}
+              width={1200}
+              height={630}
               className="w-full h-auto rounded-lg"
+              priority
             />
           </div>
         )}

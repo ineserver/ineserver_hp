@@ -22,11 +22,21 @@ export default function remarkCustomDirectives() {
                 const directiveNode = node as DirectiveNode
                 const data = directiveNode.data || (directiveNode.data = {})
 
+                // command directive - ブロック形式（:::command）とインライン形式（:command[text]）の両方に対応
                 if (directiveNode.name === 'command') {
-                    data.hName = 'div'
-                    data.hProperties = {
-                        className: ['command-code'],
-                        ...directiveNode.attributes,
+                    if (node.type === 'textDirective') {
+                        // インライン形式: :command[/tp @s ~ ~ ~]
+                        data.hName = 'code'
+                        data.hProperties = {
+                            className: ['command-inline'],
+                        }
+                    } else {
+                        // ブロック形式: :::command
+                        data.hName = 'div'
+                        data.hProperties = {
+                            className: ['command-code'],
+                            ...directiveNode.attributes,
+                        }
                     }
                 }
 
@@ -54,15 +64,6 @@ export default function remarkCustomDirectives() {
                         }
                         // 先頭に追加
                         directiveNode.children.unshift(summaryNode as unknown as Node)
-                    }
-                }
-
-                // color directive for inline text
-                if (directiveNode.name === 'color' && node.type === 'textDirective') {
-                    data.hName = 'span'
-                    const className = directiveNode.attributes.class || 'text-red'
-                    data.hProperties = {
-                        className: [className],
                     }
                 }
             }

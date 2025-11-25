@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface CommandCodeProps {
   children: string; // コマンドの内容
@@ -13,10 +13,10 @@ export default function CommandCode({ children }: CommandCodeProps) {
     try {
       // クリップボードにコピー
       await navigator.clipboard.writeText(children);
-      
+
       // トーストを表示
       setShowToast(true);
-      
+
       // 3秒後に非表示
       setTimeout(() => {
         setShowToast(false);

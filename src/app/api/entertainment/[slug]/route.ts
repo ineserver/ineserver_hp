@@ -8,14 +8,14 @@ export async function GET(
   try {
     const { slug } = await params;
     const content = await getEntertainmentData(slug);
-    
+
     if (!content) {
       return NextResponse.json(
         { error: 'エンターテインメント情報が見つかりません' },
         { status: 404 }
       );
     }
-    
+
     return NextResponse.json(content);
   } catch (error) {
     console.error('Error fetching entertainment content:', error);

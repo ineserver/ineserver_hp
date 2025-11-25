@@ -329,9 +329,9 @@ export default function TutorialPage() {
             <p>ホームページ上からも最新の物価を確認できます。→
               <Link className="inline-flex items-center" href="https://market.1necat.net" target="_blank" rel="noopener noreferrer">市場状況はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg></Link></p>
-            <p>ちなみに、初回ログイン時に<b className="text-red">全員に2000ineをプレゼントしております！</b>"ine"は、市場取引の他に他の住民のショップから物を買ったり、土地を購入したり、車を買ったりなど様々なことに使えます！</p>
+            <p>ちなみに、初回ログイン時に<b className="text-red">全員に2000ineをプレゼントしております！</b>&ldquo;ine&rdquo;は、市場取引の他に他の住民のショップから物を買ったり、土地を購入したり、車を買ったりなど様々なことに使えます！</p>
             <CollapsibleDetail title="通貨：ineについて">
-              <p>"ine"は、このサーバーでの基本的な通貨です。</p>
+              <p>&ldquo;ine&rdquo;は、このサーバーでの基本的な通貨です。</p>
               <p>ineを使うことで、「市場取引」「ユーザー同士の取引（ショップ等）」「土地購入」「車購入」「コマンド購入」など様々なことに使えます。</p>
               <p>現在の所有している金額は<CommandCode>/money show</CommandCode>コマンドで確認できます。</p>
             </CollapsibleDetail>
@@ -345,8 +345,7 @@ export default function TutorialPage() {
             <p>最も一般的な、Minecraftらしい選択肢です。</p>
             <p>いねさばの <Link className="inline-flex items-center" href="lifestyle/building_restrictions" target="_blank" rel="noopener noreferrer">中心地エリア<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link> 以外では基本的に無料で建築ができます。</p>
-            <p><Link className="inline-flex items-center" href="" target="_blank" rel="noopener noreferrer">おすすめの住宅街はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link> </p>
+            <p>いねさばには幾つかの住宅街が整備されています！詳しくはマップからご確認ください！</p>
             <p>なお、郊外エリアは保護がされていません。<b className="text-red">保護はご自身で忘れずにおかけください！</b>→ <Link className="inline-flex items-center" href="lifestyle/area_protection" target="_blank" rel="noopener noreferrer">保護のやり方はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link></p>
 
@@ -392,8 +391,8 @@ export default function TutorialPage() {
             <p>お疲れ様でした！いねさばの基本的な遊び方は以上で終了です！</p>
             <p>最後に、いねさばで役に立つ情報を幾つかご案内します！</p>
 
-            <h2>わからないことがあれば「ガイド」を見よう</h2>
-            <p>ガイドは公式HPの右上から見ることが出来ます。こんな感じのアイコンです↓</p>
+            <h2>わからないことがあれば「いねさばの歩き方」を見よう</h2>
+            <p>いねさばの歩き方は公式HPの右上から見ることが出来ます。こんな感じのアイコンです↓</p>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 py-4 bg-gray-50 rounded-xl border border-gray-200 mt-4 mb-2">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold text-gray-500">PC</span>
@@ -401,7 +400,7 @@ export default function TutorialPage() {
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                   </svg>
-                  ガイド
+                  いねさばの歩き方
                 </div>
               </div>
               <div className="w-px h-8 bg-gray-300 hidden sm:block"></div>
@@ -420,8 +419,8 @@ export default function TutorialPage() {
                 </div>
               </div>
             </div>
-            <p>ガイドではいねさば独自の追加要素の細かい解説や、追加アイテムの詳細など、いねさばライフを楽しむための情報がカテゴリごとにまとめられています！</p>
-            <p>迷ったら、「ガイド」を見てみましょう！</p>
+            <p>いねさばの歩き方ではいねさば独自の追加要素の細かい解説や、追加アイテムの詳細など、いねさばライフを楽しむための情報がカテゴリごとにまとめられています！</p>
+            <p>迷ったら、「いねさばの歩き方」を見てみましょう！</p>
 
             <h2>Discordに参加してみよう！</h2>
             <p>いねさばでは公式Discordを用意しております。公式Discordではいち早いお知らせや、住民同士の交流などを行っております！</p>
@@ -557,7 +556,7 @@ export default function TutorialPage() {
               href="/guide"
               className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl font-medium transition-all duration-200 sm:min-w-[460px] bg-gradient-to-r from-[#5b8064] to-[#4a6b55] hover:from-[#4a6b55] hover:to-[#3a5745] text-white transform hover:-translate-y-0.5 cursor-pointer"
             >
-              ガイドに進む
+              いねさばの歩き方に進む
               <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
