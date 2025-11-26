@@ -13,12 +13,7 @@ const config = {
     emptyMessage: '交通に関する記事がありません',
     pageTitle: '交通 | Ineサーバー',
     backButtonText: '交通一覧に戻る',
-    enableGrouping: true,
-    groupLabels: {
-        sightseeing: '観光',
-        guideline: 'ガイドライン',
-        other: 'その他'
-    }
+    enableGrouping: false
 };
 
 export default async function TransportPage() {

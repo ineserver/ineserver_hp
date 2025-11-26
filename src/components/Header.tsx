@@ -171,25 +171,6 @@ const Header = () => {
 
               {/* モバイル用ガイドボタン＋ハンバーガーメニュー */}
               <div className="flex items-center lg:hidden gap-1">
-                {/* サーバーガイドボタン */}
-                <Link
-                  href="/server-guide"
-                  className="relative p-1 rounded-md flex flex-col items-center justify-center"
-                  aria-label="サーバーガイド"
-                  style={{ minWidth: '48px', minHeight: '48px' }}
-                >
-                  <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5 mb-0.5" xmlSpace="preserve">
-                    <g>
-                      <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
-                        c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
-                        c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
-                        c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
-                        c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
-                        c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" style={{ fill: '#5b8064' }}></path>
-                    </g>
-                  </svg>
-                  <span className="text-[9px] font-bold text-[#5b8064] leading-none">初めての方へ</span>
-                </Link>
                 {/* ガイドボタン（アイコンのみ） */}
                 <a
                   href="/guide"
@@ -210,9 +191,8 @@ const Header = () => {
                 {/* ハンバーガーメニュー */}
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100 cursor-pointer flex items-center justify-center"
+                  className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100 cursor-pointer"
                   aria-label="メニューを開く"
-                  style={{ minWidth: '48px', minHeight: '48px' }}
                 >
                   <div className={`relative w-7 h-7 flex flex-col justify-center items-center transition-all duration-300 group`}>
                     {/* 上の線 */}
@@ -250,56 +230,20 @@ const Header = () => {
               <div className="flex-1 relative group">
                 <Link href="/server-guide" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/server-guide') ? 'active-menu-item' : ''}`}>
                   <span className="flex items-center justify-center gap-2">
-                    <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5" xmlSpace="preserve">
-                      <g>
-                        <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
-                          c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
-                          c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
-                          c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
-                          c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
-                          c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" fill="currentColor"></path>
-                      </g>
-                    </svg>
-                    はじめての方へ
+                    🔰 サーバーガイド
                   </span>
                   <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
                 </Link>
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    {/* 上側: 画像背景付きブロック */}
-                    <Link 
-                      href="/server-guide" 
-                      className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg")' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                      <div className="absolute inset-0 flex items-end p-3">
-                        <div className="text-white">
-                          <p className="text-xs font-medium mb-0.5">はじめての方へ</p>
-                          <p className="text-sm font-bold">このカテゴリを見る</p>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-[#5b8064]/0 group-hover/card:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                    </Link>
-                    
-                    {/* 下側: リンクリスト */}
-                    <div className="mb-3 pb-3 border-b border-gray-100">
-                      <ul className="space-y-1">
-                        <li><Link href="/tutorial" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />チュートリアル</Link></li>
-                        <li><Link href="/lp" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />サーバー紹介</Link></li>
-                      </ul>
-                    </div>
-                    <div className="mb-3">
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">ルール・規約</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/server-guide/rule" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />サーバールール</Link></li>
-                        <li><Link href="/server-guide/terms_of_service" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />利用規約</Link></li>
-                        <li><Link href="/server-guide/allowed_mods" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
-                        <li><Link href="/server-guide/prohibited_items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム一覧</Link></li>
-                        <li><Link href="/server-guide/building_restrictions" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      </ul>
-                    </div>
+                    <ul className="space-y-1">
+                      <li><Link href="/server-guide/rule" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />サーバールール</Link></li>
+                      <li><Link href="/server-guide/terms_of_service" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />利用規約</Link></li>
+                      <li><Link href="/server-guide/allowed_mods" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
+                      <li><Link href="/server-guide/prohibited_items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム一覧</Link></li>
+                      <li><Link href="server-guide/building_restrictions" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -313,43 +257,10 @@ const Header = () => {
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    {/* 上側: 画像背景付きブロック */}
-                    <Link 
-                      href="/life" 
-                      className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-29_15.48.01.png")' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                      <div className="absolute inset-0 flex items-end p-3">
-                        <div className="text-white">
-                          <p className="text-xs font-medium mb-0.5">くらし</p>
-                          <p className="text-sm font-bold">このカテゴリを見る</p>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-[#5b8064]/0 group-hover/card:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                    </Link>
-                    
-                    {/* 下側: リンクリスト */}
-                    <div className="mb-3">
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">保護</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方</Link></li>
-                        <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方</Link></li>
-                      </ul>
-                    </div>
-                    <div className="mb-3">
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">便利機能</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/life/mcmmo" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />スキルシステム (mcMMO)</Link></li>
-                        <li><Link href="/life/imageflame" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />画像地図の作成と使い方</Link></li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">ガイドライン</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/life/address" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />市町村・字（あざ）・敷地についてのガイドライン</Link></li>
-                      </ul>
-                    </div>
+                    <ul className="space-y-1">                       
+                      <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方</Link></li>
+                      <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方</Link></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -363,37 +274,12 @@ const Header = () => {
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    {/* 上側: 画像背景付きブロック */}
-                    <Link 
-                      href="/economy" 
-                      className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg")' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                      <div className="absolute inset-0 flex items-end p-3">
-                        <div className="text-white">
-                          <p className="text-xs font-medium mb-0.5">経済</p>
-                          <p className="text-sm font-bold">このカテゴリを見る</p>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-[#5b8064]/0 group-hover/card:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                    </Link>
-                    
-                    {/* 下側: リンクリスト */}
-                    <div className="mb-3">
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">アイテム</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引のやり方</Link></li>
-                        <li><Link href="/economy/shop" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
-                      </ul>
-                    </div>
-                    <div>
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">許可・ライセンス</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
-                        <li><Link href="/economy/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入・管理</Link></li>
-                      </ul>
-                    </div>
+                    <ul className="space-y-1">
+                      <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引のやり方</Link></li>
+                      <li><Link href="/economy/shop" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                      <li><Link href="/economy/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -407,26 +293,9 @@ const Header = () => {
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    {/* 上側: 画像背景付きブロック */}
-                    <Link 
-                      href="/adventure" 
-                      className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg")' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                      <div className="absolute inset-0 flex items-end p-3">
-                        <div className="text-white">
-                          <p className="text-xs font-medium mb-0.5">娯楽</p>
-                          <p className="text-sm font-bold">このカテゴリを見る</p>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-[#5b8064]/0 group-hover/card:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                    </Link>
-                    
-                    {/* 下側: リンクリスト */}
                     <ul className="space-y-1">
                       <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
-                      <li><Link href="/adventure/hide-item" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテムのヒント</Link></li>
+                      <li><Link href="/adventure/hidden-items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテムのヒント</Link></li>
                       <li><Link href="/adventure/events" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />過去のイベント一覧（アーカイブ）</Link></li>
                     </ul>
                   </div>
@@ -441,36 +310,10 @@ const Header = () => {
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    {/* 上側: 画像背景付きブロック */}
-                    <Link 
-                      href="/transport" 
-                      className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-28_02.41.46.png")' }}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                      <div className="absolute inset-0 flex items-end p-3">
-                        <div className="text-white">
-                          <p className="text-xs font-medium mb-0.5">交通</p>
-                          <p className="text-sm font-bold">このカテゴリを見る</p>
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-[#5b8064]/0 group-hover/card:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                    </Link>
-                    
-                    {/* 下側: リンクリスト */}
-                    <div className="mb-3">
-                      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">ガイドライン</h3>
-                      <ul className="space-y-1">
-                        <li><Link href="/transport/rail" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道に関してのガイドライン</Link></li>
-                        <li><Link href="/transport/road" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />道路に関してのガイドライン</Link></li>
-                      </ul>
-                    </div>
-                    <div>
-                      <ul className="space-y-1">
-                        <li><Link href="/transport/railway" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道・路線図（準備中）</Link></li>
-                        <li><Link href="/transport/spots" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />観光スポット・主要施設案内（準備中）</Link></li>
-                      </ul>
-                    </div>
+                    <ul className="space-y-1">
+                      <li><Link href="/transport/railway" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道・路線図（準備中）</Link></li>
+                      <li><Link href="/transport/spots" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />観光スポット・主要施設案内（準備中）</Link></li>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -493,17 +336,7 @@ const Header = () => {
                       onClick={closeMenu}
                     >
                       <span className="flex items-center gap-2">
-                        <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5" xmlSpace="preserve">
-                          <g>
-                            <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
-                              c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
-                              c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
-                              c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
-                              c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
-                              c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" fill="currentColor"></path>
-                          </g>
-                        </svg>
-                        はじめての方へ
+                        🔰 サーバーガイド
                       </span>
                     </Link>
                     <button
@@ -518,54 +351,22 @@ const Header = () => {
                   </div>
                   {openSubMenu === 'server-guide' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
-                      {/* 画像背景付きブロック */}
-                      <Link 
-                        href="/server-guide" 
-                        className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg")' }}
-                        onClick={closeMenu}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-3">
-                          <div className="text-white">
-                            <p className="text-xs font-medium mb-1 flex items-center gap-1.5">
-                              初めての方へ
-                            </p>
-                            <p className="text-sm font-bold">このカテゴリを見る</p>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-[#5b8064]/0 active:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                      </Link>
-                      
-                      <div className="mb-3 pb-3 border-b border-gray-100">
-                        <div className="pl-4 space-y-1">
-                          <Link href="/tutorial" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            チュートリアル
-                          </Link>
-                          <Link href="/lp" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            サーバー紹介
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">ルール・規約</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/server-guide/rule" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            サーバールール
-                          </Link>
-                          <Link href="/server-guide/terms_of_service" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            利用規約
-                          </Link>
-                          <Link href="/server-guide/allowed_mods" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            許可MOD一覧
-                          </Link>
-                          <Link href="/server-guide/prohibited_items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            流通禁止アイテム一覧
-                          </Link>
-                          <Link href="/server-guide/building_restrictions" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            中心地の土地利用について
-                          </Link>
-                        </div>
+                      <div className="pl-4 space-y-1">
+                        <Link href="/server-guide/rule" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          サーバールール
+                        </Link>
+                        <Link href="/server-guide/terms_of_service" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          利用規約
+                        </Link>
+                        <Link href="/server-guide/allowed_mods" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          許可MOD一覧
+                        </Link>
+                        <Link href="/server-guide/prohibited_items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          流通禁止アイテム一覧
+                        </Link>
+                        <Link href="server-guide/building_restrictions" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          中心地の土地利用について
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -593,54 +394,13 @@ const Header = () => {
                   </div>
                   {openSubMenu === 'life' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
-                      {/* 画像背景付きブロック */}
-                      <Link 
-                        href="/life" 
-                        className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-29_15.48.01.png")' }}
-                        onClick={closeMenu}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-3">
-                          <div className="text-white">
-                            <p className="text-xs font-medium mb-1 flex items-center gap-1.5">
-                              くらし
-                            </p>
-                            <p className="text-sm font-bold">このカテゴリを見る</p>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-[#5b8064]/0 active:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                      </Link>
-                      
-                      <div className="mb-3">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">保護</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/life/land-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            土地の保護のやり方
-                          </Link>
-                          <Link href="/life/block-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            ブロック保護のやり方
-                          </Link>
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">便利機能</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/life/mcmmo" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            スキルシステム (mcMMO)
-                          </Link>
-                          <Link href="/life/imageflame" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            画像地図の作成と使い方
-                          </Link>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">ガイドライン</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/life/address" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            市町村・字（あざ）・敷地についてのガイドライン
-                          </Link>
-                        </div>
+                      <div className="pl-4 space-y-1">
+                        <Link href="/life/land-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          土地の保護のやり方
+                        </Link>
+                        <Link href="/life/block-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          ブロック保護のやり方
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -668,46 +428,19 @@ const Header = () => {
                   </div>
                   {openSubMenu === 'economy' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
-                      {/* 画像背景付きブロック */}
-                      <Link 
-                        href="/economy" 
-                        className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg")' }}
-                        onClick={closeMenu}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-3">
-                          <div className="text-white">
-                            <p className="text-xs font-medium mb-1 flex items-center gap-1.5">
-                              経済
-                            </p>
-                            <p className="text-sm font-bold">このカテゴリを見る</p>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-[#5b8064]/0 active:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                      </Link>
-                      
-                      <div className="mb-3">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">アイテム</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/economy/market" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            アイテム市場取引のやり方
-                          </Link>
-                          <Link href="/economy/shop" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            お店を作る・お店で買う
-                          </Link>
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">許可・ライセンス</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/economy/buycommand" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            コマンドの購入
-                          </Link>
-                          <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            土地の購入・管理
-                          </Link>
-                        </div>
+                      <div className="pl-4 space-y-1">
+                        <Link href="/economy/market" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          アイテム市場取引のやり方
+                        </Link>
+                        <Link href="/economy/shop" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          お店を作る・お店で買う
+                        </Link>
+                        <Link href="/economy/buycommand" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          コマンドの購入
+                        </Link>
+                        <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          土地の購入・管理
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -735,30 +468,11 @@ const Header = () => {
                   </div>
                   {openSubMenu === 'adventure' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
-                      {/* 画像背景付きブロック */}
-                      <Link 
-                        href="/adventure" 
-                        className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg")' }}
-                        onClick={closeMenu}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-3">
-                          <div className="text-white">
-                            <p className="text-xs font-medium mb-1 flex items-center gap-1.5">
-                              娯楽
-                            </p>
-                            <p className="text-sm font-bold">このカテゴリを見る</p>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-[#5b8064]/0 active:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                      </Link>
-                      
                       <div className="pl-4 space-y-1">
                         <Link href="/adventure/arena" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                           アリーナ
                         </Link>
-                        <Link href="/adventure/hide-item" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                        <Link href="/adventure/hidden-items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                           隠しアイテムのヒント
                         </Link>
                         <Link href="/adventure/events" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
@@ -791,45 +505,13 @@ const Header = () => {
                   </div>
                   {openSubMenu === 'transport' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
-                      {/* 画像背景付きブロック */}
-                      <Link 
-                        href="/transport" 
-                        className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-28_02.41.46.png")' }}
-                        onClick={closeMenu}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
-                        <div className="absolute inset-0 flex items-end p-3">
-                          <div className="text-white">
-                            <p className="text-xs font-medium mb-1 flex items-center gap-1.5">
-                              交通
-                            </p>
-                            <p className="text-sm font-bold">このカテゴリを見る</p>
-                          </div>
-                        </div>
-                        <div className="absolute inset-0 bg-[#5b8064]/0 active:bg-[#5b8064]/20 transition-colors duration-200"></div>
-                      </Link>
-                      
-                      <div className="mb-3">
-                        <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3">ガイドライン</h4>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/transport/rail" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            鉄道に関してのガイドライン
-                          </Link>
-                          <Link href="/transport/road" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            道路に関してのガイドライン
-                          </Link>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="pl-4 space-y-1">
-                          <Link href="/transport/railway" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            鉄道・路線図（準備中）
-                          </Link>
-                          <Link href="/transport/spots" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            観光スポット・主要施設案内（準備中）
-                          </Link>
-                        </div>
+                      <div className="pl-4 space-y-1">
+                        <Link href="/transport/railway" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          鉄道・路線図（準備中）
+                        </Link>
+                        <Link href="/transport/spots" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          観光スポット・主要施設案内（準備中）
+                        </Link>
                       </div>
                     </div>
                   )}

@@ -17,8 +17,7 @@ const config = {
     enableGrouping: true,
     groupLabels: {
         protection: '保護',
-        utility: '便利機能',
-        guideline: 'ガイドライン',
+        land: '土地',
         other: 'その他'
     }
 };

@@ -162,10 +162,6 @@ export const iconMap = {
   chevronDown: ChevronDownIcon,
   package: PackageIcon,
   landmark: LandmarkIcon,
-  tools: ToolsIcon,
-  flag: FlagIcon,
-  discord: DiscordIcon,
-  github: GitHubIcon,
 } as const;
 
 export type IconName = keyof typeof iconMap;

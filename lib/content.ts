@@ -10,17 +10,6 @@ import remarkCustomDirectives from './remark-custom-directives'
 import rehypeStringify from 'rehype-stringify'
 import rehypeTableWrapper from './rehype-table-wrapper'
 
-function getDescription(content: string): string {
-  const lines = content.split('\n');
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith(':::') && !trimmed.startsWith('---') && !trimmed.startsWith('![')) {
-      return trimmed.replace(/[*_`]/g, '').substring(0, 100) + (trimmed.length > 100 ? '...' : '');
-    }
-  }
-  return '';
-}
-
 const contentDirectory = path.join(process.cwd(), 'content')
 
 // Content data types
@@ -382,38 +371,18 @@ export async function getLifeFiles(): Promise<ContentData[]> {
   return allLifeData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      // typeの型ガード
-      function hasType(obj: unknown): obj is { type?: string } {
-        return typeof obj === 'object' && obj !== null && 'type' in obj;
+      // orderまたはnumberでソート
+      function hasOrder(obj: unknown): obj is { order?: number } {
+        return typeof obj === 'object' && obj !== null && 'order' in obj;
       }
-      // numberの型ガード
       function hasNumber(obj: unknown): obj is { number?: number } {
         return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
 
-      const typeA = hasType(a) && typeof a.type === 'string' ? a.type : 'other';
-      const typeB = hasType(b) && typeof b.type === 'string' ? b.type : 'other';
+      const orderA = hasOrder(a) && typeof a.order === 'number' ? a.order : (hasNumber(a) && typeof a.number === 'number' ? a.number : 999);
+      const orderB = hasOrder(b) && typeof b.order === 'number' ? b.order : (hasNumber(b) && typeof b.number === 'number' ? b.number : 999);
 
-      // typeの優先順位を定義: 保護 → 便利機能 → ガイドライン → その他
-      const typeOrder: Record<string, number> = {
-        'protection': 1,
-        'utility': 2,
-        'guideline': 3,
-        'other': 999
-      };
-
-      const orderA = typeOrder[typeA] || 999;
-      const orderB = typeOrder[typeB] || 999;
-
-      // まずtypeの優先順位で比較
-      if (orderA !== orderB) {
-        return orderA - orderB;
-      }
-
-      // 同じtypeの場合、numberで比較
-      const numberA = hasNumber(a) && typeof a.number === 'number' ? a.number : 999999;
-      const numberB = hasNumber(b) && typeof b.number === 'number' ? b.number : 999999;
-      return numberA - numberB;
+      return orderA - orderB;
     })
 }
 
@@ -451,7 +420,6 @@ export async function getAdventureFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
-          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )

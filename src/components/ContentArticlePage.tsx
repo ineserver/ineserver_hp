@@ -10,8 +10,6 @@ import { useEffect, useState } from 'react';
 import parse, { DOMNode, Element, domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import CommandCode from '@/components/CommandCode';
 import CollapsibleDetail from '@/components/CollapsibleDetail';
-import ImageModal from '@/components/ImageModal';
-import CodeBlock from '@/components/CodeBlock';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
@@ -114,47 +112,6 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           return <CommandCode>{textContent.trim()}</CommandCode>;
         }
 
-        // 通常のコードブロック（pre > code）の処理
-        if (domNode.name === 'pre') {
-          const codeNode = domNode.children.find(
-            (child) => child instanceof Element && child.name === 'code'
-          ) as Element | undefined;
-
-          if (codeNode) {
-            const extractText = (node: DOMNode): string => {
-              if (node instanceof Element && node.children) {
-                return node.children.map((child) => extractText(child as DOMNode)).join('');
-              }
-              if ('data' in node && typeof node.data === 'string') {
-                return node.data;
-              }
-              return '';
-            };
-
-            const textContent = extractText(codeNode);
-            const className = codeNode.attribs?.class || '';
-
-            return <CodeBlock className={className}>{textContent}</CodeBlock>;
-          }
-        }
-
-        // 画像をクリック可能にする
-        if (domNode.name === 'img') {
-          const src = domNode.attribs.src || '';
-          const alt = domNode.attribs.alt || '';
-
-          return (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={src}
-              alt={alt}
-              className="cursor-pointer hover:opacity-80 transition-opacity duration-200"
-              onClick={() => setModalImage({ src, alt })}
-              style={{ maxWidth: '100%', height: 'auto' }}
-            />
-          );
-        }
-
         // CollapsibleDetail
         if (domNode.name === 'details' && domNode.attribs.class && domNode.attribs.class.includes('collapsible-detail')) {
           // summaryタグを探してtitleを取得
@@ -190,7 +147,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
       <Header />
       <Breadcrumb items={breadcrumbItems} />
 
-      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
+      <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center justify-between mb-6">

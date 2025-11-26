@@ -10,16 +10,11 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
-import Footer from "@/components/Footer";
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
-      <body className="noto flex flex-col min-h-screen">
-        <main className="flex-grow">
-          {children}
-        </main>
-        <Footer />
+      <body className="noto">
+        {children}
       </body>
     </html>
   );

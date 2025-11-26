@@ -25,9 +25,6 @@ export default function ContentListPage({ config, content = [], children }: Cont
     '保護': 'shield',
     'アイテム取引': 'package',
     '土地・ライセンス': 'landmark',
-    '観光': 'map',
-    '便利機能': 'tools',
-    'ガイドライン': 'fileText',
   };
 
   // typeに基づいてグループ分け
@@ -85,7 +82,7 @@ export default function ContentListPage({ config, content = [], children }: Cont
       <Header />
       <Breadcrumb items={breadcrumbItems} />
 
-      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
+      <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">
@@ -111,31 +108,18 @@ export default function ContentListPage({ config, content = [], children }: Cont
             </div>
           ) : config.enableGrouping ? (
             <div className="space-y-10">
-              {Object.entries(groupedContent)
-                .sort(([typeA], [typeB]) => {
-                  if (!config.groupLabels) return 0;
-                  const order = Object.keys(config.groupLabels);
-                  const indexA = order.indexOf(typeA);
-                  const indexB = order.indexOf(typeB);
+              {Object.entries(groupedContent).map(([type, items]) => {
+                const groupLabel = config.groupLabels?.[type] || type;
+                const GroupIcon = groupIconMap[groupLabel] ? iconMap[groupIconMap[groupLabel]] : null;
 
-                  if (indexA !== -1 && indexB !== -1) return indexA - indexB;
-                  if (indexA !== -1) return -1;
-                  if (indexB !== -1) return 1;
-                  return 0;
-                })
-                .map(([type, items]) => {
-                  const groupLabel = config.groupLabels?.[type] || type;
-                  const GroupIcon = groupIconMap[groupLabel] ? iconMap[groupIconMap[groupLabel]] : null;
-
-                  return (
-                    <div key={type}>
-                      <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">
-                        {GroupIcon && <GroupIcon className="text-gray-800 mr-3" size={28} />}
-                        {groupLabel}
-                      </h1>
-                      <div className="space-y-2">
-                        {items.map(renderContentItem)}
-                      </div>
+                return (
+                  <div key={type}>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">
+                      {GroupIcon && <GroupIcon className="text-gray-800 mr-3" size={28} />}
+                      {groupLabel}
+                    </h1>
+                    <div className="space-y-2">
+                      {items.map(renderContentItem)}
                     </div>
                   );
                 })}
