@@ -1,10 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 import { useEffect, useState } from 'react';
+import parse, { DOMNode, Element, domToReact, HTMLReactParserOptions } from 'html-react-parser';
+import CommandCode from '@/components/CommandCode';
+import CollapsibleDetail from '@/components/CollapsibleDetail';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
@@ -30,19 +34,19 @@ export default function ContentArticlePage({ config, content, showDate = false, 
     const parser = new DOMParser();
     const doc = parser.parseFromString(content.content, 'text/html');
     const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    
+
     const items: TocItem[] = [];
     headings.forEach((heading) => {
       const level = parseInt(heading.tagName.substring(1));
       const text = heading.textContent || '';
       // rehype-slugで自動生成されたIDを使用
       const id = heading.id || '';
-      
+
       if (id) {
         items.push({ id, text, level });
       }
     });
-    
+
     setTocItems(items);
   }, [content, showToc]);
 
@@ -52,9 +56,8 @@ export default function ContentArticlePage({ config, content, showDate = false, 
         <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">❌</div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">記事が見つかりません</h3>
-            <p className="text-gray-600">指定された記事は存在しません</p>
+            <p className="text-gray-600">記事は消されたか移動された可能性があります。。。</p>
           </div>
         </div>
       </div>
@@ -67,11 +70,81 @@ export default function ContentArticlePage({ config, content, showDate = false, 
     { label: content.title }
   ];
 
+  // html-react-parser options
+  const options: HTMLReactParserOptions = {
+    replace: (domNode) => {
+      if (domNode instanceof Element && domNode.attribs) {
+        // ブロック形式のコマンド
+        if (domNode.attribs.class && domNode.attribs.class.includes('command-code')) {
+          const extractText = (node: DOMNode): string => {
+            if (node instanceof Element && node.children) {
+              return node.children.map((child) => extractText(child as DOMNode)).join('');
+            }
+            if ('data' in node && typeof node.data === 'string') {
+              return node.data;
+            }
+            return '';
+          };
+
+          const textContent = extractText(domNode);
+          return (
+            <div className="mb-4">
+              <CommandCode>{textContent.trim()}</CommandCode>
+            </div>
+          );
+        }
+
+        // インライン形式のコマンド
+        if (domNode.name === 'code' && domNode.attribs.class && domNode.attribs.class.includes('command-inline')) {
+          const extractText = (node: DOMNode): string => {
+            if (node instanceof Element && node.children) {
+              return node.children.map((child) => extractText(child as DOMNode)).join('');
+            }
+            if ('data' in node && typeof node.data === 'string') {
+              return node.data;
+            }
+            return '';
+          };
+
+          const textContent = extractText(domNode);
+          return <CommandCode>{textContent.trim()}</CommandCode>;
+        }
+
+        // CollapsibleDetail
+        if (domNode.name === 'details' && domNode.attribs.class && domNode.attribs.class.includes('collapsible-detail')) {
+          // summaryタグを探してtitleを取得
+          const summaryNode = domNode.children.find(
+            (child) => child instanceof Element && child.name === 'summary'
+          ) as Element | undefined;
+
+          let title = '詳細';
+          if (summaryNode && summaryNode.children.length > 0) {
+            const firstChild = summaryNode.children[0];
+            if ('data' in firstChild && typeof firstChild.data === 'string') {
+              title = firstChild.data;
+            }
+          }
+
+          // summary以外の要素をchildrenとして渡す
+          const contentNodes = domNode.children.filter(
+            (child) => !(child instanceof Element && child.name === 'summary')
+          );
+
+          return (
+            <CollapsibleDetail title={title}>
+              {domToReact(contentNodes as DOMNode[], options)}
+            </CollapsibleDetail>
+          );
+        }
+      }
+    },
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
-      
+
       <article className="max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
@@ -103,6 +176,20 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           )}
         </header>
 
+        {/* アイキャッチ画像 */}
+        {content.image && (
+          <div className="mb-12 lg:-mx-[1.5rem]">
+            <Image
+              src={content.image}
+              alt={content.title}
+              width={1200}
+              height={630}
+              className="w-full h-auto rounded-lg"
+              priority
+            />
+          </div>
+        )}
+
         {/* 目次 */}
         {showToc && tocItems.length > 0 && (
           <nav className="mb-12 bg-gray-50 border border-gray-200 rounded-lg overflow-hidden">
@@ -118,27 +205,27 @@ export default function ContentArticlePage({ config, content, showDate = false, 
                 </svg>
                 もくじ
               </h2>
-              <svg 
+              <svg
                 className={`w-5 h-5 text-gray-600 transition-transform duration-200 ${isTocOpen ? 'transform rotate-180' : ''}`}
-                fill="none" 
-                stroke="currentColor" 
+                fill="none"
+                stroke="currentColor"
                 viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div 
+            <div
               id="table-of-contents"
               className={`overflow-hidden transition-all duration-300 ${isTocOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
             >
               <ul className="px-6 pt-4 pb-4 space-y-2">
                 {tocItems.map((item) => (
-                  <li 
-                    key={item.id} 
+                  <li
+                    key={item.id}
                     style={{ marginLeft: `${(item.level - 1) * 1}rem` }}
                     className="text-sm"
                   >
-                    <a 
+                    <a
                       href={`#${item.id}`}
                       className="text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
                     >
@@ -153,16 +240,15 @@ export default function ContentArticlePage({ config, content, showDate = false, 
 
         {/* コンテンツ */}
         <article className="max-w-none">
-          <div 
-            className="markdown-content"
-            dangerouslySetInnerHTML={{ __html: content.content }}
-          />
+          <div className="markdown-content">
+            {parse(content.content, options)}
+          </div>
         </article>
 
         {/* フッター */}
         <footer className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex justify-between items-center">
-            <Link 
+            <Link
               href={config.basePath}
               className={`inline-flex items-center ${config.color} font-medium transition-colors duration-200`}
             >

@@ -1,12 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllPatchNotes } from '@/lib/patch-notes';
+import { getAllPatchNotes, getLatestPatchNoteLight } from '@/lib/patch-notes';
+
+// 120秒ごとにキャッシュを再検証
+export const revalidate = 120;
 
 export async function GET(request: NextRequest) {
   try {
     // クエリパラメータの取得
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
+    const latest = searchParams.get('latest') === 'true';
+    
+    // 最新1件のみ取得（トップページ用）
+    if (latest) {
+      const latestNote = getLatestPatchNoteLight();
+      return NextResponse.json({
+        data: latestNote ? [latestNote] : [],
+        pagination: {
+          currentPage: 1,
+          totalPages: 1,
+          totalItems: latestNote ? 1 : 0,
+          itemsPerPage: 1
+        }
+      });
+    }
     
     // パッチノートデータを取得
     const allPatchNotes = await getAllPatchNotes();

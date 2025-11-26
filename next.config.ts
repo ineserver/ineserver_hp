@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'i.gyazo.com',
+        hostname: 'img.1necat.net',
       },
     ],
   },

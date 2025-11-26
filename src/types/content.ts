@@ -9,11 +9,11 @@ export interface ContentItem {
   category?: string;
   type?: string;
   externalLink?: string;
+  image?: string;
 }
 
 export interface ContentPageConfig {
   title: string;
-  description: string;
   apiEndpoint: string;
   basePath: string;
   icon: IconName;
@@ -21,7 +21,6 @@ export interface ContentPageConfig {
   bgColor: string;
   borderColor: string;
   loadingColor: string;
-  emptyIcon: string;
   emptyMessage: string;
   pageTitle: string;
   backButtonText: string;

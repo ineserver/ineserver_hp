@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 
+// 300秒(5分)ごとにキャッシュを再検証
+export const revalidate = 300;
+
 export async function GET() {
   try {
     // Googleカレンダーの公開フィードURL

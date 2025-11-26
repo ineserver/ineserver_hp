@@ -1,9 +1,13 @@
 import { NextResponse } from 'next/server';
-import { getAnnouncementFiles } from '../../../../lib/content';
+import { getAnnouncementFilesLight } from '../../../../lib/content';
+
+// 60秒ごとにキャッシュを再検証
+export const revalidate = 60;
 
 export async function GET() {
   try {
-    const announcements = await getAnnouncementFiles();
+    // 軽量版を使用（HTMLレンダリングをスキップ）
+    const announcements = getAnnouncementFilesLight();
     
     // 公開されているお知らせのみをフィルター
     const publishedAnnouncements = announcements.filter((announcement) => {
