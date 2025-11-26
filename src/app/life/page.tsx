@@ -2,8 +2,7 @@ import ContentListPage from '@/components/ContentListPage';
 import { getLifeFiles, ContentData } from '../../../lib/content';
 
 const config = {
-    title: '建築・居住',
-    description: '「自分の場所を持つ」ことに特化した情報です',
+    title: 'くらし',
     apiEndpoint: '/api/life',
     basePath: '/life',
     icon: 'home' as const,
@@ -12,9 +11,9 @@ const config = {
     borderColor: 'border-[#5b8064]/20',
     loadingColor: 'border-[#5b8064]',
     emptyIcon: '🏠',
-    emptyMessage: '建築・居住に関する記事がありません',
-    pageTitle: '建築・居住 | Ineサーバー',
-    backButtonText: '建築・居住一覧に戻る',
+    emptyMessage: 'くらしに関する記事がありません',
+    pageTitle: 'くらし | Ineサーバー',
+    backButtonText: 'くらし一覧に戻る',
     enableGrouping: true,
     groupLabels: {
         protection: '保護',

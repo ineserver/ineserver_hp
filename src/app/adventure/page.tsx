@@ -2,8 +2,7 @@ import ContentListPage from '@/components/ContentListPage';
 import { getAdventureFiles, ContentData } from '../../../lib/content';
 
 const config = {
-    title: '冒険・娯楽',
-    description: '「遊ぶ・楽しむ」要素をまとめます',
+    title: '娯楽',
     apiEndpoint: '/api/adventure',
     basePath: '/adventure',
     icon: 'gamepad' as const,
@@ -11,10 +10,9 @@ const config = {
     bgColor: 'bg-[#5b8064]/10',
     borderColor: 'border-[#5b8064]/20',
     loadingColor: 'border-[#5b8064]',
-    emptyIcon: '🎮',
-    emptyMessage: '冒険・娯楽に関する記事がありません',
-    pageTitle: '冒険・娯楽 | Ineサーバー',
-    backButtonText: '冒険・娯楽一覧に戻る',
+    emptyMessage: '娯楽に関する記事がありません',
+    pageTitle: '娯楽 | Ineサーバー',
+    backButtonText: '娯楽一覧に戻る',
     enableGrouping: false
 };
 

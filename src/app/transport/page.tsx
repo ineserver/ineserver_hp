@@ -2,8 +2,7 @@ import ContentListPage from '@/components/ContentListPage';
 import { getTransportFiles, ContentData } from '../../../lib/content';
 
 const config = {
-    title: 'ワールド・交通',
-    description: '「場所」に関する情報はすべてここです',
+    title: '交通',
     apiEndpoint: '/api/transport',
     basePath: '/transport',
     icon: 'map' as const,
@@ -11,10 +10,9 @@ const config = {
     bgColor: 'bg-[#5b8064]/10',
     borderColor: 'border-[#5b8064]/20',
     loadingColor: 'border-[#5b8064]',
-    emptyIcon: '🗺️',
-    emptyMessage: 'ワールド・交通に関する記事がありません',
-    pageTitle: 'ワールド・交通 | Ineサーバー',
-    backButtonText: 'ワールド・交通一覧に戻る',
+    emptyMessage: '交通に関する記事がありません',
+    pageTitle: '交通 | Ineサーバー',
+    backButtonText: '交通一覧に戻る',
     enableGrouping: false
 };
 

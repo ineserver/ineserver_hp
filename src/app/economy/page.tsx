@@ -2,8 +2,7 @@ import ContentListPage from '@/components/ContentListPage';
 import { getEconomyFiles, ContentData } from '../../../lib/content';
 
 const config = {
-  title: '経済・職業',
-  description: 'サーバー内の経済システムや職業について説明します',
+  title: '経済',
   apiEndpoint: '/api/economy',
   basePath: '/economy',
   icon: 'cash' as const,
@@ -11,10 +10,9 @@ const config = {
   bgColor: 'bg-[#5b8064]/10',
   borderColor: 'border-[#5b8064]/20',
   loadingColor: 'border-[#5b8064]',
-  emptyIcon: '💰',
-  emptyMessage: '経済・職業に関するコンテンツがまだありません。',
-  pageTitle: '経済・職業 | Ineサーバー',
-  backButtonText: '経済・職業一覧に戻る',
+  emptyMessage: '経済に関するコンテンツがまだありません。',
+  pageTitle: '経済 | Ineサーバー',
+  backButtonText: '経済一覧に戻る',
   enableGrouping: true,
   groupLabels: {
     job: '職業',

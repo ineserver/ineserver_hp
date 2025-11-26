@@ -90,9 +90,6 @@ export default function ContentListPage({ config, content = [], children }: Cont
             <IconComponent className={`${config.color} mr-6`} size={40} />
             <div>
               <div className="text-4xl font-bold text-gray-900 mb-2">{config.title}</div>
-              <p className="text-gray-600 text-lg">
-                {config.description}
-              </p>
             </div>
           </div>
         </header>
@@ -107,7 +104,6 @@ export default function ContentListPage({ config, content = [], children }: Cont
         <section>
           {content.length === 0 ? (
             <div className="text-center py-12">
-              <div className="text-gray-400 text-6xl mb-4">{config.emptyIcon}</div>
               <h3 className="text-xl font-medium text-gray-900 mb-2">コンテンツがありません</h3>
               <p className="text-gray-600">{config.emptyMessage}</p>
             </div>

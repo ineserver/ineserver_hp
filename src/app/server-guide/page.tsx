@@ -3,7 +3,6 @@ import { getServerGuideFiles, ContentData } from '../../../lib/content';
 
 const config = {
     title: 'サーバーガイド',
-    description: '「まずはここから」という必読情報をまとめます',
     apiEndpoint: '/api/server-guide',
     basePath: '/server-guide',
     icon: 'bullhorn' as const,
@@ -11,14 +10,12 @@ const config = {
     bgColor: 'bg-[#5b8064]/10',
     borderColor: 'border-[#5b8064]/20',
     loadingColor: 'border-[#5b8064]',
-    emptyIcon: '📢',
     emptyMessage: 'サーバーガイドの記事がありません',
     pageTitle: 'サーバーガイド | Ineサーバー',
     backButtonText: 'サーバーガイド一覧に戻る',
     enableGrouping: true,
     groupLabels: {
         rule: 'ルール・規約',
-        protection: '保護',
         other: 'その他'
     }
 };
@@ -47,7 +44,7 @@ export default async function ServerGuidePage() {
                             <span className="text-2xl mr-3">🔰</span>
                             <h3 className="text-xl font-bold text-gray-800 group-hover:text-[#5b8064] transition-colors">チュートリアル</h3>
                         </div>
-                        <p className="text-gray-600 text-sm">サーバーへの参加方法や最初のステップを解説します。</p>
+                        <p className="text-gray-600 text-sm">サーバーへの参加方法や最初のステップを解説！</p>
                     </a>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -55,9 +52,9 @@ export default async function ServerGuidePage() {
                     <a href="/lp" className="block p-6 bg-white border border-gray-200 rounded-xl hover:shadow-md hover:border-[#5b8064] transition-all duration-200 group h-full">
                         <div className="flex items-center mb-2">
                             <span className="text-2xl mr-3">✨</span>
-                            <h3 className="text-xl font-bold text-gray-800 group-hover:text-[#5b8064] transition-colors">サーバー紹介 (LP)</h3>
+                            <h3 className="text-xl font-bold text-gray-800 group-hover:text-[#5b8064] transition-colors">サーバー紹介</h3>
                         </div>
-                        <p className="text-gray-600 text-sm">いねさばの魅力や特徴をまとめた紹介ページです。</p>
+                        <p className="text-gray-600 text-sm">いねさばの魅力や特徴をまとめた紹介ページ</p>
                     </a>
                 </div>
                 <a href="/guide" className="block p-6 bg-white border border-gray-200 rounded-xl hover:shadow-md hover:border-[#5b8064] transition-all duration-200 group md:col-span-2">
@@ -75,7 +72,7 @@ export default async function ServerGuidePage() {
                         </span>
                         <h3 className="text-xl font-bold text-gray-800 group-hover:text-[#5b8064] transition-colors">いねさばの歩き方</h3>
                     </div>
-                    <p className="text-gray-600 text-sm">いねさば独自のよく使われる機能まとめ一覧的なページ</p>
+                    <p className="text-gray-600 text-sm">いねさばの独自機能の一覧ページ</p>
                 </a>
             </div>
         </ContentListPage>

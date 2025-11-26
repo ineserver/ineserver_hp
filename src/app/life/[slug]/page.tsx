@@ -3,7 +3,7 @@ import { getLifeData } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 
 const config = {
-    title: '建築・居住',
+    title: 'くらし',
     description: '「自分の場所を持つ」ことに特化した情報です',
     apiEndpoint: '/api/life',
     basePath: '/life',
@@ -13,9 +13,9 @@ const config = {
     borderColor: 'border-[#5b8064]/20',
     loadingColor: 'border-[#5b8064]',
     emptyIcon: '🏠',
-    emptyMessage: '建築・居住に関する記事がありません',
-    pageTitle: '建築・居住',
-    backButtonText: '建築・居住一覧に戻る'
+    emptyMessage: 'くらしに関する記事がありません',
+    pageTitle: 'くらし',
+    backButtonText: 'くらし一覧に戻る'
 };
 
 interface PageProps {
