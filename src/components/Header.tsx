@@ -242,6 +242,7 @@ const Header = () => {
                       <li><Link href="/server-guide/terms_of_service" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />利用規約</Link></li>
                       <li><Link href="/server-guide/allowed_mods" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />許可MOD一覧</Link></li>
                       <li><Link href="/server-guide/prohibited_items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />流通禁止アイテム一覧</Link></li>
+                      <li><Link href="server-guide/building_restrictions" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -250,17 +251,15 @@ const Header = () => {
               {/* 2. 建築・居住 */}
               <div className="flex-1 relative group">
                 <Link href="/life" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/life') ? 'active-menu-item' : ''}`}>
-                  建築・居住
+                  くらし
                   <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
                 </Link>
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    <ul className="space-y-1">
-                      <li><Link href="/life/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入・管理 (ARM)</Link></li>
-                      <li><Link href="/life/building-restrictions" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />中心地の土地利用について</Link></li>
-                      <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方 (WorldGuard)</Link></li>
-                      <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方 (LWC)</Link></li>
+                    <ul className="space-y-1">                       
+                      <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方</Link></li>
+                      <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -269,17 +268,17 @@ const Header = () => {
               {/* 3. 経済・職業 */}
               <div className="flex-1 relative group">
                 <Link href="/economy" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/economy') ? 'active-menu-item' : ''}`}>
-                  経済・職業
+                  経済
                   <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
                 </Link>
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
                     <ul className="space-y-1">
-                      <li><Link href="/economy/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業（Jobsなど）</Link></li>
-                      <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引のやり方 (Nascraft)</Link></li>
-                      <li><Link href="/economy/shop" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う (DisplayShops)</Link></li>
-                      <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入 (機能ショップ)</Link></li>
+                      <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引のやり方</Link></li>
+                      <li><Link href="/economy/shop" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
+                      <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                      <li><Link href="/economy/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -288,14 +287,14 @@ const Header = () => {
               {/* 4. 冒険・娯楽 */}
               <div className="flex-1 relative group">
                 <Link href="/adventure" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/adventure') ? 'active-menu-item' : ''}`}>
-                  冒険・娯楽
+                  娯楽
                   <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
                 </Link>
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
                     <ul className="space-y-1">
-                      <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ（PvPやPvE）</Link></li>
+                      <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
                       <li><Link href="/adventure/hidden-items" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテムのヒント</Link></li>
                       <li><Link href="/adventure/events" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />過去のイベント一覧（アーカイブ）</Link></li>
                     </ul>
@@ -306,14 +305,14 @@ const Header = () => {
               {/* 5. ワールド・交通 */}
               <div className="flex-1 relative group">
                 <Link href="/transport" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center transition-colors duration-200 ${isActive('/transport') ? 'active-menu-item' : ''}`}>
-                  ワールド・交通
+                  交通
                 </Link>
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
                     <ul className="space-y-1">
-                      <li><Link href="/transport/railway" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道・路線図</Link></li>
-                      <li><Link href="/transport/spots" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />観光スポット・主要施設案内</Link></li>
+                      <li><Link href="/transport/railway" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道・路線図（準備中）</Link></li>
+                      <li><Link href="/transport/spots" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />観光スポット・主要施設案内（準備中）</Link></li>
                     </ul>
                   </div>
                 </div>
@@ -365,6 +364,9 @@ const Header = () => {
                         <Link href="/server-guide/prohibited_items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                           流通禁止アイテム一覧
                         </Link>
+                        <Link href="server-guide/building_restrictions" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          中心地の土地利用について
+                        </Link>
                       </div>
                     </div>
                   )}
@@ -378,12 +380,12 @@ const Header = () => {
                       className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                       onClick={closeMenu}
                     >
-                      建築・居住
+                      くらし
                     </Link>
                     <button
                       onClick={() => toggleSubMenu('life')}
                       className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
-                      aria-label="建築・居住のサブメニューを開く"
+                      aria-label="くらしのサブメニューを開く"
                     >
                       <ChevronDownIcon
                         className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'life' ? 'rotate-180' : ''}`}
@@ -393,17 +395,11 @@ const Header = () => {
                   {openSubMenu === 'life' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
                       <div className="pl-4 space-y-1">
-                        <Link href="/life/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          土地の購入・管理 (ARM)
-                        </Link>
-                        <Link href="/life/building-restrictions" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          中心地の土地利用について
-                        </Link>
                         <Link href="/life/land-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          土地の保護のやり方 (WorldGuard)
+                          土地の保護のやり方
                         </Link>
                         <Link href="/life/block-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          ブロック保護のやり方 (LWC)
+                          ブロック保護のやり方
                         </Link>
                       </div>
                     </div>
@@ -418,12 +414,12 @@ const Header = () => {
                       className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                       onClick={closeMenu}
                     >
-                      経済・職業
+                      経済
                     </Link>
                     <button
                       onClick={() => toggleSubMenu('economy')}
                       className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
-                      aria-label="経済・職業のサブメニューを開く"
+                      aria-label="経済のサブメニューを開く"
                     >
                       <ChevronDownIcon
                         className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'economy' ? 'rotate-180' : ''}`}
@@ -433,17 +429,17 @@ const Header = () => {
                   {openSubMenu === 'economy' && (
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
                       <div className="pl-4 space-y-1">
-                        <Link href="/economy/jobs" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          職業（Jobsなど）
-                        </Link>
                         <Link href="/economy/market" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          アイテム市場取引のやり方 (Nascraft)
+                          アイテム市場取引のやり方
                         </Link>
                         <Link href="/economy/shop" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          お店を作る・お店で買う (DisplayShops)
+                          お店を作る・お店で買う
                         </Link>
                         <Link href="/economy/buycommand" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          コマンドの購入 (機能ショップ)
+                          コマンドの購入
+                        </Link>
+                        <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                          土地の購入・管理
                         </Link>
                       </div>
                     </div>
@@ -458,7 +454,7 @@ const Header = () => {
                       className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                       onClick={closeMenu}
                     >
-                      冒険・娯楽
+                      娯楽
                     </Link>
                     <button
                       onClick={() => toggleSubMenu('adventure')}
@@ -474,7 +470,7 @@ const Header = () => {
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
                       <div className="pl-4 space-y-1">
                         <Link href="/adventure/arena" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          アリーナ（PvPやPvE）
+                          アリーナ
                         </Link>
                         <Link href="/adventure/hidden-items" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                           隠しアイテムのヒント
@@ -495,12 +491,12 @@ const Header = () => {
                       className="flex-1 py-4 text-gray-700 hover:text-[#5b8064] hover:bg-gray-50 px-3 rounded-md font-medium"
                       onClick={closeMenu}
                     >
-                      ワールド・交通
+                      交通
                     </Link>
                     <button
                       onClick={() => toggleSubMenu('transport')}
                       className="p-4 text-gray-500 hover:text-[#5b8064] hover:bg-gray-50 min-w-[56px] min-h-[56px] flex items-center justify-center rounded-md transition-colors duration-200 cursor-pointer"
-                      aria-label="ワールド・交通のサブメニューを開く"
+                      aria-label="交通のサブメニューを開く"
                     >
                       <ChevronDownIcon
                         className={`w-5 h-5 transition-transform duration-200 ${openSubMenu === 'transport' ? 'rotate-180' : ''}`}
@@ -511,10 +507,10 @@ const Header = () => {
                     <div className="ml-3 mt-1 mb-3 rounded-lg p-3 space-y-2">
                       <div className="pl-4 space-y-1">
                         <Link href="/transport/railway" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          鉄道・路線図
+                          鉄道・路線図（準備中）
                         </Link>
                         <Link href="/transport/spots" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                          観光スポット・主要施設案内
+                          観光スポット・主要施設案内（準備中）
                         </Link>
                       </div>
                     </div>

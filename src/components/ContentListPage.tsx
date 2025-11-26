@@ -20,10 +20,8 @@ export default function ContentListPage({ config, content = [], children }: Cont
 
   // グループラベルとアイコンのマッピング
   const groupIconMap: Record<string, keyof typeof iconMap> = {
-    'サーバールール': 'fileText',
+    'ルール・規約': 'fileText',
     '保護': 'shield',
-    'ineを貯める': 'trendingUp',
-    'ineを使う': 'trendingDown',
     'アイテム取引': 'package',
     '土地・ライセンス': 'landmark',
   };

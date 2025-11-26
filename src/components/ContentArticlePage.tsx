@@ -56,9 +56,8 @@ export default function ContentArticlePage({ config, content, showDate = false, 
         <Header />
         <div className="max-w-4xl mx-auto px-6 py-8">
           <div className="text-center py-12">
-            <div className="text-gray-400 text-6xl mb-4">❌</div>
             <h3 className="text-xl font-medium text-gray-900 mb-2">記事が見つかりません</h3>
-            <p className="text-gray-600">指定された記事は存在しません</p>
+            <p className="text-gray-600">記事は消されたか移動された可能性があります。。。</p>
           </div>
         </div>
       </div>
