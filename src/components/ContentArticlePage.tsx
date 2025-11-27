@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import parse, { DOMNode, Element, domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import CommandCode from '@/components/CommandCode';
 import CollapsibleDetail from '@/components/CollapsibleDetail';
+import ImageModal from '@/components/ImageModal';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
@@ -26,6 +27,7 @@ interface TocItem {
 export default function ContentArticlePage({ config, content, showDate = false, showToc = false }: ContentArticlePageProps) {
   const [tocItems, setTocItems] = useState<TocItem[]>([]);
   const [isTocOpen, setIsTocOpen] = useState(false);
+  const [modalImage, setModalImage] = useState<{ src: string; alt: string } | null>(null);
 
   useEffect(() => {
     if (!showToc || !content) return;
@@ -108,6 +110,22 @@ export default function ContentArticlePage({ config, content, showDate = false, 
 
           const textContent = extractText(domNode);
           return <CommandCode>{textContent.trim()}</CommandCode>;
+        }
+
+        // 画像をクリック可能にする
+        if (domNode.name === 'img') {
+          const src = domNode.attribs.src || '';
+          const alt = domNode.attribs.alt || '';
+          
+          return (
+            <img
+              src={src}
+              alt={alt}
+              className="cursor-pointer hover:opacity-80 transition-opacity duration-200"
+              onClick={() => setModalImage({ src, alt })}
+              style={{ maxWidth: '100%', height: 'auto' }}
+            />
+          );
         }
 
         // CollapsibleDetail
@@ -260,6 +278,15 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           </div>
         </footer>
       </article>
+
+      {/* 画像モーダル */}
+      {modalImage && (
+        <ImageModal
+          src={modalImage.src}
+          alt={modalImage.alt}
+          onClose={() => setModalImage(null)}
+        />
+      )}
     </div>
   );
 }

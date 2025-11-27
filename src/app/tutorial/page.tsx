@@ -7,9 +7,11 @@ import RecommendedVersion from '@/components/RecommendedVersion';
 import Link from 'next/link';
 import CommandCode from '@/components/CommandCode';
 import CollapsibleDetail from '@/components/CollapsibleDetail';
+import ImageModal from '@/components/ImageModal';
 
 export default function TutorialPage() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [modalImage, setModalImage] = useState<{ src: string; alt: string } | null>(null);
 
   const steps = [
     {
@@ -17,11 +19,11 @@ export default function TutorialPage() {
       title: "チュートリアルへようこそ！",
       content: (
         <div className="markdown-content">
-          <div className="rounded-2xl overflow-hidden mb-6">
+          <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/a4b5d73c97c288bff8c5c86c3d8f859a.jpg', alt: 'いねさばへようこそ' })}>
             <Image
               src="https://img.1necat.net/a4b5d73c97c288bff8c5c86c3d8f859a.jpg"
               alt="いねさばへようこそ"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
               width={1200}
               height={675}
             />
@@ -143,28 +145,30 @@ export default function TutorialPage() {
             <p className="mb-4">
               実際の処罰は以下のルールに則って行われますのでご注意ください。
             </p>
-            <Link
-              href="/lifestyle/rule"
-              className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              サーバールール
-              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </Link>
-            <Link
-              href="/lifestyle/terms_of_service"
-              className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium ml-4"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              利用規約
-              <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 items-start">
+              <Link
+                href="/server-guide/rule"
+                className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                サーバールール
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </Link>
+              <Link
+                href="/server-guide/terms_of_service"
+                className="inline-flex items-center px-4 py-2 bg-[#5b8064] hover:bg-[#4a6b54] text-white rounded-lg transition-all duration-200 font-medium"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                利用規約
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       )
@@ -197,31 +201,31 @@ export default function TutorialPage() {
             <div className="ml-14">
               <div className="space-y-1 mb-4">
                 <p>Minecraftを起動し、「マルチプレイ」を選択してください。</p>
-                <div className="rounded-2xl overflow-hidden mb-6">
+                <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.40.png', alt: 'Minecraftメイン画面' })}>
                   <Image
                     src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.40.png"
                     alt="Minecraftメイン画面"
-                    className="w-full h-auto object-cover"
+                    className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                     width={1200}
                     height={675}
                   />
                 </div>
                 <p>右下にある「サーバーを追加」をクリックしてください。</p>
-                <div className="rounded-2xl overflow-hidden mb-6">
+                <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.48.png', alt: 'Minecraftマルチ選択画面' })}>
                   <Image
                     src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2015.59.48.png"
                     alt="Minecraftマルチ選択画面"
-                    className="w-full h-auto object-cover"
+                    className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                     width={1200}
                     height={675}
                   />
                 </div>
                 <p>サーバー名にわかりやすい名前（例：いねさば）を、<b className="text-red-600">サーバーアドレスに「1necat.net」</b>を、<b className="text-red-600">リソースパックは「有効」</b>に設定してください。</p>
-                <div className="rounded-2xl overflow-hidden mb-6">
+                <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2016.00.01.png', alt: 'Minecraftマルチプレイ追加画面' })}>
                   <Image
                     src="https://img.1necat.net/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202025-11-17%2016.00.01.png"
                     alt="Minecraftマルチプレイ追加画面"
-                    className="w-full h-auto object-cover"
+                    className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                     width={1200}
                     height={675}
                   />
@@ -245,22 +249,22 @@ export default function TutorialPage() {
             <p>続いてメインのサーバーである、経済サーバーに移動してみましょう！</p>
             <h2>最初にログインしたサーバーは「ロビーサーバー」です</h2>
             <p>ロビーサーバーは、経済サーバーがメンテナンス時などの待機場になります。</p>
-            <div className="rounded-2xl overflow-hidden mb-6">
+            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/2025-11-19_14.46.59.png', alt: 'いねさばロビー' })}>
               <Image
                 src="https://img.1necat.net/2025-11-19_14.46.59.png"
                 alt="いねさばロビー"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                 width={1200}
                 height={675}
               />
             </div>
             <h2>目の前の水に入ると「経済サーバー」に移動できます！</h2>
             <p>いねさばのメインのサーバーはこの「経済サーバー」です。これから解説していくものはすべて「経済サーバー」内のものになります。</p>
-            <div className="rounded-2xl overflow-hidden mb-6">
+            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/2025-11-19_23.48.55.png', alt: 'いねさば経済サーバー' })}>
               <Image
                 src="https://img.1necat.net/2025-11-19_23.48.55.png"
                 alt="いねさば経済サーバー"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                 width={1200}
                 height={675}
               />
@@ -274,11 +278,11 @@ export default function TutorialPage() {
       title: "いねさばへようこそ！",
       content: (
         <div className="space-y-6">
-          <div className="rounded-2xl overflow-hidden mb-6">
+          <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/2025-11-21_15.02.13.png', alt: '経済ワールド説明画像' })}>
             <Image
               src="https://img.1necat.net/2025-11-21_15.02.13.png"
               alt="経済ワールド説明画像"
-              className="w-full h-auto object-cover"
+              className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
               width={1200}
               height={675}
             />
@@ -301,11 +305,11 @@ export default function TutorialPage() {
             <p><CommandCode>/market</CommandCode>コマンドで、取引画面を開くことができます。</p>
 
             <h2>カテゴリを選ぶ</h2>
-            <div className="rounded-2xl overflow-hidden mb-6">
+            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/84f0e56743771bf49598a875d4f85905.png', alt: 'カテゴリ説明画像' })}>
               <Image
                 src="https://img.1necat.net/84f0e56743771bf49598a875d4f85905.png"
                 alt="カテゴリ説明画像"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                 width={1200}
                 height={675}
               />
@@ -313,11 +317,11 @@ export default function TutorialPage() {
             <p>今回は食料カテゴリ→購入したい食べ物を選択します。</p>
 
             <h2>購入する</h2>
-            <div className="rounded-2xl overflow-hidden mb-6">
+            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/eb8be81f07fbad47458c2109cb0f7bce.png', alt: '購入説明画像' })}>
               <Image
                 src="https://img.1necat.net/eb8be81f07fbad47458c2109cb0f7bce.png"
                 alt="購入説明画像"
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
                 width={1200}
                 height={675}
               />
@@ -343,22 +347,22 @@ export default function TutorialPage() {
 
             <h2>おすすめ！　選択肢① 郊外に自宅をつくる</h2>
             <p>最も一般的な、Minecraftらしい選択肢です。</p>
-            <p>いねさばの <Link className="inline-flex items-center" href="lifestyle/building_restrictions" target="_blank" rel="noopener noreferrer">中心地エリア<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <p>いねさばの <Link className="inline-flex items-center" href="server-guide/building_restrictions" target="_blank" rel="noopener noreferrer">中心地エリア<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link> 以外では基本的に無料で建築ができます。</p>
             <p>いねさばには幾つかの住宅街が整備されています！詳しくはマップからご確認ください！</p>
-            <p>なお、郊外エリアは保護がされていません。<b className="text-red">保護はご自身で忘れずにおかけください！</b>→ <Link className="inline-flex items-center" href="lifestyle/area_protection" target="_blank" rel="noopener noreferrer">保護のやり方はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <p>なお、郊外エリアは保護がされていません。<b className="text-red">保護はご自身で忘れずにおかけください！</b>→ <Link className="inline-flex items-center" href="life/land-protection" target="_blank" rel="noopener noreferrer">保護のやり方はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link></p>
 
             <h2>選択肢② マンション・アパートに住む</h2>
             <p>中心地エリアに住みたいけど、高い土地代を払いたくない方向けの選択肢です。</p>
             <p>いねさばにはマンション・アパートがいくつかあります。マンション・アパートには土地代がかからず、費用を抑えて中心地に住むことができます。</p>
-            <p><Link className="inline-flex items-center" href="" target="_blank" rel="noopener noreferrer">マンション・アパートについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <p><Link className="inline-flex items-center" href="economy/land-purchase" target="_blank" rel="noopener noreferrer">マンション・アパートについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link></p>
 
             <h2>選択肢③ 中心地に自宅をつくる</h2>
             <p>夢のある選択肢です！色々な商業拠点のある中心地に土地代を払って自宅を立てることが出来ます。</p>
             <p>中心地では土地代を払うことで、その区画を入手することができます。</p>
-            <p><Link className="inline-flex items-center" href="" target="_blank" rel="noopener noreferrer">土地の購入について詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            <p><Link className="inline-flex items-center" href="economy/land-purchase" target="_blank" rel="noopener noreferrer">土地の購入について詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg></Link></p>
             <h1>資材を集めよう</h1>
             <p>拠点を建てるには資材が必要だと思います！</p>
@@ -393,7 +397,7 @@ export default function TutorialPage() {
 
             <h2>わからないことがあれば「いねさばの歩き方」を見よう</h2>
             <p>いねさばの歩き方は公式HPの右上から見ることが出来ます。こんな感じのアイコンです↓</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 py-4 bg-gray-50 rounded-xl border border-gray-200 mt-4 mb-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 py-4 bg-gray-50 rounded-xl border border-gray-200 mt-4 mb-2">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold text-gray-500">PC</span>
                 <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg text-sm text-white font-bold shadow-md flex items-center gap-1.5 pointer-events-none scale-90">
@@ -403,7 +407,6 @@ export default function TutorialPage() {
                   いねさばの歩き方
                 </div>
               </div>
-              <div className="w-px h-8 bg-gray-300 hidden sm:block"></div>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold text-gray-500">スマホ</span>
                 <div className="relative p-1.5 rounded-md flex items-center justify-center bg-white border border-gray-100 shadow-sm pointer-events-none scale-90" style={{ minWidth: '40px', minHeight: '40px' }}>
@@ -428,7 +431,7 @@ export default function TutorialPage() {
           </div>
           <Link
             href="https://discord.gg/tdefsEKYhp"
-            className="inline-flex items-center px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] !text-white rounded-lg transition-all duration-200 font-medium"
+            className="flex sm:inline-flex w-full sm:w-auto justify-center items-center px-4 py-2 bg-[#5865F2] hover:bg-[#4752C4] !text-white rounded-lg transition-all duration-200 font-medium"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -603,6 +606,15 @@ export default function TutorialPage() {
           </div>
         </div>
       </div>
+
+      {/* 画像モーダル */}
+      {modalImage && (
+        <ImageModal
+          src={modalImage.src}
+          alt={modalImage.alt}
+          onClose={() => setModalImage(null)}
+        />
+      )}
     </div>
   );
 }
