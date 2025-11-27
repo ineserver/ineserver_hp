@@ -80,7 +80,7 @@ const Header = () => {
           <div className="max-w-full mx-auto px-2 sm:px-3 lg:px-4 pb-1 lg:pb-0">
             <div className="flex items-center h-14">
               {/* ロゴ - 左側 */}
-              <div className="flex items-center">
+              <div className="flex items-center pl-2 lg:pl-0">
                 <div className="flex items-center">
                   <div className="w-8 h-8 mr-3 flex items-center justify-center">
                     <Link href="/">
@@ -97,7 +97,7 @@ const Header = () => {
                     <Link href="/">
                       <h1 className="text-2xl font-black text-gray-900 hover:text-gray-700 transition-colors duration-200 cursor-pointer">いねさば</h1>
                     </Link>
-                    <p className="text-base text-gray-600">Ine Server</p>
+                    <p className="text-base text-gray-600 hidden sm:block">Ine Server</p>
                   </div>
                 </div>
               </div>
@@ -171,6 +171,25 @@ const Header = () => {
 
               {/* モバイル用ガイドボタン＋ハンバーガーメニュー */}
               <div className="flex items-center lg:hidden gap-1">
+                {/* サーバーガイドボタン */}
+                <Link
+                  href="/server-guide"
+                  className="relative p-1 rounded-md flex flex-col items-center justify-center"
+                  aria-label="サーバーガイド"
+                  style={{ minWidth: '48px', minHeight: '48px' }}
+                >
+                  <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5 mb-0.5" xmlSpace="preserve">
+                    <g>
+                      <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
+                        c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
+                        c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
+                        c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
+                        c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
+                        c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" style={{ fill: '#5b8064' }}></path>
+                    </g>
+                  </svg>
+                  <span className="text-[9px] font-bold text-[#5b8064] leading-none">初めての方へ</span>
+                </Link>
                 {/* ガイドボタン（アイコンのみ） */}
                 <a
                   href="/guide"
@@ -191,8 +210,9 @@ const Header = () => {
                 {/* ハンバーガーメニュー */}
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100 cursor-pointer"
+                  className="p-2 rounded-md text-gray-700 hover:text-[#5b8064] hover:bg-gray-100 cursor-pointer flex items-center justify-center"
                   aria-label="メニューを開く"
+                  style={{ minWidth: '48px', minHeight: '48px' }}
                 >
                   <div className={`relative w-7 h-7 flex flex-col justify-center items-center transition-all duration-300 group`}>
                     {/* 上の線 */}
@@ -230,7 +250,17 @@ const Header = () => {
               <div className="flex-1 relative group">
                 <Link href="/server-guide" className={`block text-white hover:text-[#d1fae5] px-6 py-3 text-lg font-medium text-center relative transition-colors duration-200 ${isActive('/server-guide') ? 'active-menu-item' : ''}`}>
                   <span className="flex items-center justify-center gap-2">
-                    🔰 サーバーガイド
+                    <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5" xmlSpace="preserve">
+                      <g>
+                        <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
+                          c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
+                          c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
+                          c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
+                          c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
+                          c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" fill="currentColor"></path>
+                      </g>
+                    </svg>
+                    はじめての方へ
                   </span>
                   <div className="absolute right-0 top-[10%] bottom-[10%] w-px bg-[#4a6b55]"></div>
                 </Link>
@@ -257,7 +287,7 @@ const Header = () => {
 
                 <div className="absolute top-full left-0 right-0 bg-white shadow-xl border border-gray-200 rounded-b-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-4">
-                    <ul className="space-y-1">                       
+                    <ul className="space-y-1">
                       <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方</Link></li>
                       <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方</Link></li>
                     </ul>
@@ -336,7 +366,17 @@ const Header = () => {
                       onClick={closeMenu}
                     >
                       <span className="flex items-center gap-2">
-                        🔰 サーバーガイド
+                        <svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 512 512" className="w-5 h-5" xmlSpace="preserve">
+                          <g>
+                            <path className="st0" d="M256,120.07L145.016,12.742C131.953,0.102,112.594-3.492,95.844,3.586
+                              c-16.734,7.109-27.609,23.531-27.609,41.719v274c0,18.406,7.469,36.031,20.703,48.844L224.5,499.258
+                              c17.563,16.984,45.438,16.984,62.984,0l135.578-131.109c13.234-12.813,20.703-30.438,20.703-48.844v-274
+                              c0-18.188-10.875-34.609-27.609-41.719c-16.75-7.078-36.109-3.484-49.172,9.156L256,120.07z M379.844,311.414
+                              c0,6.141-2.484,12.016-6.906,16.281L256,440.805V209.008l22.219-21.5l82.438-79.719c3.25-3.156,8.109-4.063,12.281-2.281
+                              c4.188,1.766,6.906,5.875,6.906,10.422V311.414z" fill="currentColor"></path>
+                          </g>
+                        </svg>
+                        はじめての方へ
                       </span>
                     </Link>
                     <button
