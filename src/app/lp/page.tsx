@@ -90,7 +90,6 @@ const HERO_IMAGES = [
 ];
 
 export default function LandingPage() {
-    const [isScrolled, setIsScrolled] = useState(false);
     const [headerColor, setHeaderColor] = useState<'white' | 'black'>('white');
 
     // Modal States
@@ -111,13 +110,6 @@ export default function LandingPage() {
 
     useEffect(() => {
         const handleScroll = () => {
-            // Change color after scrolling past the hero section (approx 80vh to be safe)
-            if (window.scrollY > window.innerHeight * 0.8) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
-
             const lightSection = document.getElementById('light-section-start');
             if (lightSection) {
                 const rect = lightSection.getBoundingClientRect();
@@ -161,9 +153,11 @@ export default function LandingPage() {
 
                         <div className="mt-6 space-y-3">
                             <div className="relative w-full rounded-lg overflow-hidden shadow-lg border border-gray-200">
-                                <img
+                                <Image
                                     src="https://img.1necat.net/fe70a2a98fbec6f8e811d356880a6d29.jpg"
                                     alt="Ineserver Market Preview"
+                                    width={800}
+                                    height={450}
                                     className="w-full h-auto"
                                 />
                             </div>
@@ -215,9 +209,11 @@ export default function LandingPage() {
                         </p>
 
                         <div className="rounded-lg overflow-hidden border border-gray-200 mb-2">
-                            <img
+                            <Image
                                 src="https://img.1necat.net/6178bc97da86c11d0014235bfa84eeab.png"
                                 alt="GitHubで公開されている開発タスク"
+                                width={800}
+                                height={450}
                                 className="w-full h-auto object-cover"
                             />
                         </div>
@@ -240,9 +236,11 @@ export default function LandingPage() {
 
                         {/* 画像エリア：ここに「家具一覧」や「料理が並んだテーブル」のSSを入れると最高です */}
                         <div className="rounded-lg overflow-hidden border border-gray-200 shadow-lg">
-                            <img
+                            <Image
                                 src="https://img.1necat.net/2025-11-29_01.41.15.png"
                                 alt="家具や料理などのカスタムアイテム一覧"
+                                width={800}
+                                height={450}
                                 className="w-full h-auto object-cover transition-transform duration-500"
                             />
                         </div>
@@ -578,10 +576,11 @@ export default function LandingPage() {
                                     {/* 道路設計 */}
                                     <div className="relative rounded-xl overflow-hidden shadow-md group">
                                         <div className="aspect-video w-full relative">
-                                            <img
+                                            <Image
                                                 src="https://img.1necat.net/2025-11-29_15.24.15.png"
                                                 alt="道路設計のイメージ"
-                                                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                                                fill
+                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                                             />
                                             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                                         </div>
@@ -595,10 +594,11 @@ export default function LandingPage() {
                                     {/* 鉄道敷設 */}
                                     <div className="relative rounded-xl overflow-hidden shadow-md group">
                                         <div className="aspect-video w-full relative">
-                                            <img
+                                            <Image
                                                 src="https://img.1necat.net/2025-11-29_15.23.53.png"
                                                 alt="鉄道敷設のイメージ"
-                                                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                                                fill
+                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
                                             />
                                             <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
                                         </div>

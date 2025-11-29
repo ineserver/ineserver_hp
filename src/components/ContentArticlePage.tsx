@@ -116,8 +116,9 @@ export default function ContentArticlePage({ config, content, showDate = false, 
         if (domNode.name === 'img') {
           const src = domNode.attribs.src || '';
           const alt = domNode.attribs.alt || '';
-          
+
           return (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={src}
               alt={alt}
