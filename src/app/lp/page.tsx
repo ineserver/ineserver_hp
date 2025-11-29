@@ -69,7 +69,7 @@ const Modal = ({ isOpen, onClose, title, children, theme = 'dark' }: { isOpen: b
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose}></div>
-            <div className={`relative ${bgClass} ${textClass} p-8 md:p-12 max-w-2xl w-full shadow-2xl animate-fade-in-up border-t-4 ${borderClass}`}>
+            <div className={`relative ${bgClass} ${textClass} p-8 md:p-12 max-w-2xl w-full shadow-2xl animate-fade-in-up border-t-4 ${borderClass} max-h-[85vh] overflow-y-auto`}>
                 <button onClick={onClose} className={`absolute top-4 right-4 transition-colors ${closeBtnClass}`}>
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
@@ -82,12 +82,29 @@ const Modal = ({ isOpen, onClose, title, children, theme = 'dark' }: { isOpen: b
     );
 };
 
+const HERO_IMAGES = [
+    "https://img.1necat.net/2025-11-29_15.26.54.png",
+    "https://img.1necat.net/2025-11-29_15.25.35.png",
+    "https://img.1necat.net/2025-11-29_15.48.01.png",
+    "https://img.1necat.net/2025-11-29_15.50.03.png"
+];
+
 export default function LandingPage() {
     const [isScrolled, setIsScrolled] = useState(false);
     const [headerColor, setHeaderColor] = useState<'white' | 'black'>('white');
 
     // Modal States
     const [activeModal, setActiveModal] = useState<string | null>(null);
+
+    // Hero Slideshow State
+    const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentHeroIndex((prev) => (prev + 1) % HERO_IMAGES.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     const openModal = (id: string) => setActiveModal(id);
     const closeModal = () => setActiveModal(null);
@@ -128,26 +145,120 @@ export default function LandingPage() {
                         あなたらしい距離感で、<br className="md:hidden" />街に溶け込む
                     </h3>
                 </div>
-                <p>いねさばが目指す「居場所」とは、無理に繋がることではありません。 独自の<strong className="text-white">「意思疎通ステータス」システム</strong>により、会話を楽しみたい時は「雑談歓迎」、建築や採掘に集中したい時は「作業中」、少し席を外す時は「離席中」と、その時の気分を周囲に自然に伝えることができます。</p>
-                <p>「話さなくても、同じ空間に誰かがいる」。そんな緩やかな繋がりの中で、あなたの好きな街に住み、あなたらしい方法で経済に参加し、あなたらしい役割を見つける。 賑わいの中にも、一人になれる安心がある。それが私たちの考えるデジタル都市の在り方です。</p>
+                <p className="text-gray-300 font-medium leading-relaxed">いねさばが目指す「居場所」とは、無理に繋がることではありません。 独自の<strong className="text-white">「意思疎通ステータス」システム</strong>により、会話を楽しみたい時は「雑談歓迎」、建築や採掘に集中したい時は「作業中」、少し席を外す時は「離席中」と、その時の気分を周囲に自然に伝えることができます。</p>
+                <p className="text-gray-300 font-medium leading-relaxed">「話さなくても、同じ空間に誰かがいる」。そんな緩やかな繋がりの中で、あなたの好きな街に住み、あなたらしい方法で経済に参加し、あなたらしい役割を見つける。 賑わいの中にも、一人になれる安心がある。それが私たちの考えるデジタル都市の在り方です。</p>
             </Modal>
 
             <Modal isOpen={activeModal === 'economy'} onClose={closeModal} title="Real Price Fluctuation" theme="light">
-                <p>現実の市場のように、アイテムの価格はプレイヤーの取引量によってリアルタイムに変動します。</p>
-                <p>需要が高まれば価格は上がり、供給過多になれば下がります。このダイナミックな経済システムが、単なる作業ではない、戦略的な楽しみを生み出します。</p>
-                <p>17種類の職業から自分に合ったものを選び、経済の波を読みながら富を築きましょう。</p>
+                <div className="space-y-6">
+                    <div>
+                        <h4 className="text-lg font-bold mb-2 text-black" style={{ fontFamily: 'var(--font-noto-serif)' }}>市場は眠らない</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed">システムが決めた固定価格で売るだけの「作業」はもう終わりです。 ここでは、誰かが大量に売れば価格は下がり、需要が高まれば価格は高騰します。現実世界と同じ「神の見えざる手」が働くシビアな市場です。</p>
+                    </div>
+                    <div>
+                        <h4 className="text-lg font-bold mb-2 text-black" style={{ fontFamily: 'var(--font-noto-serif)' }}>スマホで相場師になる</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed">さらに、リアルタイムの市場レートはWeb上で常時公開されています。 ログインしていない外出先や移動中でも、スマホから現在の相場や値動きのグラフをチェック可能。 「日中に高騰した資源を見つけ、帰宅後に売り抜ける」——そんな、ゲームの枠を超えたリアリティのある経済活動がここにはあります。</p>
+
+                        <div className="mt-6 space-y-3">
+                            <div className="relative w-full rounded-lg overflow-hidden shadow-lg border border-gray-200">
+                                <img
+                                    src="https://img.1necat.net/fe70a2a98fbec6f8e811d356880a6d29.jpg"
+                                    alt="Ineserver Market Preview"
+                                    className="w-full h-auto"
+                                />
+                            </div>
+
+                            <div className="flex justify-end">
+                                <a
+                                    href="https://market.1necat.net"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 text-sm text-[#5b8064] hover:text-[#4a6b52] transition-colors font-bold group"
+                                    style={{ fontFamily: 'var(--font-noto-sans)' }}
+                                >
+                                    <span className="border-b border-transparent group-hover:border-[#4a6b52]">いねさば市場状況を見る</span>
+                                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </Modal>
 
-            <Modal isOpen={activeModal === 'support'} onClose={closeModal} title="Immediate Support" theme="light">
-                <p>「荒らしが怖い」「建築が壊されたらどうしよう」そんな不安を解消するために、強力な保護プラグインと、迅速な運営サポート体制を整えています。</p>
-                <p>Discordを通じたチケットシステムにより、トラブル発生時には即座に運営チームに連絡が可能。ログ調査による復旧対応も万全です。</p>
-                <p>安心して創作活動に没頭できる環境をお約束します。</p>
+            <Modal isOpen={activeModal === 'support'} onClose={closeModal} title="Support & Transparency" theme="light">
+                <div className="space-y-8">
+                    {/* セクション1：保護と安定性 */}
+                    <div>
+                        <h4 className="text-lg font-bold text-black mb-3" style={{ fontFamily: 'var(--font-noto-serif)' }}>99.78%の安定稼働と保護</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                            CoreProtect等の保護機能は標準装備。さらに、UptimeRobotの計測では<strong className="text-gray-800">稼働率99.785%</strong>を記録しています。
+                            毎週の定期メンテナンスを実施し、ラグや突発的なダウンを未然に防ぐ「管理された運営」を行っています。
+                        </p>
+                    </div>
+
+                    {/* セクション2：スピード */}
+                    <div>
+                        <h4 className="text-lg font-bold text-black mb-3" style={{ fontFamily: 'var(--font-noto-serif)' }}>待たせないサポート体制</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                            トラブル時は公式Discordへ。私たちは「原則24時間以内」の返信を掲げています。
+                            <span className="text-xs text-gray-500 block mt-2 bg-gray-100 p-2 rounded border border-gray-200">
+                                （実績：直近の不具合報告22件中、19件に対し24時間以内に回答済み）
+                            </span>
+                        </p>
+                    </div>
+
+                    {/* セクション3：透明性 */}
+                    <div>
+                        <h4 className="text-lg font-bold text-black mb-3" style={{ fontFamily: 'var(--font-noto-serif)' }}>開発タスクの完全可視化</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                            「要望が放置されていないか？」そんな不安をなくすため、サーバーの改修タスクはすべて公開しています。
+                        </p>
+
+                        <div className="rounded-lg overflow-hidden border border-gray-200 mb-2">
+                            <img
+                                src="https://img.1necat.net/6178bc97da86c11d0014235bfa84eeab.png"
+                                alt="GitHubで公開されている開発タスク"
+                                className="w-full h-auto object-cover"
+                            />
+                        </div>
+                        <p className="text-[10px] text-center text-gray-400 tracking-wider" style={{ fontFamily: 'var(--font-noto-sans)' }}>▲ 実際の開発タスク管理画面</p>
+                    </div>
+                </div>
             </Modal>
 
             <Modal isOpen={activeModal === 'items'} onClose={closeModal} title="Custom Items" theme="light">
-                <p>いねさばでは、通常のマイクラには存在しない340種類以上のカスタムアイテムを追加しています。</p>
-                <p>モダンな家具、美味しそうな料理、便利な乗り物など、生活を豊かにするアイテムが盛りだくさん。</p>
-                <p>これらのアイテムは、専用のテクスチャパックを導入することで利用可能になります（サーバー参加時に自動適用されます）。</p>
+                <div className="space-y-8">
+                    {/* セクション1：体験の提案 */}
+                    <div>
+                        <h4 className="text-lg font-bold text-black mb-3" style={{ fontFamily: 'var(--font-noto-serif)' }}>日常をアップグレード</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                            バニラのブロックだけでは表現しきれない「生活感」を。
+                            <br />
+                            モダンな照明で部屋を飾り、ソファに座ってくつろぎ、キッチンで料理を振る舞う。
+                            さらに、車や帽子といったアイテムまで。340種類以上のカスタムアイテムが、マイクラの常識を変えます。
+                        </p>
+
+                        {/* 画像エリア：ここに「家具一覧」や「料理が並んだテーブル」のSSを入れると最高です */}
+                        <div className="rounded-lg overflow-hidden border border-gray-200 shadow-lg">
+                            <img
+                                src="https://img.1necat.net/2025-11-29_01.41.15.png"
+                                alt="家具や料理などのカスタムアイテム一覧"
+                                className="w-full h-auto object-cover transition-transform duration-500"
+                            />
+                        </div>
+                    </div>
+
+                    {/* セクション2：技術的な安心感（全自動） */}
+                    <div>
+                        <h4 className="text-lg font-bold text-black mb-3" style={{ fontFamily: 'var(--font-noto-serif)' }}>面倒な設定は「ゼロ」</h4>
+                        <p className="text-gray-600 font-medium text-sm leading-relaxed" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                            「MODを入れるのが難しそう…」という心配は要りません。
+                            <br />
+                            サーバーに参加する際、<strong>専用のリソースパックが全自動で適用</strong>されます。
+                            あなたは「はい」を押すだけ。誰でもすぐに、この新しい世界を楽しめます。
+                        </p>
+                    </div>
+                </div>
             </Modal>
 
 
@@ -189,21 +300,25 @@ export default function LandingPage() {
             <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0 overflow-hidden">
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: "url('https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg')",
-                            filter: "brightness(0.4) contrast(1.1)"
-                        }}
-                    />
+                    {HERO_IMAGES.map((img, index) => (
+                        <div
+                            key={img}
+                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-2000 ease-in-out ${index === currentHeroIndex ? "opacity-100" : "opacity-0"
+                                }`}
+                            style={{
+                                backgroundImage: `url('${img}')`,
+                                filter: "brightness(0.4) contrast(1.1)"
+                            }}
+                        />
+                    ))}
                 </div>
 
                 <div className="relative z-10 text-center text-white p-6">
-                    <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif font-thin tracking-widest mb-8 opacity-0 animate-fade-in-up" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                        想像を、<br className="md:hidden" />創造する。
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-thin tracking-widest mb-8 opacity-0 animate-fade-in-up" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                        街を積む。<br className="md:hidden" />日々を紡ぐ。
                     </h1>
-                    <p className="text-sm md:text-lg tracking-[0.3em] uppercase opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-6 inline-block font-helvetica text-gray-300">
-                        Create the Imagination.
+                    <p className="text-base md:text-xl tracking-[0.15em] opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-8 inline-block font-helvetica text-gray-100">
+                        心地よい距離感と、呼吸する経済。あなたが選ぶ生き方が、この有機的な都市の形になる。
                     </p>
                 </div>
 
@@ -313,7 +428,7 @@ export default function LandingPage() {
                                     <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-l-2 border-white/10 rounded-sm">
                                         <div
                                             className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                            style={{ backgroundImage: "url('https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg')" }}
+                                            style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_16.26.18.png')" }}
                                         />
                                     </div>
                                 </FadeInSection>
@@ -361,7 +476,7 @@ export default function LandingPage() {
                                 <p className="text-gray-600 leading-loose mb-12" style={{ fontFamily: 'var(--font-noto-sans)' }}>
                                     プレイヤー主導の経済、変動する市場価格。<br />
                                     そして、安心して遊べる万全のサポート体制。<br />
-                                    どれも、いねさばライフをより楽しくします。
+                                    いねさばライフがより楽しくなるシステムが盛り沢山です。
                                 </p>
                             </FadeInSection>
                         </div>
@@ -373,9 +488,9 @@ export default function LandingPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                         </svg>
                                     </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>リアルな物価変動</h4>
+                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>生きている経済</h4>
                                     <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        プレイヤーの取引によってリアルタイムに変動する市場価格。需要と供給を見極め、富を築く楽しみを提供します。
+                                        昨日の価値は今日の価値ではない。全プレイヤーの取引がリアルタイムで価格に反映される、脈動する経済があります。
                                     </p>
                                     <button
                                         onClick={() => openModal('economy')}
@@ -392,9 +507,9 @@ export default function LandingPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                         </svg>
                                     </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>即日サポート</h4>
+                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>盤石な基盤、迅速なサポート</h4>
                                     <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        困ったときはすぐに運営へ。透明性のある運営で、快適なプレイ環境を維持するための迅速な対応を約束します。
+                                        稼働率99%の安定基盤と、毎週のメンテナンス。困った時はすぐに運営へ。迅速で透明性のある対応が、快適なプレイを約束します。
                                     </p>
                                     <button
                                         onClick={() => openModal('support')}
@@ -411,9 +526,9 @@ export default function LandingPage() {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                                         </svg>
                                     </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>340種類の追加アイテム</h4>
+                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>340種類以上の追加アイテム</h4>
                                     <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        家具、料理、乗り物など、バニラにはない340種類以上のカスタムアイテムを実装。建築の幅が広がり、生活がより豊かになります。
+                                        家具、料理、乗り物。バニラの限界を超えたアイテム群が、あなたの建築と生活をより鮮やかに、豊かに彩ります。
                                     </p>
                                     <button
                                         onClick={() => openModal('items')}
@@ -443,7 +558,7 @@ export default function LandingPage() {
                             あなたも、<br />
                             都市開発者の一員です。
                         </h2>
-                        <div className="space-y-8 text-gray-600 leading-loose font-light text-sm md:text-base" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                        <div className="space-y-8 text-gray-600 leading-loose text-sm md:text-base" style={{ fontFamily: 'var(--font-noto-sans)' }}>
                             <p>
                                 いねさばでは、運営だけが街を作るのではありません。<br />
                                 あなたが建てる家、あなたが営む店、あなたが歩く道。
@@ -452,6 +567,49 @@ export default function LandingPage() {
                                 その一つひとつが、この都市の風景となり、歴史となります。<br />
                                 さあ、あなたの手で、この街に新たな彩りを。
                             </p>
+                            <div className="pt-8">
+                                <h3 className="text-lg md:text-xl font-bold text-black mb-4" style={{ fontFamily: 'var(--font-noto-serif)' }}>「公共事業」への参画</h3>
+                                <p className="mb-8">
+                                    幹線道路や鉄道網の整備は、運営からの認可制を採用しています。
+                                    適切な計画を立て、認可を受ければ、あなたは<strong className="text-gray-800">「公式な都市インフラ」の施工者</strong>となることができます。
+                                    あなたの技術で、地図に残る仕事をしませんか？
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* 道路設計 */}
+                                    <div className="relative rounded-xl overflow-hidden shadow-md group">
+                                        <div className="aspect-video w-full relative">
+                                            <img
+                                                src="https://img.1necat.net/2025-11-29_15.24.15.png"
+                                                alt="道路設計のイメージ"
+                                                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="absolute bottom-3 left-3">
+                                            <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                                <span className="text-gray-400">#</span>道路設計
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* 鉄道敷設 */}
+                                    <div className="relative rounded-xl overflow-hidden shadow-md group">
+                                        <div className="aspect-video w-full relative">
+                                            <img
+                                                src="https://img.1necat.net/2025-11-29_15.23.53.png"
+                                                alt="鉄道敷設のイメージ"
+                                                className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-105"
+                                            />
+                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                        </div>
+                                        <div className="absolute bottom-3 left-3">
+                                            <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                                <span className="text-gray-400">#</span>鉄道敷設
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </FadeInSection>
                 </div>
