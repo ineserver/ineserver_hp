@@ -37,10 +37,6 @@ image: https://img.1necat.net/2025-11-25_03.28.18.png
 
 コマンド入力後、**共有したいブロックを左クリック**することで設定が反映されます。
 
-例：`nekodesu` さんも開けられるようにする場合
-```
-/cmodify nekodesu
-```
 ※コマンドを打った後に、対象のチェストを殴る（クリックする）のを忘れないでください。
 
 ::::details{title="複数の人を一度に追加する場合"}
@@ -49,9 +45,9 @@ image: https://img.1necat.net/2025-11-25_03.28.18.png
 /cmodify <プレイヤー1> <プレイヤー2>
 :::
 例：
-```
+`
 /cmodify nekodesu yorosikuonegaisimasu
-```
+`
 ::::
 
 # 4. 保護の削除

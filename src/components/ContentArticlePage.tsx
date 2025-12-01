@@ -10,6 +10,7 @@ import parse, { DOMNode, Element, domToReact, HTMLReactParserOptions } from 'htm
 import CommandCode from '@/components/CommandCode';
 import CollapsibleDetail from '@/components/CollapsibleDetail';
 import ImageModal from '@/components/ImageModal';
+import CodeBlock from '@/components/CodeBlock';
 
 interface ContentArticlePageProps {
   config: ContentPageConfig;
@@ -110,6 +111,30 @@ export default function ContentArticlePage({ config, content, showDate = false, 
 
           const textContent = extractText(domNode);
           return <CommandCode>{textContent.trim()}</CommandCode>;
+        }
+
+        // 通常のコードブロック（pre > code）の処理
+        if (domNode.name === 'pre') {
+          const codeNode = domNode.children.find(
+            (child) => child instanceof Element && child.name === 'code'
+          ) as Element | undefined;
+
+          if (codeNode) {
+            const extractText = (node: DOMNode): string => {
+              if (node instanceof Element && node.children) {
+                return node.children.map((child) => extractText(child as DOMNode)).join('');
+              }
+              if ('data' in node && typeof node.data === 'string') {
+                return node.data;
+              }
+              return '';
+            };
+
+            const textContent = extractText(codeNode);
+            const className = codeNode.attribs?.class || '';
+            
+            return <CodeBlock className={className}>{textContent}</CodeBlock>;
+          }
         }
 
         // 画像をクリック可能にする

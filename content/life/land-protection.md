@@ -37,10 +37,10 @@ image: https://img.1necat.net/2025-11-25_03.28.38.png
 
 <span class="text-red">**必ず、保護名は「自分の名前_保護名(保護名は自由)」にしてください！**</span>（保護名の重複を避けるためです）
 
-例：自分の家を `1necat_myhome` という名前で保護する場合
-```
+例：
+`
 /rg create 1necat_myhome
-```
+`
 
 これで、自分以外のプレイヤーはその場所を編集できなくなります。
 
@@ -60,11 +60,6 @@ image: https://img.1necat.net/2025-11-25_03.28.38.png
 :::command
 /rg addmember <保護名> <プレイヤー名>
 :::
-
-例：`1necat_myhome` に `nekodesu` さんを追加する場合
-```
-/rg addmember 1necat_myhome nekodesu
-```
 
 メンバーから削除する場合：
 :::command
