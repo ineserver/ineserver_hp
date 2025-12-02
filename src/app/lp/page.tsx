@@ -666,7 +666,7 @@ export default function LandingPage() {
 
             {/* Footer - Simple Copyright */}
             < footer className="bg-[#fafafa] text-gray-500 py-12 text-center text-xs tracking-[0.2em] border-t border-gray-200 font-helvetica" >
-                & copy; Ineserver.All Rights Reserved.
+                いねさば.All Rights Reserved.
             </footer >
 
             <style jsx global>{`
