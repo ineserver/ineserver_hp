@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/Breadcrumb';
 import { iconMap } from '@/components/Icons';
 import { ContentItem, ContentPageConfig } from '@/types/content';
@@ -25,6 +26,7 @@ export default function ContentListPage({ config, content = [], children }: Cont
     'アイテム取引': 'package',
     '土地・ライセンス': 'landmark',
     '観光': 'map',
+    '便利機能': 'tools',
     'ガイドライン': 'fileText',
   };
 
@@ -145,6 +147,7 @@ export default function ContentListPage({ config, content = [], children }: Cont
           )}
         </section>
       </article>
+      <Footer />
     </div>
   );
 }

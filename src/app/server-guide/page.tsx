@@ -5,7 +5,7 @@ const config = {
     title: 'サーバーガイド',
     apiEndpoint: '/api/server-guide',
     basePath: '/server-guide',
-    icon: 'bullhorn' as const,
+    icon: 'flag' as const,
     color: 'text-[#5b8064]',
     bgColor: 'bg-[#5b8064]/10',
     borderColor: 'border-[#5b8064]/20',

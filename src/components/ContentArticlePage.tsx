@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 import { useEffect, useState } from 'react';
@@ -313,6 +314,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           onClose={() => setModalImage(null)}
         />
       )}
+      <Footer />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 ﻿import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import HomePageClient, { Announcement, Event, PatchNote } from "@/components/HomePageClient";
 import { getAnnouncementFilesLight } from "../../lib/content";
 import { getLatestPatchNoteLight } from "@/lib/patch-notes";
@@ -65,6 +66,7 @@ export default async function Home() {
         currentEvents={currentEvents}
         latestPatchNote={latestPatchNote}
       />
+      <Footer />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 ---
 title: 市町村・字（あざ）・敷地についてのガイドライン
 published: true
-type: other
+type: guideline
 number: 1
 image: 
 ---
