@@ -382,11 +382,11 @@ export async function getLifeFiles(): Promise<ContentData[]> {
   return allLifeData
     .filter(item => typeof item === 'object' && item !== null && 'published' in item ? (item as { published?: boolean }).published !== false : true)
     .sort((a, b) => {
-      // typeの型ガード
+      // orderでソート
+      // orderまたはnumberでソート
       function hasType(obj: unknown): obj is { type?: string } {
         return typeof obj === 'object' && obj !== null && 'type' in obj;
       }
-      // numberの型ガード
       function hasNumber(obj: unknown): obj is { number?: number } {
         return typeof obj === 'object' && obj !== null && 'number' in obj;
       }
