@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+
 import Breadcrumb from '@/components/Breadcrumb';
 import { iconMap } from '@/components/Icons';
 import { ContentItem, ContentPageConfig } from '@/types/content';
@@ -81,11 +81,11 @@ export default function ContentListPage({ config, content = [], children }: Cont
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white flex flex-col h-full">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
 
-      <article className="max-w-4xl mx-auto px-5 py-8">
+      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center mb-6">
@@ -147,7 +147,6 @@ export default function ContentListPage({ config, content = [], children }: Cont
           )}
         </section>
       </article>
-      <Footer />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, useRef, useCallback } from "react";
 import ServerStatus from "@/components/ServerStatus";
-import { CashIcon, MapIcon, HomeIcon, ShieldIcon } from "@/components/Icons";
+
 
 export interface Announcement {
     id: string;
@@ -13,6 +13,7 @@ export interface Announcement {
     description: string;
     eventStartDate?: string;
     eventEndDate?: string;
+    image?: string;
 }
 
 export interface Event {
@@ -58,6 +59,19 @@ export default function HomePageClient({
     // タブのref
     const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
     const containerRef = useRef<HTMLDivElement>(null); // モバイルプルダウン用
+    const scrollContainerRef = useRef<HTMLDivElement>(null); // ナビゲーションスクロール用
+
+    // ナビゲーションスクロール関数
+    const scrollNav = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const scrollAmount = 200;
+            const newScrollLeft = scrollContainerRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+            scrollContainerRef.current.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    };
     const tabContainerRef = useRef<HTMLDivElement>(null); // PC版タブ用
 
     // タブのアニメーション用
@@ -126,44 +140,25 @@ export default function HomePageClient({
         return () => clearTimeout(timer);
     }, [activeTab, updateIndicator]);
 
-    const slides = [
-        {
-            id: 1,
-            title: "経済システム",
-            subtitle: "いねさばといえば、経済！",
-            description: "17種類の職業・リアルタイムレートの物価と市場取引・地価システムでリアルな経済を体験",
-            bgColor: "bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600",
-            icon: "💰",
-            features: ["17種類の職業", "リアルタイム市場取引", "地価システム"]
-        },
-        {
-            id: 2,
-            title: "都市開発",
-            subtitle: "特徴を持った複数の市町村",
-            description: "計画的な都市計画・各地の名産品・鉄道網と列車の自動運転で都市開発に参加しよう",
-            bgColor: "bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600",
-            icon: "🏙️",
-            features: ["計画的な都市計画", "各地の名産品", "鉄道網・自動運転"]
-        },
-        {
-            id: 3,
-            title: "豊富な生活要素",
-            subtitle: "様々な追加要素・やりこみ要素",
-            description: "340種類を超える追加アイテム・McMMOシステム・最大4人のPvEアリーナで充実した生活を",
-            bgColor: "bg-gradient-to-br from-orange-500 via-red-500 to-pink-600",
-            icon: "🎮",
-            features: ["340種類超の追加アイテム", "McMMOシステム", "PvEアリーナ"]
-        },
-        {
-            id: 4,
-            title: "安心・安全",
-            subtitle: "充実したサポート体制",
-            description: "地形・ブロック保護機能・透明性のある運営・即日サポート対応で安心してプレイできます",
-            bgColor: "bg-gradient-to-br from-cyan-500 via-blue-500 to-indigo-600",
-            icon: "🛡️",
-            features: ["保護機能完備", "透明性のある運営", "即日サポート対応"]
-        }
-    ];
+    const defaultSlide = {
+        id: 'default',
+        title: "いねさばへようこそ",
+        subtitle: "自由な生活、無限の可能性",
+        description: "忙しい日常離れ、もう一つの「居場所」をあなたに。",
+        image: "https://img.1necat.net/2025-11-29_15.48.01.png",
+        link: "/lp"
+    };
+
+    const slides = currentEvents.length > 0
+        ? currentEvents.map(event => ({
+            id: event.id,
+            title: event.title,
+            subtitle: "開催中のイベント",
+            description: event.description,
+            image: event.image || defaultSlide.image,
+            link: `/announcements/${event.id}`
+        }))
+        : [defaultSlide];
 
     const nextSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -174,6 +169,7 @@ export default function HomePageClient({
     }, [slides.length]);
 
     useEffect(() => {
+        if (slides.length <= 1) return;
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
         }, 8000); // 5秒から8秒に変更
@@ -187,11 +183,6 @@ export default function HomePageClient({
                 prevSlide();
             } else if (event.key === 'ArrowRight') {
                 nextSlide();
-            } else if (event.key >= '1' && event.key <= '4') {
-                const slideIndex = parseInt(event.key) - 1;
-                if (slideIndex < slides.length) {
-                    setCurrentSlide(slideIndex);
-                }
             }
         };
 
@@ -278,59 +269,7 @@ export default function HomePageClient({
         }
     };
 
-    // イベント状態に応じた開始までの時間を計算する関数
-    const getTimeToStart = (startDate: string) => {
-        const start = new Date(startDate);
-        const now = new Date();
 
-        const diffTime = start.getTime() - now.getTime();
-        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-
-        // 日付のみを比較するため、時刻を00:00:00に設定
-        const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-        const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const dayDiffTime = startDateOnly.getTime() - nowDateOnly.getTime();
-        const diffDays = Math.floor(dayDiffTime / (1000 * 60 * 60 * 24));
-
-        return { diffDays, diffHours };
-    };
-
-    // 表示用のテキストを生成する関数
-    const getStartTimeText = (startDate: string) => {
-        const { diffDays, diffHours } = getTimeToStart(startDate);
-
-        // 24時間以内の場合は時間表示
-        if (diffHours >= 0 && diffHours < 24) {
-            return `${diffHours}時間後開始`;
-        }
-        // 1日前（24時間以上48時間未満）の場合は「明日」
-        else if (diffDays === 1) {
-            return '明日開始';
-        }
-        // 2日以上先の場合は日数表示
-        else if (diffDays >= 2) {
-            return `${diffDays}日後開始`;
-        }
-        // 既に開始している場合
-        else {
-            return '開始済み';
-        }
-    };
-
-    // イベント期間の残り日数を計算する関数
-    const getDaysRemaining = (endDate: string) => {
-        const end = new Date(endDate);
-        const now = new Date();
-
-        // 日付のみを比較するため、時刻を00:00:00に設定
-        const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-        const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-        const diffTime = endDateOnly.getTime() - nowDateOnly.getTime();
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
-    };
 
     // イベント期間を表示用にフォーマットする関数
     const formatEventPeriod = (startDate: string, endDate: string) => {
@@ -340,11 +279,10 @@ export default function HomePageClient({
         const endStr = end.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
         return `${startStr} - ${endStr}`;
     };
-
     return (
         <>
             {/* カルーセルスライダー */}
-            <div className="relative w-full h-[90vh] lg:h-[85vh] overflow-hidden -mt-14 lg:-mt-28">
+            <div className="relative w-full h-[70vh] lg:h-[85vh] overflow-hidden -mt-14 lg:-mt-28">
                 {slides.map((slide, index) => (
                     <div
                         key={slide.id}
@@ -352,355 +290,169 @@ export default function HomePageClient({
                             index < currentSlide ? '-translate-x-full' : 'translate-x-full'
                             }`}
                     >
-                        <div
-                            className="h-full flex relative overflow-hidden"
-                            style={{
-                                backgroundImage: slide.id === 1 ? `url('https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg')` :
-                                    slide.id === 2 ? `url('https://img.1necat.net/c1af2bfcb3a0004bb4c4b9c94b1a6dce.jpg')` :
-                                        slide.id === 3 ? `url('https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg')` :
-                                            slide.id === 4 ? `url('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg')` : '',
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat'
-                            }}
-                        >
-                            {/* 背景画像のオーバーレイ（グラデーション） */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/30 to-black/50"></div>
+                        <Link href={slide.link} className="block w-full h-full cursor-pointer">
+                            <div
+                                className="h-full flex relative overflow-hidden"
+                                style={{
+                                    backgroundImage: `url('${slide.image}')`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundRepeat: 'no-repeat'
+                                }}
+                            >
+                                {/* 背景画像のオーバーレイ（グラデーション） */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
 
-                            {/* 左上: タイトルエリア */}
-                            <div className="absolute top-20 left-4 right-4 lg:top-40 lg:left-16 lg:right-auto z-20 max-w-md lg:max-w-lg">
-                                {/* モバイル版レイアウト */}
-                                <div className="lg:hidden">
-                                    {/* アイコンとタイトルを横並び */}
-                                    <div className="flex items-center gap-4 mb-3">
-                                        <div className="text-white drop-shadow-2xl flex-shrink-0">
-                                            {slide.id === 1 && (
-                                                <CashIcon className="w-14 h-14" />
-                                            )}
-                                            {slide.id === 2 && (
-                                                <MapIcon className="w-14 h-14" />
-                                            )}
-                                            {slide.id === 3 && (
-                                                <HomeIcon className="w-14 h-14" />
-                                            )}
-                                            {slide.id === 4 && (
-                                                <ShieldIcon className="w-14 h-14" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <h2 className="text-2xl font-black text-white drop-shadow-2xl leading-tight">{slide.title}</h2>
-                                        </div>
-                                    </div>
 
-                                    {/* 説明文 */}
-                                    <p className="text-lg font-medium mb-4 text-white/95 drop-shadow-lg leading-relaxed">{slide.subtitle}</p>
 
-                                    {/* 特徴リスト（タグ） */}
-                                    <div className="flex flex-wrap gap-2">
-                                        {slide.features.map((feature, idx) => (
-                                            <div key={idx} className="bg-white/25 backdrop-blur-md px-2.5 py-1 rounded-full text-xs font-medium text-white border border-white/30 shadow-lg">
-                                                {feature}
+                                <div className="absolute bottom-10 left-4 right-4 lg:bottom-14 lg:right-20 lg:left-auto z-20 flex justify-center lg:justify-end pointer-events-none">
+                                    <div className="bg-black/60 backdrop-blur-md rounded-2xl p-4 lg:p-6 border border-white/20 shadow-2xl w-full lg:w-[33vw] pointer-events-auto transform transition-all hover:scale-[1.02]">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className="flex items-center gap-3 flex-wrap">
+                                                {slide.id !== 'default' && (
+                                                    <>
+                                                        {/* ステータスバッジ */}
+                                                        {(() => {
+                                                            // slideオブジェクトにstatusがない場合は計算する (defaultSlide以外)
+                                                            const event = currentEvents.find(e => e.id === slide.id);
+                                                            const status = event ? getEventStatus(event.startDate, event.endDate) : null;
+
+                                                            if (status === 'ongoing') {
+                                                                return (
+                                                                    <span className="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                                                        開催中
+                                                                    </span>
+                                                                );
+                                                            } else if (status === 'upcoming') {
+                                                                return (
+                                                                    <span className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                                                        開催予定
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })()}
+
+                                                        {/* 開催期間 */}
+                                                        {(() => {
+                                                            const event = currentEvents.find(e => e.id === slide.id);
+                                                            if (event) {
+                                                                return (
+                                                                    <span className="text-white/80 text-xs font-mono">
+                                                                        {formatEventPeriod(event.startDate, event.endDate)}
+                                                                    </span>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        })()}
+                                                    </>
+                                                )}
+                                                {slide.id === 'default' && (
+                                                    <span className="bg-gray-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                                        ご案内
+                                                    </span>
+                                                )}
                                             </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* PC版レイアウト */}
-                                <div className="hidden lg:block">
-                                    {/* アイコンとタイトルを横並び */}
-                                    <div className="flex items-center gap-6 mb-6">
-                                        <div className="text-white drop-shadow-2xl flex-shrink-0">
-                                            {slide.id === 1 && (
-                                                <CashIcon className="w-20 h-20" />
-                                            )}
-                                            {slide.id === 2 && (
-                                                <MapIcon className="w-20 h-20" />
-                                            )}
-                                            {slide.id === 3 && (
-                                                <HomeIcon className="w-20 h-20" />
-                                            )}
-                                            {slide.id === 4 && (
-                                                <ShieldIcon className="w-20 h-20" />
-                                            )}
                                         </div>
-                                        <div className="flex-1">
-                                            <h2 className="text-4xl xl:text-5xl font-black mb-3 text-white drop-shadow-2xl leading-tight">{slide.title}</h2>
-                                            <p className="text-xl font-semibold text-white/95 drop-shadow-lg">{slide.subtitle}</p>
-                                        </div>
-                                    </div>
 
-                                    {/* 特徴リスト */}
-                                    <div className="flex flex-wrap gap-2 mb-6">
-                                        {slide.features.map((feature, idx) => (
-                                            <div key={idx} className="bg-white/25 backdrop-blur-md px-3 py-1.5 rounded-full text-sm font-medium text-white border border-white/30 shadow-lg">
-                                                {feature}
+                                        <h2 className="text-lg lg:text-3xl font-black text-white mb-1 lg:mb-2 leading-tight drop-shadow-md">
+                                            {slide.title}
+                                        </h2>
+
+                                        <p className="text-xs lg:text-base text-white/90 line-clamp-2 mb-2 lg:mb-4 leading-relaxed">
+                                            {slide.description}
+                                        </p>
+
+                                        <div className="flex items-center justify-end">
+                                            <div className="inline-flex items-center gap-2 text-white font-bold text-sm group cursor-pointer">
+                                                <span className="group-hover:underline decoration-2 underline-offset-4">詳細を見る</span>
+                                                <div className="bg-white/20 rounded-full p-1 group-hover:bg-white/30 transition-colors">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                    </svg>
+                                                </div>
                                             </div>
-                                        ))}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            {/* 右下: 情報エリア */}
-                            <div className="absolute bottom-23 left-4 right-4 lg:bottom-24 lg:left-auto lg:right-20 z-20 text-center lg:text-right">
-                                {/* モバイル版レイアウト */}
-                                <div className="lg:hidden">
-                                    {/* ボタン */}
-                                    <div className="flex flex-col gap-3">
-                                        <Link href="/tutorial">
-                                            <button className="w-full bg-gradient-to-r from-green-500/80 to-emerald-600/80 backdrop-blur-md text-white px-6 py-3 rounded-lg font-bold text-sm hover:from-green-600/90 hover:to-emerald-700/90 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30 cursor-pointer">
-                                                チュートリアルを見る
-                                            </button>
-                                        </Link>
-                                        <Link href="/lp">
-                                            <button
-                                                className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-sm hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer"
-                                            >
-                                                詳しく見る
-                                            </button>
-                                        </Link>
-                                    </div>
-                                </div>
-
-                                {/* PC版レイアウト（従来通り） */}
-                                <div className="hidden lg:block lg:min-w-[450px]">
-                                    {/* ボタン */}
-                                    <div className="flex flex-col gap-3">
-                                        <Link href="/tutorial">
-                                            <button className="w-full bg-gradient-to-r from-green-500 to-emerald-600 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-bold text-base hover:from-green-600 hover:to-emerald-700 transition-all duration-200 transform hover:scale-105 shadow-xl hover:shadow-2xl border border-white/30 cursor-pointer">
-                                                チュートリアルを見る
-                                            </button>
-                                        </Link>
-                                        <Link href="/lp">
-                                            <button
-                                                className="w-full bg-transparent border-2 border-white/80 text-white px-6 py-3 rounded-lg font-bold text-base hover:bg-white/20 backdrop-blur-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl cursor-pointer"
-                                            >
-                                                詳しく見る
-                                            </button>
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        </Link>
                     </div>
                 ))}
 
 
-                {/* モバイル版：従来通り中央部分に左右のボタンを配置 */}
-                <button
-                    onClick={prevSlide}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden cursor-pointer"
-                >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-                    </svg>
-                </button>
-
-                <button
-                    onClick={nextSlide}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn lg:hidden cursor-pointer"
-                >
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                    </svg>
-                </button>
-
-
-                {/* PC版：インディケーターと左右のボタンを右側に配置 */}
-                <div className="absolute bottom-8 right-20 hidden lg:flex items-center space-x-3">
-                    {/* 前へボタン */}
-                    <button
-                        onClick={prevSlide}
-                        className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn cursor-pointer"
-                    >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z" />
-                        </svg>
-                    </button>
-
-                    {/* インディケーター */}
-                    <div className="flex space-x-2">
-                        {slides.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setCurrentSlide(index)}
-                                className={`w-3 h-3 rounded-full transition-all duration-300 border cursor-pointer ${index === currentSlide
-                                    ? 'bg-white border-white scale-125'
-                                    : 'bg-transparent border-white/60 hover:border-white hover:scale-110'
-                                    }`}
-                            />
-                        ))}
-                    </div>
-
-                    {/* 次へボタン */}
-                    <button
-                        onClick={nextSlide}
-                        className="bg-black/30 hover:bg-black/50 text-white p-2 rounded-full transition-all duration-200 slider-nav-btn cursor-pointer"
-                    >
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                        </svg>
-                    </button>
-                </div>
-
-                {/* スクロール誘導アニメーション */}
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30 lg:bottom-4">
-                    <div className="flex flex-col items-center animate-bounce">
-                        <div className="text-white/70 text-xs font-medium mb-1">SCROLL</div>
-                        <svg className="w-5 h-5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                    </div>
-                </div>
             </div>
 
-            {/* メインコンテンツ */}
-            <main className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-8">
-                {/* イベント */}
-                {currentEvents.length > 0 && (
-                    <section className="mb-8">
-                        <div className="bg-gradient-to-br from-orange-400 via-pink-500 to-purple-600 rounded-xl p-6 text-white overflow-hidden relative">
-                            {/* 幾何学的な背景装飾 */}
-                            <div className="absolute inset-0 pointer-events-none overflow-hidden">
-                                {/* 円形パターン1 */}
-                                <div className="absolute top-6 left-10 w-24 h-24 opacity-10">
-                                    <div className="w-full h-full border-2 border-white rounded-full"></div>
-                                    <div className="absolute top-2 left-2 w-20 h-20 border border-white/50 rounded-full"></div>
-                                    <div className="absolute top-4 left-4 w-16 h-16 border border-white/30 rounded-full"></div>
-                                </div>
+            {/* 新しいナビゲーション: 画像＋タイトル (カルーセルの外、境界部分に配置) */}
+            {slides.length > 1 && (
+                <div className="relative z-30 -mt-8 lg:-mt-10 flex justify-center items-center px-4 mb-8">
+                    <div className="bg-[#1a1a1a] rounded-2xl p-1 border border-white/10 shadow-lg flex items-center gap-2 w-full lg:max-w-6xl mx-auto">
+                        {/* 左スクロールボタン (モバイルのみ) */}
+                        <button
+                            onClick={(e) => { e.stopPropagation(); scrollNav('left'); }}
+                            className="p-1.5 rounded-full bg-black/40 text-white/80 hover:bg-white/20 hover:text-white transition-colors lg:hidden flex-shrink-0"
+                            aria-label="Previous slides"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
 
-                                {/* 六角形パターン */}
-                                <div className="absolute top-16 right-16 w-20 h-20 opacity-15">
-                                    <div className="w-full h-full border-2 border-yellow-200 transform rotate-12"
-                                        style={{ clipPath: 'polygon(50% 0%, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%)' }}>
-                                    </div>
-                                </div>
+                        <div
+                            ref={scrollContainerRef}
+                            className="flex space-x-3 overflow-x-auto w-full no-scrollbar px-3 py-1 scroll-smooth"
+                        >
+                            {slides.map((slide, index) => {
+                                const event = currentEvents.find(e => e.id === slide.id);
+                                const status = event ? getEventStatus(event.startDate, event.endDate) : null;
 
-                                {/* 円形パターン2 */}
-                                <div className="absolute bottom-12 left-20 w-28 h-28 opacity-12">
-                                    <div className="w-full h-full border-2 border-pink-200 rounded-full transform rotate-45"></div>
-                                    <div className="absolute top-3 left-3 w-22 h-22 border border-pink-200/60 rounded-full"></div>
-                                </div>
-
-                                {/* ダイヤモンドパターン */}
-                                <div className="absolute bottom-20 right-12 w-16 h-16 opacity-15">
-                                    <div className="w-full h-full border-2 border-blue-200 transform rotate-45 rounded-sm"></div>
-                                    <div className="absolute top-2 left-2 w-12 h-12 border border-blue-200/50 transform rotate-45 rounded-sm"></div>
-                                </div>
-
-                                {/* 星形パターン */}
-                                <div className="absolute top-32 left-6 w-12 h-12 opacity-20">
-                                    <svg viewBox="0 0 24 24" className="w-full h-full fill-white">
-                                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                                    </svg>
-                                </div>
-
-                                {/* 三角形パターン */}
-                                <div className="absolute top-8 right-32 w-14 h-14 opacity-12">
-                                    <div className="w-0 h-0 border-l-7 border-r-7 border-b-12 border-transparent border-b-yellow-200"></div>
-                                </div>
-
-                                {/* 小さな装飾要素 */}
-                                <div className="absolute top-12 right-6 w-2 h-2 bg-white rounded-full opacity-25"></div>
-                                <div className="absolute top-24 left-36 w-1.5 h-1.5 bg-yellow-200 rounded-full opacity-30"></div>
-                                <div className="absolute bottom-16 left-8 w-2 h-2 bg-pink-200 rounded-full opacity-25"></div>
-                                <div className="absolute bottom-8 right-28 w-1.5 h-1.5 bg-blue-200 rounded-full opacity-30"></div>
-                                <div className="absolute top-28 left-16 w-1 h-1 bg-white rounded-full opacity-35"></div>
-
-                                {/* グラデーション装飾 */}
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-white/5 to-transparent rounded-full"></div>
-                                <div className="absolute bottom-0 left-0 w-28 h-28 bg-gradient-radial from-pink-200/8 to-transparent rounded-full"></div>
-                            </div>
-
-                            <div className="relative z-10">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                        {/* PC版: 1行表示 */}
-                                        <div className="hidden sm:block">
-                                            <h2 className="text-2xl font-bold">イベント情報 <span className="text-lg font-normal text-white/80">　開催中・開催予定のイベント</span></h2>
+                                return (
+                                    <button
+                                        key={slide.id}
+                                        onClick={(e) => { e.stopPropagation(); setCurrentSlide(index); }}
+                                        className={`flex items-center space-x-2 bg-black/40 backdrop-blur-md border transition-all duration-300 rounded-lg p-1 pr-3 cursor-pointer flex-shrink-0 group flex-1 min-w-[150px] lg:min-w-[200px] ${index === currentSlide
+                                            ? 'border-white/80 bg-black/70 shadow-xl'
+                                            : 'border-white/20 hover:bg-black/50 hover:border-white/50'
+                                            }`}
+                                    >
+                                        <div className="relative">
+                                            <div
+                                                className="w-8 h-8 lg:w-12 lg:h-8 rounded-md bg-cover bg-center shadow-sm"
+                                                style={{ backgroundImage: `url('${slide.image}')` }}
+                                            ></div>
                                         </div>
-
-                                        {/* モバイル版: 2行表示 */}
-                                        <div className="sm:hidden">
-                                            <h2 className="text-2xl font-bold">イベント情報</h2>
-                                            <p className="text-white/80 text-sm">開催中・開催予定のイベント</p>
+                                        <div className="flex flex-col items-start">
+                                            <span className={`text-xs font-bold whitespace-nowrap ${index === currentSlide ? 'text-white' : 'text-white/70'
+                                                }`}>
+                                                {slide.title}
+                                            </span>
+                                            <span className="text-[10px] text-white/50 font-mono">
+                                                {status === 'ongoing' ? '開催中' : status === 'upcoming' ? '開催予定' : ''}
+                                            </span>
                                         </div>
-                                    </div>
-                                    <div className="hidden sm:block text-sm bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full border border-white/30">
-                                        {currentEvents.length}件のイベント
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                    {currentEvents.map((event) => {
-                                        const status = getEventStatus(event.startDate, event.endDate);
-                                        const daysRemaining = getDaysRemaining(event.endDate);
-
-                                        return (
-                                            <div key={event.id} className="bg-white/15 backdrop-blur-sm rounded-xl p-5 hover:bg-white/20 transition-all duration-200 border border-white/20">
-                                                <div className="flex items-start justify-between mb-4">
-                                                    <h3 className="text-lg font-bold text-white leading-tight flex-1">
-                                                        {event.title}
-                                                    </h3>
-                                                    <div className="ml-3 flex-shrink-0">
-                                                        {status === 'upcoming' ? (
-                                                            <span className="bg-blue-400 text-blue-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                                                {getStartTimeText(event.startDate)}
-                                                            </span>
-                                                        ) : status === 'ongoing' ? (
-                                                            daysRemaining > 0 ? (
-                                                                <span className="bg-green-400 text-green-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                                                    残り{daysRemaining}日
-                                                                </span>
-                                                            ) : (
-                                                                <span className="bg-red-400 text-red-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                                                    本日終了
-                                                                </span>
-                                                            )
-                                                        ) : (
-                                                            <span className="bg-gray-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                                                                終了
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                <p className="text-white/90 text-sm mb-4 leading-relaxed">
-                                                    {event.description}
-                                                </p>
-
-                                                <div className="flex items-center justify-between">
-                                                    <div className="text-xs text-white/70 flex items-center space-x-2">
-                                                        <span className="flex items-center">
-                                                            {formatEventPeriod(event.startDate, event.endDate)}
-                                                        </span>
-                                                        {status === 'upcoming' && (
-                                                            <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
-                                                                開催予定
-                                                            </span>
-                                                        )}
-                                                        {status === 'ongoing' && (
-                                                            <span className="bg-green-500/30 px-2 py-1 rounded-full text-xs">
-                                                                開催中
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <Link href={`/announcements/${event.id}`}>
-                                                        <button className="text-white hover:text-white/80 text-sm font-medium transition-colors duration-200 flex items-center space-x-1 bg-white/20 px-3 py-2 rounded-lg hover:bg-white/30 cursor-pointer">
-                                                            <span>詳細を見る</span>
-                                                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
-                                                                <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" />
-                                                            </svg>
-                                                        </button>
-                                                    </Link>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                                    </button>
+                                );
+                            })}
                         </div>
-                    </section>
-                )}
+
+                        {/* 右スクロールボタン (モバイルのみ) */}
+                        <button
+                            onClick={(e) => { e.stopPropagation(); scrollNav('right'); }}
+                            className="p-1.5 rounded-full bg-black/40 text-white/80 hover:bg-white/20 hover:text-white transition-colors lg:hidden flex-shrink-0"
+                            aria-label="Next slides"
+                        >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* メインコンテンツ */}
+            <main className={`max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 mb-7 ${slides.length <= 1 ? 'mt-8' : ''}`}>
+                {/* イベントグリッド (既存のまま維持) */}
+
 
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
                     {/* 左側: お知らせとパッチノート */}
@@ -861,7 +613,7 @@ export default function HomePageClient({
 
                                 {/* もっと見るボタン */}
                                 <div className="p-6 border-t border-gray-200 text-center">
-                                    <Link href="/announcements">
+                                    <Link href={`/announcements?filter=${activeTab}`}>
                                         <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
                                             もっと見る
                                             <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -959,7 +711,7 @@ export default function HomePageClient({
                         </div>
                     </div>
                 </div>
-            </main>
+            </main >
         </>
     );
 }

@@ -1,5 +1,4 @@
 ﻿import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import HomePageClient, { Announcement, Event, PatchNote } from "@/components/HomePageClient";
 import { getAnnouncementFilesLight } from "../../lib/content";
 import { getLatestPatchNoteLight } from "@/lib/patch-notes";
@@ -28,7 +27,8 @@ export default async function Home() {
     }) : '',
     type: (item.type as 'important' | 'normal' | 'pickup') || 'normal',
     eventStartDate: item.eventStartDate as string | undefined,
-    eventEndDate: item.eventEndDate as string | undefined
+    eventEndDate: item.eventEndDate as string | undefined,
+    image: (item.image || item.Image) as string | undefined
   }));
 
   // Filter events
@@ -48,7 +48,8 @@ export default async function Home() {
       title: announcement.title,
       description: announcement.description,
       startDate: announcement.eventStartDate!,
-      endDate: announcement.eventEndDate!
+      endDate: announcement.eventEndDate!,
+      image: announcement.image
     }))
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
@@ -59,14 +60,15 @@ export default async function Home() {
   const latestPatchNote = latestPatchNoteData as unknown as PatchNote | null;
 
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <Header />
-      <HomePageClient
-        announcements={formattedAnnouncements}
-        currentEvents={currentEvents}
-        latestPatchNote={latestPatchNote}
-      />
-      <Footer />
-    </div>
+      <div className="flex-grow bg-white">
+        <HomePageClient
+          announcements={formattedAnnouncements}
+          currentEvents={currentEvents}
+          latestPatchNote={latestPatchNote}
+        />
+      </div>
+    </>
   );
 }

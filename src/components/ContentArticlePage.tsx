@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 import { useEffect, useState } from 'react';
@@ -133,7 +133,7 @@ export default function ContentArticlePage({ config, content, showDate = false, 
 
             const textContent = extractText(codeNode);
             const className = codeNode.attribs?.class || '';
-            
+
             return <CodeBlock className={className}>{textContent}</CodeBlock>;
           }
         }
@@ -186,11 +186,11 @@ export default function ContentArticlePage({ config, content, showDate = false, 
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="bg-white flex flex-col h-full">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
 
-      <article className="max-w-4xl mx-auto px-5 py-8">
+      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
         {/* ページヘッダー */}
         <header className="mb-12">
           <div className="flex items-center justify-between mb-6">
@@ -314,7 +314,6 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           onClose={() => setModalImage(null)}
         />
       )}
-      <Footer />
     </div>
   );
 }

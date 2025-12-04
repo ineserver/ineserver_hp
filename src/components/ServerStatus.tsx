@@ -8,10 +8,6 @@ interface ServerStatusProps {
 }
 
 export default function ServerStatus({
-  // 【本番環境での変更点1】
-  // 環境変数を使用することで、ローカル/本番の切り替えが容易になります
-  // .env.local: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=localhost:25565
-  // .env.production: NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS=1necat.net
   serverAddress = process.env.NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS || '1necat.net',
   refreshInterval = 30000 // 30秒
 }: ServerStatusProps) {
@@ -350,7 +346,7 @@ export default function ServerStatus({
 
           {/* 寄付ページ */}
           <a
-            href="/support"
+            href="https://inecat.fanbox.cc"
             target="_blank"
             rel="noopener noreferrer"
             className="group block bg-white rounded-lg border border-gray-200 p-4 bg-pink-50 border-pink-200 hover:bg-pink-100 active:bg-pink-100 transition-all duration-300 cursor-pointer overflow-visible relative"
@@ -363,7 +359,7 @@ export default function ServerStatus({
               </div>
               <div className="flex-grow flex items-center justify-between">
                 <div>
-                  <h4 className="font-semibold text-gray-900">サーバー運営支援</h4>
+                  <h4 className="font-semibold text-gray-900">サーバー支援(FANBOX)</h4>
                 </div>
                 <svg className="w-5 h-5 text-pink-600 hover:text-pink-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -378,7 +374,7 @@ export default function ServerStatus({
                 </svg>
               </div>
               <div className="flex-grow">
-                <p className="text-sm text-gray-700 font-medium">サーバーをサポートして継続運営にご協力ください</p>
+                <p className="text-sm text-gray-700 font-medium">サーバーが気に入っていただけましたら継続運営のため、寄付をお願い致します</p>
               </div>
             </div>
           </a>

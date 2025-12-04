@@ -11,7 +11,7 @@ interface PageProps {
 export default async function PatchNoteDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const patchNote = await getPatchNoteBySlug(slug);
-  
+
   if (!patchNote) {
     notFound();
   }
@@ -50,11 +50,11 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50 flex flex-col h-full">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
-      
-      <article className="max-w-4xl mx-auto px-6 py-8">
+
+      <article className="flex-grow max-w-4xl mx-auto px-6 py-8">
         {/* パッチノートヘッダー */}
         <header className="bg-white rounded-lg shadow-md p-8 mb-8">
           {/* 一覧に戻るボタン - モバイル優先で上部に配置 */}
@@ -68,7 +68,7 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
               </button>
             </Link>
           </div>
-          
+
           {/* 最新のアップデート表示 */}
           {patchNote.isLatest && (
             <div className="mb-4">
@@ -77,12 +77,12 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
               </span>
             </div>
           )}
-          
+
           {/* 日付 */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-900">{patchNote.date}</h1>
           </div>
-          
+
           <div className="border-l-4 border-[#5b8064] pl-6">
             <p className="text-gray-600 leading-relaxed">{patchNote.description}</p>
           </div>
@@ -96,17 +96,17 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
                 <span className="text-2xl mr-3">{getSectionIcon(section.type)}</span>
                 {section.title}
               </h3>
-              
+
               <ul className="space-y-3">
                 {section.items.map((item, itemIndex) => (
                   <li key={itemIndex} className="flex items-start">
                     <span className="inline-block w-2 h-2 bg-current rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                    <div 
+                    <div
                       className="text-gray-700 leading-relaxed prose-sm max-w-none markdown-content [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_ul]:list-none [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square]"
-                      dangerouslySetInnerHTML={{ 
-                        __html: section.itemsHtml && section.itemsHtml[itemIndex] 
-                          ? section.itemsHtml[itemIndex] 
-                          : item 
+                      dangerouslySetInnerHTML={{
+                        __html: section.itemsHtml && section.itemsHtml[itemIndex]
+                          ? section.itemsHtml[itemIndex]
+                          : item
                       }}
                     />
                   </li>

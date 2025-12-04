@@ -49,11 +49,11 @@ export default async function PatchNotesArchive() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
       <Breadcrumb items={breadcrumbItems} />
       
-      <main className="max-w-4xl mx-auto px-6 py-8">
+      <main className="flex-grow max-w-4xl mx-auto px-6 py-8">
         {/* ページヘッダー */}
         <header className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">パッチノート</h1>

@@ -64,14 +64,16 @@ body {
 }
 
 /* スクロールバーを隠す */
-.scrollbar-hide {
+.scrollbar-hide,
+.no-scrollbar {
     -ms-overflow-style: none;
     /* Internet Explorer 10+ */
     scrollbar-width: none;
     /* Firefox */
 }
 
-.scrollbar-hide::-webkit-scrollbar {
+.scrollbar-hide::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
     display: none;
     /* Safari and Chrome */
 }
@@ -500,8 +502,8 @@ body {
 .code-block-pre {
     background-color: transparent;
     padding: 1rem;
-    padding-right: 3.5rem; /* コピーボタンのスペースを確保 */
+    padding-right: 3.5rem;
+    /* コピーボタンのスペースを確保 */
     overflow-x: auto;
     margin: 0;
 }
-

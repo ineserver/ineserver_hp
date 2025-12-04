@@ -10,6 +10,17 @@ import remarkCustomDirectives from './remark-custom-directives'
 import rehypeStringify from 'rehype-stringify'
 import rehypeTableWrapper from './rehype-table-wrapper'
 
+function getDescription(content: string): string {
+  const lines = content.split('\n');
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#') && !trimmed.startsWith(':::') && !trimmed.startsWith('---') && !trimmed.startsWith('![')) {
+      return trimmed.replace(/[*_`]/g, '').substring(0, 100) + (trimmed.length > 100 ? '...' : '');
+    }
+  }
+  return '';
+}
+
 const contentDirectory = path.join(process.cwd(), 'content')
 
 // Content data types
@@ -229,6 +240,7 @@ export async function getEconomyFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
+          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )
@@ -304,6 +316,7 @@ export async function getServerGuideFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
+          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )
@@ -361,6 +374,7 @@ export async function getLifeFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
+          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )
@@ -437,6 +451,7 @@ export async function getAdventureFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
+          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )
@@ -487,6 +502,7 @@ export async function getTransportFiles(): Promise<ContentData[]> {
           id,
           contentHtml,
           ...matterResult.data,
+          description: (matterResult.data as { description?: string }).description || getDescription(matterResult.content),
         }
       })
   )

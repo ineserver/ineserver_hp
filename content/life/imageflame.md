@@ -27,7 +27,7 @@ number: 2
 
 1.  **画像のURLを用意する**
 
-    DiscordやImgurなどに画像をアップロードし、その「画像アドレス（URL）」をコピーします。
+    DiscordやImgur、Gyazoなどに画像をアップロードし、その「画像アドレス（URL）」をコピーします。
 
     ※URLは `http` または `https` で始まり、末尾が `.png` や `.jpg` など画像形式で終わるものである必要があります。
 
@@ -36,7 +36,7 @@ number: 2
     以下のコマンドを入力して地図を作成します。
 
     :::command
-    /imageframe create <地図の名前> <URL> <幅> <高さ>
+    /if create <地図の名前> <URL> <幅> <高さ>
     :::
 
     * **地図の名前**: 自分で管理しやすい名前を付けてください。
@@ -89,5 +89,5 @@ number: 2
 ## 作成済み地図の管理
 自分が作成した地図の一覧を確認したり、削除したりするには以下のコマンドを使用します。
 
-* **一覧を表示**: :command[/imageframe list]
-* **地図を削除**: :command[/imageframe delete <地図の名前>]
+* **一覧を表示**: :command[/if list]
+* **地図を削除**: :command[/if delete <地図の名前>]

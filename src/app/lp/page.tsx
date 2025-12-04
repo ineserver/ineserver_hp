@@ -127,7 +127,7 @@ export default function LandingPage() {
     }, []);
 
     return (
-        <div className={`min-h-screen bg-[#1c1c1c] text-gray-200 ${notoSerifJP.variable} ${notoSansJP.variable} font-sans overflow-x-hidden select-none`}>
+        <div className={`min-h-screen bg-[#1c1c1c] text-gray-200 ${notoSerifJP.variable} ${notoSansJP.variable} font-sans overflow-x-hidden select-none flex flex-col`}>
 
             {/* Modals */}
             <Modal isOpen={activeModal === 'concept'} onClose={closeModal} theme="dark">
@@ -294,380 +294,382 @@ export default function LandingPage() {
                 </Link>
             </div>
 
-            {/* 1. First View (Hero) - Bold & Minimal */}
-            <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
-                {/* Background Image */}
-                <div className="absolute inset-0 z-0 overflow-hidden">
-                    {HERO_IMAGES.map((img, index) => (
+            {/* Main Content Wrapper for flex-grow */}
+            <div className="flex-grow flex flex-col">
+                {/* 1. First View (Hero) - Bold & Minimal */}
+                <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
+                    {/* Background Image */}
+                    <div className="absolute inset-0 z-0 overflow-hidden">
+                        {HERO_IMAGES.map((img, index) => (
+                            <div
+                                key={img}
+                                className={`absolute inset-0 bg-cover bg-center transition-opacity duration-2000 ease-in-out ${index === currentHeroIndex ? "opacity-100" : "opacity-0"
+                                    }`}
+                                style={{
+                                    backgroundImage: `url('${img}')`,
+                                    filter: "brightness(0.4) contrast(1.1)"
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="relative z-10 text-center text-white p-6">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-thin tracking-widest mb-8 opacity-0 animate-fade-in-up" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                            街を積む。<br className="md:hidden" />日々を紡ぐ。
+                        </h1>
+                        <p className="text-base md:text-xl tracking-[0.15em] opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-8 inline-block font-helvetica text-gray-100">
+                            心地よい距離感と、呼吸する経済。あなたが選ぶ生き方が、この有機的な都市の形になる。
+                        </p>
+                    </div>
+
+                    {/* Scroll Indicator */}
+                    <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-10 opacity-0 animate-fade-in delay-1000">
+                        <div className="flex flex-col items-center gap-2">
+                            <span className="text-white text-[10px] tracking-[0.3em] uppercase writing-vertical-rl font-helvetica">SCROLL</span>
+                            <div className="w-[1px] h-24 bg-gradient-to-b from-white to-transparent"></div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 2. Vision - Ample Whitespace */}
+                <section className="py-40 md:py-60 px-6 md:px-12 lg:px-24 bg-[#222] relative">
+                    <div className="max-w-5xl mx-auto">
+                        <FadeInSection>
+                            <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-12 uppercase font-helvetica">Vision</span>
+                        </FadeInSection>
+
+                        <FadeInSection delay={200}>
+                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight mb-24 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                自由と秩序が<br />調和する場所。
+                            </h2>
+                        </FadeInSection>
+
+                        <div className="flex flex-col md:flex-row gap-12 md:gap-24 items-start">
+                            <div className="w-full md:w-1/3 pt-4 border-t border-white/30">
+                                <FadeInSection delay={400}>
+                                    <p className="text-sm font-bold tracking-widest uppercase font-helvetica text-gray-400">Concept</p>
+                                </FadeInSection>
+                            </div>
+                            <div className="w-full md:w-2/3">
+                                <FadeInSection delay={600}>
+                                    <p className="text-lg md:text-2xl leading-loose text-gray-300 font-light mb-8" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                        ここは単なるゲームサーバーではありません。<br />
+                                        一人ひとりの建築が織りなす、デジタルの都市空間です。<br />
+                                        忙しい日常を離れ、もう一つの「居場所」をあなたに。
+                                    </p>
+                                    <button
+                                        onClick={() => openModal('concept')}
+                                        className="px-8 py-3 rounded-full border border-white/30 text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:border-white transition-all duration-300 tracking-widest flex items-center gap-2 group"
+                                        style={{ fontFamily: 'var(--font-noto-sans)' }}
+                                    >
+                                        <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
+                                        <span>詳しく</span>
+                                    </button>
+                                </FadeInSection>
+                            </div>
+                        </div>
+                    </div>
+                </section >
+
+                {/* 3. Landscape (World Introduction) - Large Images */}
+                < section className="py-24 bg-[#4a4a4a]" >
+                    <div className="container mx-auto px-6 md:px-12">
+                        <FadeInSection className="mb-24 text-center md:text-left">
+                            <h2 className="text-8xl md:text-[10rem] font-serif font-thin text-white leading-none select-none absolute -top-20 left-0 z-0 opacity-5 pointer-events-none font-helvetica" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                WORLD
+                            </h2>
+                            <div className="relative z-10">
+                                <span className="block text-xs font-bold tracking-[0.3em] text-gray-400 mb-4 uppercase font-helvetica">Landscape</span>
+                                <h2 className="text-4xl md:text-5xl font-serif text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>World Introduction</h2>
+                            </div>
+                        </FadeInSection>
+
+                        <div className="space-y-32">
+                            {/* Area 1: Central Station */}
+                            <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+                                <div className="w-full md:w-3/5 order-1 md:order-1">
+                                    <FadeInSection>
+                                        <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_02.41.46.png')" }}
+                                            />
+                                        </div>
+                                    </FadeInSection>
+                                </div>
+                                <div className="w-full md:w-2/5 order-2 md:order-2">
+                                    <FadeInSection delay={200}>
+                                        <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>中央駅</h3>
+                                        <div className="w-12 h-[1px] bg-white mb-8"></div>
+                                        <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            旅の始まりとなる場所。壮大な建築と行き交う人々。<br />
+                                            ここからあなたの物語が始まります。
+                                        </p>
+                                        <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">Spawn Point</p>
+                                    </FadeInSection>
+                                </div>
+                            </div>
+
+                            {/* Area 2: City Center */}
+                            <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+                                <div className="w-full md:w-2/5 order-2 md:order-1 md:text-right">
+                                    <FadeInSection delay={200}>
+                                        <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>中心部</h3>
+                                        <div className="w-12 h-[1px] bg-white mb-8 ml-auto md:ml-auto md:mr-0"></div>
+                                        <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            経済の中心地。摩天楼が立ち並び、活気に満ちたエリア。<br />
+                                            ビジネスと交流の拠点です。
+                                        </p>
+                                        <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">City Center</p>
+                                    </FadeInSection>
+                                </div>
+                                <div className="w-full md:w-3/5 order-1 md:order-2">
+                                    <FadeInSection>
+                                        <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-l-2 border-white/10 rounded-sm">
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_16.26.18.png')" }}
+                                            />
+                                        </div>
+                                    </FadeInSection>
+                                </div>
+                            </div>
+
+                            {/* Area 3: Suburbs */}
+                            <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
+                                <div className="w-full md:w-3/5 order-1 md:order-1">
+                                    <FadeInSection>
+                                        <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
+                                            <div
+                                                className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
+                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-27_18.50.25.png')" }}
+                                            />
+                                        </div>
+                                    </FadeInSection>
+                                </div>
+                                <div className="w-full md:w-2/5 order-2 md:order-2">
+                                    <FadeInSection delay={200}>
+                                        <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>郊外</h3>
+                                        <div className="w-12 h-[1px] bg-white mb-8"></div>
+                                        <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            自然と調和した穏やかな住宅街。<br />
+                                            自分だけの理想の家を建てるのに最適な場所です。
+                                        </p>
+                                        <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">Suburbs</p>
+                                    </FadeInSection>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section >
+
+                {/* 4. System - Modern & Clean */}
+                < section id="light-section-start" className="py-40 px-6 bg-[#d4d4d4] text-black" >
+                    <div className="container mx-auto max-w-6xl">
+                        <div className="flex flex-col lg:flex-row gap-20">
+                            <div className="w-full lg:w-1/3">
+                                <FadeInSection>
+                                    <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-8 uppercase font-helvetica">System</span>
+                                    <h2 className="text-4xl md:text-5xl font-serif mb-12 leading-tight" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                        生活を彩る<br />様々なシステム
+                                    </h2>
+                                    <p className="text-gray-600 leading-loose mb-12" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                        プレイヤー主導の経済、変動する市場価格。<br />
+                                        そして、安心して遊べる万全のサポート体制。<br />
+                                        いねさばライフがより楽しくなるシステムが盛り沢山です。
+                                    </p>
+                                </FadeInSection>
+                            </div>
+                            <div className="w-full lg:w-2/3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <FadeInSection delay={200} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10">
+                                        <div className="text-4xl mb-6 text-black">
+                                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </div>
+                                        <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>生きている経済</h4>
+                                        <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            昨日の価値は今日の価値ではない。全プレイヤーの取引がリアルタイムで価格に反映される、脈動する経済があります。
+                                        </p>
+                                        <button
+                                            onClick={() => openModal('economy')}
+                                            className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
+                                            style={{ fontFamily: 'var(--font-noto-sans)' }}
+                                        >
+                                            <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
+                                            <span>詳しく</span>
+                                        </button>
+                                    </FadeInSection>
+                                    <FadeInSection delay={400} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10">
+                                        <div className="text-4xl mb-6 text-black">
+                                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                            </svg>
+                                        </div>
+                                        <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>盤石な基盤、迅速なサポート</h4>
+                                        <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            稼働率99%の安定基盤と、毎週のメンテナンス。困った時はすぐに運営へ。迅速で透明性のある対応が、快適なプレイを約束します。
+                                        </p>
+                                        <button
+                                            onClick={() => openModal('support')}
+                                            className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
+                                            style={{ fontFamily: 'var(--font-noto-sans)' }}
+                                        >
+                                            <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
+                                            <span>詳しく</span>
+                                        </button>
+                                    </FadeInSection>
+                                    <FadeInSection delay={600} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10 md:col-span-2">
+                                        <div className="text-4xl mb-6 text-black">
+                                            <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                            </svg>
+                                        </div>
+                                        <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>340種類以上の追加アイテム</h4>
+                                        <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                            家具、料理、乗り物。バニラの限界を超えたアイテム群が、あなたの建築と生活をより鮮やかに、豊かに彩ります。
+                                        </p>
+                                        <button
+                                            onClick={() => openModal('items')}
+                                            className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
+                                            style={{ fontFamily: 'var(--font-noto-sans)' }}
+                                        >
+                                            <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
+                                            <span>詳しく</span>
+                                        </button>
+                                    </FadeInSection>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section >
+
+
+                {/* New Section: Citizenship - Gradient Light */}
+                <section className="py-32 md:py-48 px-6 bg-gradient-to-b from-[#e5e5e5] to-[#f5f5f5] text-black relative overflow-hidden">
+                    {/* Decorative background elements */}
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-black/10 to-transparent"></div>
+
+                    <div className="container mx-auto max-w-4xl text-center relative z-10">
+                        <FadeInSection>
+                            <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-10 uppercase font-helvetica">Citizenship</span>
+                            <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif mb-16 leading-tight text-gray-900" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                あなたも、<br />
+                                都市開発者の一員です。
+                            </h2>
+                            <div className="space-y-8 text-gray-600 leading-loose text-sm md:text-base" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                <p>
+                                    いねさばでは、運営だけが街を作るのではありません。<br />
+                                    あなたが建てる家、あなたが営む店、あなたが歩く道。
+                                </p>
+                                <p>
+                                    その一つひとつが、この都市の風景となり、歴史となります。<br />
+                                    さあ、あなたの手で、この街に新たな彩りを。
+                                </p>
+                                <div className="pt-8">
+                                    <h3 className="text-lg md:text-xl font-bold text-black mb-4" style={{ fontFamily: 'var(--font-noto-serif)' }}>「公共事業」への参画</h3>
+                                    <p className="mb-8">
+                                        幹線道路や鉄道網の整備は、運営からの認可制を採用しています。
+                                        適切な計画を立て、認可を受ければ、あなたは<strong className="text-gray-800">「公式な都市インフラ」の施工者</strong>となることができます。
+                                        あなたの技術で、地図に残る仕事をしませんか？
+                                    </p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {/* 道路設計 */}
+                                        <div className="relative rounded-xl overflow-hidden shadow-md group">
+                                            <div className="aspect-video w-full relative">
+                                                <Image
+                                                    src="https://img.1necat.net/2025-11-29_15.24.15.png"
+                                                    alt="道路設計のイメージ"
+                                                    fill
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+                                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                            </div>
+                                            <div className="absolute bottom-3 left-3">
+                                                <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                                    <span className="text-gray-400">#</span>道路設計
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* 鉄道敷設 */}
+                                        <div className="relative rounded-xl overflow-hidden shadow-md group">
+                                            <div className="aspect-video w-full relative">
+                                                <Image
+                                                    src="https://img.1necat.net/2025-11-29_15.23.53.png"
+                                                    alt="鉄道敷設のイメージ"
+                                                    fill
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                                />
+                                                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                            </div>
+                                            <div className="absolute bottom-3 left-3">
+                                                <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                                    <span className="text-gray-400">#</span>鉄道敷設
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </FadeInSection>
+                    </div>
+
+                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-black/10 to-transparent"></div>
+                </section>
+
+                {/* 5. Access - Start a Journey (Airplane Takeoff) */}
+                < section className="relative py-60 text-black text-center overflow-hidden group" >
+                    {/* Background Image for Journey */}
+                    < div className="absolute inset-0 z-0 overflow-hidden" >
                         <div
-                            key={img}
-                            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-2000 ease-in-out ${index === currentHeroIndex ? "opacity-100" : "opacity-0"
-                                }`}
+                            className="absolute inset-0 bg-cover bg-center"
                             style={{
-                                backgroundImage: `url('${img}')`,
-                                filter: "brightness(0.4) contrast(1.1)"
+                                backgroundImage: "url('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg')", // Suburbs image as placeholder for "Journey"
+                                filter: "brightness(1.1) grayscale(0.2)"
                             }}
                         />
-                    ))}
-                </div>
+                        {/* Cloud/Speed effect overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#f4f4f4]/0 via-[#f4f4f4]/60 to-[#f4f4f4]"></div>
+                    </div >
 
-                <div className="relative z-10 text-center text-white p-6">
-                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-thin tracking-widest mb-8 opacity-0 animate-fade-in-up" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                        街を積む。<br className="md:hidden" />日々を紡ぐ。
-                    </h1>
-                    <p className="text-base md:text-xl tracking-[0.15em] opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-8 inline-block font-helvetica text-gray-100">
-                        心地よい距離感と、呼吸する経済。あなたが選ぶ生き方が、この有機的な都市の形になる。
-                    </p>
-                </div>
+                    <div className="container mx-auto px-6 relative z-10">
+                        <FadeInSection>
+                            <h2 className="text-5xl md:text-7xl font-serif mb-12 leading-tight tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                さあ、<br />旅に出よう。
+                            </h2>
+                            <p className="text-lg md:text-xl text-gray-700 mb-20 font-light tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                無限の可能性が広がる世界が、<br className="md:hidden" />あなたを待っています。
+                            </p>
+                        </FadeInSection>
 
-                {/* Scroll Indicator */}
-                <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-10 opacity-0 animate-fade-in delay-1000">
-                    <div className="flex flex-col items-center gap-2">
-                        <span className="text-white text-[10px] tracking-[0.3em] uppercase writing-vertical-rl font-helvetica">SCROLL</span>
-                        <div className="w-[1px] h-24 bg-gradient-to-b from-white to-transparent"></div>
-                    </div>
-                </div>
-            </section>
+                        <div className="flex flex-col items-center gap-8">
+                            <FadeInSection delay={200} className="w-full max-w-md flex flex-col items-center">
+                                <Link href="/tutorial" className="group">
+                                    <div className="relative px-12 py-8 border border-black/30 bg-black/5 backdrop-blur-sm transition-all duration-500 group-hover:bg-black/10 group-hover:border-black group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] flex flex-col items-center gap-3">
+                                        <div className="flex items-center gap-4 text-black text-xl md:text-2xl font-serif tracking-[0.2em]" style={{ fontFamily: 'var(--font-noto-serif)' }}>
+                                            <span>VISIT THE CITY</span>
+                                            <span className="font-light transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                                        </div>
+                                        <p className="text-xs text-gray-600 tracking-widest font-light" style={{ fontFamily: 'var(--font-noto-sans)' }}>初めての方・参加手順はこちら</p>
+                                    </div>
+                                </Link>
+                            </FadeInSection>
 
-            {/* 2. Vision - Ample Whitespace */}
-            <section className="py-40 md:py-60 px-6 md:px-12 lg:px-24 bg-[#222] relative">
-                <div className="max-w-5xl mx-auto">
-                    <FadeInSection>
-                        <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-12 uppercase font-helvetica">Vision</span>
-                    </FadeInSection>
-
-                    <FadeInSection delay={200}>
-                        <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight mb-24 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                            自由と秩序が<br />調和する場所。
-                        </h2>
-                    </FadeInSection>
-
-                    <div className="flex flex-col md:flex-row gap-12 md:gap-24 items-start">
-                        <div className="w-full md:w-1/3 pt-4 border-t border-white/30">
                             <FadeInSection delay={400}>
-                                <p className="text-sm font-bold tracking-widest uppercase font-helvetica text-gray-400">Concept</p>
-                            </FadeInSection>
-                        </div>
-                        <div className="w-full md:w-2/3">
-                            <FadeInSection delay={600}>
-                                <p className="text-lg md:text-2xl leading-loose text-gray-300 font-light mb-8" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                    ここは単なるゲームサーバーではありません。<br />
-                                    一人ひとりの建築が織りなす、デジタルの都市空間です。<br />
-                                    忙しい日常を離れ、もう一つの「居場所」をあなたに。
-                                </p>
-                                <button
-                                    onClick={() => openModal('concept')}
-                                    className="px-8 py-3 rounded-full border border-white/30 text-sm text-gray-300 hover:text-white hover:bg-white/10 hover:border-white transition-all duration-300 tracking-widest flex items-center gap-2 group"
-                                    style={{ fontFamily: 'var(--font-noto-sans)' }}
-                                >
-                                    <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
-                                    <span>詳しく</span>
-                                </button>
+                                <Link href="/" className="inline-block text-black/60 hover:text-black transition-colors tracking-widest border-b border-transparent hover:border-black pb-1 mt-12" style={{ fontFamily: 'var(--font-noto-sans)' }}>
+                                    トップページに戻る
+                                </Link>
                             </FadeInSection>
                         </div>
                     </div>
-                </div>
-            </section >
+                </section >
 
-            {/* 3. Landscape (World Introduction) - Large Images */}
-            < section className="py-24 bg-[#4a4a4a]" >
-                <div className="container mx-auto px-6 md:px-12">
-                    <FadeInSection className="mb-24 text-center md:text-left">
-                        <h2 className="text-8xl md:text-[10rem] font-serif font-thin text-white leading-none select-none absolute -top-20 left-0 z-0 opacity-5 pointer-events-none font-helvetica" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                            WORLD
-                        </h2>
-                        <div className="relative z-10">
-                            <span className="block text-xs font-bold tracking-[0.3em] text-gray-400 mb-4 uppercase font-helvetica">Landscape</span>
-                            <h2 className="text-4xl md:text-5xl font-serif text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>World Introduction</h2>
-                        </div>
-                    </FadeInSection>
+                {/* Footer - Simple Copyright */}
 
-                    <div className="space-y-32">
-                        {/* Area 1: Central Station */}
-                        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
-                            <div className="w-full md:w-3/5 order-1 md:order-1">
-                                <FadeInSection>
-                                    <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
-                                        <div
-                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                            style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_02.41.46.png')" }}
-                                        />
-                                    </div>
-                                </FadeInSection>
-                            </div>
-                            <div className="w-full md:w-2/5 order-2 md:order-2">
-                                <FadeInSection delay={200}>
-                                    <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>中央駅</h3>
-                                    <div className="w-12 h-[1px] bg-white mb-8"></div>
-                                    <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        旅の始まりとなる場所。壮大な建築と行き交う人々。<br />
-                                        ここからあなたの物語が始まります。
-                                    </p>
-                                    <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">Spawn Point</p>
-                                </FadeInSection>
-                            </div>
-                        </div>
-
-                        {/* Area 2: City Center */}
-                        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
-                            <div className="w-full md:w-2/5 order-2 md:order-1 md:text-right">
-                                <FadeInSection delay={200}>
-                                    <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>中心部</h3>
-                                    <div className="w-12 h-[1px] bg-white mb-8 ml-auto md:ml-auto md:mr-0"></div>
-                                    <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        経済の中心地。摩天楼が立ち並び、活気に満ちたエリア。<br />
-                                        ビジネスと交流の拠点です。
-                                    </p>
-                                    <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">City Center</p>
-                                </FadeInSection>
-                            </div>
-                            <div className="w-full md:w-3/5 order-1 md:order-2">
-                                <FadeInSection>
-                                    <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-l-2 border-white/10 rounded-sm">
-                                        <div
-                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                            style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_16.26.18.png')" }}
-                                        />
-                                    </div>
-                                </FadeInSection>
-                            </div>
-                        </div>
-
-                        {/* Area 3: Suburbs */}
-                        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-24">
-                            <div className="w-full md:w-3/5 order-1 md:order-1">
-                                <FadeInSection>
-                                    <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
-                                        <div
-                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                            style={{ backgroundImage: "url('https://img.1necat.net/2025-11-27_18.50.25.png')" }}
-                                        />
-                                    </div>
-                                </FadeInSection>
-                            </div>
-                            <div className="w-full md:w-2/5 order-2 md:order-2">
-                                <FadeInSection delay={200}>
-                                    <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>郊外</h3>
-                                    <div className="w-12 h-[1px] bg-white mb-8"></div>
-                                    <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        自然と調和した穏やかな住宅街。<br />
-                                        自分だけの理想の家を建てるのに最適な場所です。
-                                    </p>
-                                    <p className="text-xs text-gray-400 tracking-widest uppercase font-helvetica">Suburbs</p>
-                                </FadeInSection>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section >
-
-            {/* 4. System - Modern & Clean */}
-            < section id="light-section-start" className="py-40 px-6 bg-[#d4d4d4] text-black" >
-                <div className="container mx-auto max-w-6xl">
-                    <div className="flex flex-col lg:flex-row gap-20">
-                        <div className="w-full lg:w-1/3">
-                            <FadeInSection>
-                                <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-8 uppercase font-helvetica">System</span>
-                                <h2 className="text-4xl md:text-5xl font-serif mb-12 leading-tight" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                                    生活を彩る<br />様々なシステム
-                                </h2>
-                                <p className="text-gray-600 leading-loose mb-12" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                    プレイヤー主導の経済、変動する市場価格。<br />
-                                    そして、安心して遊べる万全のサポート体制。<br />
-                                    いねさばライフがより楽しくなるシステムが盛り沢山です。
-                                </p>
-                            </FadeInSection>
-                        </div>
-                        <div className="w-full lg:w-2/3">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <FadeInSection delay={200} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10">
-                                    <div className="text-4xl mb-6 text-black">
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                                        </svg>
-                                    </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>生きている経済</h4>
-                                    <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        昨日の価値は今日の価値ではない。全プレイヤーの取引がリアルタイムで価格に反映される、脈動する経済があります。
-                                    </p>
-                                    <button
-                                        onClick={() => openModal('economy')}
-                                        className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
-                                        style={{ fontFamily: 'var(--font-noto-sans)' }}
-                                    >
-                                        <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
-                                        <span>詳しく</span>
-                                    </button>
-                                </FadeInSection>
-                                <FadeInSection delay={400} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10">
-                                    <div className="text-4xl mb-6 text-black">
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                        </svg>
-                                    </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>盤石な基盤、迅速なサポート</h4>
-                                    <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        稼働率99%の安定基盤と、毎週のメンテナンス。困った時はすぐに運営へ。迅速で透明性のある対応が、快適なプレイを約束します。
-                                    </p>
-                                    <button
-                                        onClick={() => openModal('support')}
-                                        className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
-                                        style={{ fontFamily: 'var(--font-noto-sans)' }}
-                                    >
-                                        <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
-                                        <span>詳しく</span>
-                                    </button>
-                                </FadeInSection>
-                                <FadeInSection delay={600} className="bg-[#f0f0f0] p-10 hover:bg-white transition-colors duration-500 border-t-2 border-black/10 md:col-span-2">
-                                    <div className="text-4xl mb-6 text-black">
-                                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                        </svg>
-                                    </div>
-                                    <h4 className="text-xl font-bold mb-4 font-serif" style={{ fontFamily: 'var(--font-noto-serif)' }}>340種類以上の追加アイテム</h4>
-                                    <p className="text-gray-600 leading-relaxed text-sm mb-6" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        家具、料理、乗り物。バニラの限界を超えたアイテム群が、あなたの建築と生活をより鮮やかに、豊かに彩ります。
-                                    </p>
-                                    <button
-                                        onClick={() => openModal('items')}
-                                        className="px-8 py-3 rounded-full border border-black/20 text-sm text-gray-600 hover:text-black hover:bg-black/5 hover:border-black transition-all duration-300 tracking-widest flex items-center gap-2 group"
-                                        style={{ fontFamily: 'var(--font-noto-sans)' }}
-                                    >
-                                        <span className="group-hover:rotate-180 transition-transform duration-500 inline-block">+</span>
-                                        <span>詳しく</span>
-                                    </button>
-                                </FadeInSection>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section >
-
-
-            {/* New Section: Citizenship - Gradient Light */}
-            <section className="py-32 md:py-48 px-6 bg-gradient-to-b from-[#e5e5e5] to-[#f5f5f5] text-black relative overflow-hidden">
-                {/* Decorative background elements */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-black/10 to-transparent"></div>
-
-                <div className="container mx-auto max-w-4xl text-center relative z-10">
-                    <FadeInSection>
-                        <span className="block text-xs font-bold tracking-[0.3em] text-gray-500 mb-10 uppercase font-helvetica">Citizenship</span>
-                        <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif mb-16 leading-tight text-gray-900" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                            あなたも、<br />
-                            都市開発者の一員です。
-                        </h2>
-                        <div className="space-y-8 text-gray-600 leading-loose text-sm md:text-base" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                            <p>
-                                いねさばでは、運営だけが街を作るのではありません。<br />
-                                あなたが建てる家、あなたが営む店、あなたが歩く道。
-                            </p>
-                            <p>
-                                その一つひとつが、この都市の風景となり、歴史となります。<br />
-                                さあ、あなたの手で、この街に新たな彩りを。
-                            </p>
-                            <div className="pt-8">
-                                <h3 className="text-lg md:text-xl font-bold text-black mb-4" style={{ fontFamily: 'var(--font-noto-serif)' }}>「公共事業」への参画</h3>
-                                <p className="mb-8">
-                                    幹線道路や鉄道網の整備は、運営からの認可制を採用しています。
-                                    適切な計画を立て、認可を受ければ、あなたは<strong className="text-gray-800">「公式な都市インフラ」の施工者</strong>となることができます。
-                                    あなたの技術で、地図に残る仕事をしませんか？
-                                </p>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {/* 道路設計 */}
-                                    <div className="relative rounded-xl overflow-hidden shadow-md group">
-                                        <div className="aspect-video w-full relative">
-                                            <Image
-                                                src="https://img.1necat.net/2025-11-29_15.24.15.png"
-                                                alt="道路設計のイメージ"
-                                                fill
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        </div>
-                                        <div className="absolute bottom-3 left-3">
-                                            <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                                <span className="text-gray-400">#</span>道路設計
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    {/* 鉄道敷設 */}
-                                    <div className="relative rounded-xl overflow-hidden shadow-md group">
-                                        <div className="aspect-video w-full relative">
-                                            <Image
-                                                src="https://img.1necat.net/2025-11-29_15.23.53.png"
-                                                alt="鉄道敷設のイメージ"
-                                                fill
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                            <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
-                                        </div>
-                                        <div className="absolute bottom-3 left-3">
-                                            <span className="bg-white/90 backdrop-blur-sm px-4 py-1.5 rounded-xl text-xs md:text-sm font-bold text-gray-800 shadow-sm border border-gray-100 flex items-center gap-1" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                                <span className="text-gray-400">#</span>鉄道敷設
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </FadeInSection>
-                </div>
-
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-px h-32 bg-gradient-to-b from-transparent via-black/10 to-transparent"></div>
-            </section>
-
-            {/* 5. Access - Start a Journey (Airplane Takeoff) */}
-            < section className="relative py-60 text-black text-center overflow-hidden group" >
-                {/* Background Image for Journey */}
-                < div className="absolute inset-0 z-0 overflow-hidden" >
-                    <div
-                        className="absolute inset-0 bg-cover bg-center"
-                        style={{
-                            backgroundImage: "url('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg')", // Suburbs image as placeholder for "Journey"
-                            filter: "brightness(1.1) grayscale(0.2)"
-                        }}
-                    />
-                    {/* Cloud/Speed effect overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#f4f4f4]/0 via-[#f4f4f4]/60 to-[#f4f4f4]"></div>
-                </div >
-
-                <div className="container mx-auto px-6 relative z-10">
-                    <FadeInSection>
-                        <h2 className="text-5xl md:text-7xl font-serif mb-12 leading-tight tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                            さあ、<br />旅に出よう。
-                        </h2>
-                        <p className="text-lg md:text-xl text-gray-700 mb-20 font-light tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                            無限の可能性が広がる世界が、<br className="md:hidden" />あなたを待っています。
-                        </p>
-                    </FadeInSection>
-
-                    <div className="flex flex-col items-center gap-8">
-                        <FadeInSection delay={200} className="w-full max-w-md flex flex-col items-center">
-                            <Link href="/tutorial" className="group">
-                                <div className="relative px-12 py-8 border border-black/30 bg-black/5 backdrop-blur-sm transition-all duration-500 group-hover:bg-black/10 group-hover:border-black group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] flex flex-col items-center gap-3">
-                                    <div className="flex items-center gap-4 text-black text-xl md:text-2xl font-serif tracking-[0.2em]" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                                        <span>VISIT THE CITY</span>
-                                        <span className="font-light transform group-hover:translate-x-2 transition-transform duration-300">→</span>
-                                    </div>
-                                    <p className="text-xs text-gray-600 tracking-widest font-light" style={{ fontFamily: 'var(--font-noto-sans)' }}>初めての方・参加手順はこちら</p>
-                                </div>
-                            </Link>
-                        </FadeInSection>
-
-                        <FadeInSection delay={400}>
-                            <Link href="/" className="inline-block text-black/60 hover:text-black transition-colors tracking-widest border-b border-transparent hover:border-black pb-1 mt-12" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                トップページに戻る
-                            </Link>
-                        </FadeInSection>
-                    </div>
-                </div>
-            </section >
-
-            {/* Footer - Simple Copyright */}
-            < footer className="bg-[#fafafa] text-gray-500 py-12 text-center text-xs tracking-[0.2em] border-t border-gray-200 font-helvetica" >
-                いねさば.All Rights Reserved.
-            </footer >
+            </div>
+            {/* End Main Content Wrapper */}
 
             <style jsx global>{`
         :root {
