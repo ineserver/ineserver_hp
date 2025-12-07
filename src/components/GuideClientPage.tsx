@@ -138,10 +138,19 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                         <div className="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm max-w-3xl mx-auto">
                             <h3 className="text-xl font-bold text-gray-900 mb-4">お困りですか？</h3>
                             <p className="text-gray-600 mb-8">
-                                ガイドを見ても解決しない場合は、チュートリアルを確認するか、<br className="hidden sm:block" />
+                                ガイドを見ても解決しない場合は、Q&Aやチュートリアルを確認するか、<br className="hidden sm:block" />
                                 Discordサーバーやゲーム内でスタッフにお気軽にお声がけください。
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                <Link
+                                    href="/qa"
+                                    className="inline-flex items-center justify-center px-6 py-3 bg-[#5b8064] text-white rounded-xl hover:bg-[#4a6b51] font-medium transition-colors shadow-lg shadow-[#5b8064]/20 active:scale-[0.98]"
+                                >
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Q&Aを見る
+                                </Link>
                                 <Link
                                     href="/tutorial"
                                     className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 font-medium transition-colors shadow-lg shadow-gray-900/20 active:scale-[0.98]"
