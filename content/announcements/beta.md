@@ -1,7 +1,7 @@
 ---
 title: ベータ版のホームページを公開中です
 date: 2025-07-24T09:00:00.000Z
-type: important
+type: normal
 description: リンクがなかったり、デモデータが表示される場合があります
 published: true
 ---
