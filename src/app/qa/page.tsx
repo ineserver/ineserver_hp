@@ -178,7 +178,7 @@ export default function QAPage() {
                                     </h2>
                                 )}
                                 <div className="space-y-3">
-                                    {items.map((item, idx) => {
+                                    {items.map((item) => {
                                         const globalIndex = faqData.indexOf(item);
                                         return (
                                             <AccordionItem

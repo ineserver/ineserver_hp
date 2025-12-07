@@ -11,10 +11,10 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const latest = searchParams.get('latest') === 'true';
-    
+
     // 最新1件のみ取得（トップページ用）
     if (latest) {
-      const latestNote = getLatestPatchNoteLight();
+      const latestNote = await getLatestPatchNoteLight();
       return NextResponse.json({
         data: latestNote ? [latestNote] : [],
         pagination: {
@@ -25,15 +25,15 @@ export async function GET(request: NextRequest) {
         }
       });
     }
-    
+
     // パッチノートデータを取得
     const allPatchNotes = await getAllPatchNotes();
-    
+
     // ページネーション処理
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
     const paginatedNotes = allPatchNotes.slice(startIndex, endIndex);
-    
+
     return NextResponse.json({
       data: paginatedNotes,
       pagination: {

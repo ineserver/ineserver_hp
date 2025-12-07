@@ -11,6 +11,7 @@ Minecraftサーバー「いねさば」の公式ホームページです。Next.
 - **MINECRAFT_SERVER_ADDRESS**：Minecraftサーバーのアドレス（1necat.netでOK）
 - **NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS**：同上
 - **NEXT_PUBLIC_RECOMMENDED_VERSION**：推奨のサーバーバージョン(1.21.4など)
+- **NEXT_PUBLIC_GA_MEASUREMENT_ID**：Google Analyticsの測定ID
 
 ## 注意事項
 - masterブランチにpushすると、GitHub Actionsが作動し、ビルドが開始されます。
