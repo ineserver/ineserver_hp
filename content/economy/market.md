@@ -3,6 +3,7 @@ title: アイテム市場取引のやり方
 published: true
 type: item
 number: 1
+image: https://img.1necat.net/71f67a1c30c776ef8e2e9af77bdf9c6c.png
 ---
 
 経済システム「アイテム市場」の使い方を解説します。

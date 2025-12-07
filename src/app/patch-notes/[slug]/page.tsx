@@ -1,8 +1,16 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
-import { getPatchNoteBySlug } from '@/lib/patch-notes';
+import { getPatchNoteBySlug, getAllPatchNotes } from '@/lib/patch-notes';
 import { notFound } from 'next/navigation';
+
+// 静的生成: ビルド時に全ページを事前生成
+export async function generateStaticParams() {
+  const patchNotes = await getAllPatchNotes();
+  return patchNotes.map((note) => ({
+    slug: note.slug,
+  }));
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;

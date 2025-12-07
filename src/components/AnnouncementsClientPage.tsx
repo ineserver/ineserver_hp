@@ -16,6 +16,41 @@ type FilterType = 'all' | 'important' | 'pickup' | 'normal';
 type SortType = 'date-desc' | 'date-asc';
 type EventStatusFilterType = 'all' | 'ongoing' | 'upcoming' | 'ended';
 
+// お知らせリンクコンポーネント
+function AnnouncementLink({ item, formatDate, getTag, formatEventPeriod }: {
+    item: ContentData;
+    formatDate: (dateString?: string) => string;
+    getTag: (type: string) => React.ReactNode;
+    formatEventPeriod: (startDate?: string, endDate?: string) => string | null;
+}) {
+    return (
+        <div className="group">
+            <Link
+                href={`/announcements/${item.id}`}
+                className="block p-3 rounded-lg hover:bg-gray-50 transition-colors active:bg-gray-100"
+            >
+                <div className="flex items-center flex-wrap gap-2">
+                    <div className="flex items-center flex-shrink-0">
+                        {getTag(item.type as string || 'normal')}
+                        <span className="text-sm text-gray-500 font-mono mr-3">{formatDate(item.date)}</span>
+                    </div>
+                    <div className="flex flex-col flex-grow">
+                        <span className="text-lg font-medium text-gray-900 group-hover:text-[#5b8064] transition-colors">
+                            {item.title}
+                        </span>
+                        {item.type === 'pickup' && typeof item.eventStartDate === 'string' && typeof item.eventEndDate === 'string' && (
+                            <span className="text-sm text-gray-500 mt-1">
+                                開催期間: {formatEventPeriod(item.eventStartDate, item.eventEndDate)}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </Link>
+            <div className="border-b border-gray-100 mt-2 mx-2"></div>
+        </div>
+    );
+}
+
 export default function AnnouncementsClientPage({ announcements }: AnnouncementsClientPageProps) {
     const searchParams = useSearchParams();
     const initialFilter = (searchParams.get('filter') as FilterType) || 'all';
@@ -220,27 +255,13 @@ export default function AnnouncementsClientPage({ announcements }: Announcements
                         </div>
                     ) : (
                         filteredAndSortedAnnouncements.map((item) => (
-                            <div key={item.id} className="group">
-                                <Link href={`/announcements/${item.id}`} className="block p-3 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <div className="flex items-center flex-wrap gap-2">
-                                        <div className="flex items-center flex-shrink-0">
-                                            {getTag(item.type as string || 'normal')}
-                                            <span className="text-sm text-gray-500 font-mono mr-3">{formatDate(item.date)}</span>
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-lg font-medium text-gray-900 group-hover:text-[#5b8064] transition-colors">
-                                                {item.title}
-                                            </span>
-                                            {item.type === 'pickup' && typeof item.eventStartDate === 'string' && typeof item.eventEndDate === 'string' && (
-                                                <span className="text-sm text-gray-500 mt-1">
-                                                    開催期間: {formatEventPeriod(item.eventStartDate, item.eventEndDate)}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </Link>
-                                <div className="border-b border-gray-100 mt-2 mx-2"></div>
-                            </div>
+                            <AnnouncementLink
+                                key={item.id}
+                                item={item}
+                                formatDate={formatDate}
+                                getTag={getTag}
+                                formatEventPeriod={formatEventPeriod}
+                            />
                         ))
                     )}
                 </section>
@@ -248,3 +269,4 @@ export default function AnnouncementsClientPage({ announcements }: Announcements
         </div>
     );
 }
+

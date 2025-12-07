@@ -3,6 +3,7 @@ title: スキルシステム (mcMMO)
 published: true
 type: utility
 number: 1
+image: https://img.1necat.net/2025-12-07_15.49.58.png
 ---
 
 日々の行動（採掘、伐採、戦闘など）に熟練度システム「mcMMO」が導入されています。

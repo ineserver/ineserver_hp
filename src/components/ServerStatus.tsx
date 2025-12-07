@@ -309,6 +309,41 @@ export default function ServerStatus({
             </div>
           </a>
 
+          {/* よくある質問 */}
+          <a
+            href="/qa"
+            className="group block bg-white rounded-lg border border-gray-200 p-4 bg-[#5b8064]/5 border-[#5b8064]/20 hover:bg-[#5b8064]/10 active:bg-[#5b8064]/10 transition-all duration-300 cursor-pointer overflow-visible relative"
+          >
+            <div className="flex items-center">
+              <div className="mr-4">
+                <svg className="w-6 h-6 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01" />
+                </svg>
+              </div>
+              <div className="flex-grow flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-gray-900">よくある質問</h4>
+                </div>
+                <svg className="w-5 h-5 text-[#5b8064] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+            {/* ホバー時の詳細テキスト */}
+            <div className="absolute inset-0 bg-emerald-50 border border-[#5b8064] rounded-lg p-4 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-all duration-300 pointer-events-none flex items-center">
+              <div className="mr-4">
+                <svg className="w-6 h-6 text-[#5b8064]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" strokeWidth="2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3m.08 4h.01" />
+                </svg>
+              </div>
+              <div className="flex-grow">
+                <p className="text-sm text-gray-700 font-medium">サーバーについてのよくある質問と回答</p>
+              </div>
+            </div>
+          </a>
+
           {/* 既知の不具合 */}
           <a
             href="https://github.com/ineserver/ineserver-Public/issues"

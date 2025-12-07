@@ -1,5 +1,5 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { getLifeData } from '../../../../lib/content';
+import { getLifeData, getLifeFiles } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 
 const config = {
@@ -17,6 +17,14 @@ const config = {
     pageTitle: 'くらし',
     backButtonText: 'くらし一覧に戻る'
 };
+
+// 静的生成: ビルド時に全ページを事前生成
+export async function generateStaticParams() {
+    const files = await getLifeFiles();
+    return files.map((file) => ({
+        slug: file.id,
+    }));
+}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -42,3 +50,4 @@ export default async function HousingLifeArticlePage({ params }: PageProps) {
 
     return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
+

@@ -1,5 +1,5 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { getAnnouncementData } from '../../../../lib/content';
+import { getAnnouncementData, getAnnouncementFilesLight } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 
 const config = {
@@ -18,6 +18,14 @@ const config = {
   backButtonText: 'お知らせ一覧に戻る'
 };
 
+// 静的生成: ビルド時に全ページを事前生成
+export async function generateStaticParams() {
+  const files = getAnnouncementFilesLight();
+  return files.map((file) => ({
+    slug: file.id,
+  }));
+}
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -25,11 +33,11 @@ interface PageProps {
 export default async function AnnouncementArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const contentData = await getAnnouncementData(slug);
-  
+
   if (!contentData) {
     notFound();
   }
-  
+
   const content = {
     id: contentData.id,
     title: contentData.title || '',
@@ -38,6 +46,7 @@ export default async function AnnouncementArticlePage({ params }: PageProps) {
     content: contentData.content || '',
     category: contentData.category,
   };
-  
+
   return <ContentArticlePage config={config} content={content} showDate={true} />;
 }
+

@@ -3,6 +3,7 @@ title: お店を作る・お店で買う
 published: true
 type: item
 number: 2
+image: https://img.1necat.net/2025-06-24_23.13.49.png
 ---
 
 アイテムが空中に浮いて見える、綺麗で分かりやすいショップの作り方を解説します。

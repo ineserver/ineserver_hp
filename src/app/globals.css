@@ -507,3 +507,40 @@ body {
     overflow-x: auto;
     margin: 0;
 }
+
+/* コンテンツリンクのタップフィードバック（モバイル対応） */
+.content-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-accent);
+    transition: all 0.15s ease;
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    margin: -0.5rem -0.75rem;
+    border-radius: 0.5rem;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.content-link:hover {
+    color: #4a6b55;
+    text-decoration: underline;
+}
+
+.content-link:active {
+    background-color: rgba(91, 128, 100, 0.15);
+    transform: scale(0.97);
+}
+
+/* モバイルでのタッチフィードバック強化 */
+@media (max-width: 767px) {
+    .content-link {
+        padding: 0.75rem 1rem;
+        margin: -0.75rem -1rem;
+    }
+
+    .content-link:active {
+        background-color: rgba(91, 128, 100, 0.2);
+    }
+}

@@ -3,6 +3,7 @@ title: 画像地図の作成と使い方
 published: true
 type: utility
 number: 2
+image: https://img.1necat.net/2025-12-07_15.51.46.png
 ---
 
 インターネット上の画像をマインクラフト内の「地図」として貼り付けられる機能の使い方を解説します。

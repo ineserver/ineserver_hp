@@ -2,6 +2,7 @@
 title: アリーナの遊び方
 published: true
 number: 1
+image: https://img.1necat.net/2023-09-12_10.10.08.png
 ---
 
 迫りくるモンスターの波（ウェーブ）を耐え抜き、報酬を獲得する「アリーナ」の解説です。

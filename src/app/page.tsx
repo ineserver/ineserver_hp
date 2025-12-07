@@ -54,7 +54,7 @@ export default async function Home() {
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
   // Fetch patch note
-  const latestPatchNoteData = getLatestPatchNoteLight();
+  const latestPatchNoteData = await getLatestPatchNoteLight();
 
   // Cast to PatchNote interface (compatible)
   const latestPatchNote = latestPatchNoteData as unknown as PatchNote | null;
