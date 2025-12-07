@@ -1,5 +1,5 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { getServerGuideData } from '../../../../lib/content';
+import { getServerGuideData, getServerGuideFiles } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 
 const config = {
@@ -17,6 +17,14 @@ const config = {
     pageTitle: 'サーバーガイド',
     backButtonText: 'サーバーガイド一覧に戻る'
 };
+
+// 静的生成: ビルド時に全ページを事前生成
+export async function generateStaticParams() {
+    const files = await getServerGuideFiles();
+    return files.map((file) => ({
+        slug: file.id,
+    }));
+}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -42,3 +50,4 @@ export default async function ServerGuideArticlePage({ params }: PageProps) {
 
     return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
+

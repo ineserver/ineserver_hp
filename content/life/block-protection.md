@@ -3,7 +3,7 @@ title: ブロック保護のやり方
 published: true
 type: protection
 number: 2
-image: https://img.1necat.net/2025-11-25_03.28.18.png
+image: https://img.1necat.net/2025-12-07_16.46.02.png
 ---
 
 チェストやドアなどを保護する方法と使い方を解説します。

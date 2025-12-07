@@ -3,6 +3,7 @@ title: コマンドの購入
 published: true
 type: license
 number: 1
+image: https://img.1necat.net/2025-12-07_16.25.56.png
 ---
 ゲーム内通貨（ine）を使って、冒険を便利にする機能や特別な権限を購入することができます。
 これらはすべて **「買い切り」** タイプで、一度購入すれば永続的に使用可能です。

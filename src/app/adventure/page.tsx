@@ -27,6 +27,7 @@ export default async function AdventurePage() {
         content: item.contentHtml || '',
         category: item.category,
         type: item.type,
+        image: typeof item.image === 'string' ? item.image : undefined,
         externalLink: typeof item.externalLink === 'string' ? item.externalLink : undefined,
     }));
 

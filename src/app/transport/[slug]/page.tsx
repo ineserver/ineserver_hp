@@ -1,9 +1,9 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
-import { getTransportData } from '../../../../lib/content';
+import { getTransportData, getTransportFiles } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 
 const config = {
-    title: 'ワールド・交通',
+    title: '交通',
     description: '「場所」に関する情報はすべてここです',
     apiEndpoint: '/api/transport',
     basePath: '/transport',
@@ -13,10 +13,18 @@ const config = {
     borderColor: 'border-orange-200',
     loadingColor: 'border-orange-600',
     emptyIcon: '🗺️',
-    emptyMessage: 'ワールド・交通に関する記事がありません',
-    pageTitle: 'ワールド・交通',
-    backButtonText: 'ワールド・交通一覧に戻る'
+    emptyMessage: '交通に関する記事がありません',
+    pageTitle: '交通',
+    backButtonText: '交通一覧に戻る'
 };
+
+// 静的生成: ビルド時に全ページを事前生成
+export async function generateStaticParams() {
+    const files = await getTransportFiles();
+    return files.map((file) => ({
+        slug: file.id,
+    }));
+}
 
 interface PageProps {
     params: Promise<{ slug: string }>;
@@ -42,3 +50,4 @@ export default async function TransportArticlePage({ params }: PageProps) {
 
     return <ContentArticlePage config={config} content={content} showToc={true} />;
 }
+

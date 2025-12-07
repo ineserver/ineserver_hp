@@ -34,8 +34,8 @@ export interface PatchNote {
   published: boolean;
 }
 
-// 軽量版: メタデータのみ取得（最新1件、HTMLレンダリングなし）
-export function getLatestPatchNoteLight(): PatchNote | null {
+// 軽量版: 最新1件取得（HTMLレンダリングあり）
+export async function getLatestPatchNoteLight(): Promise<PatchNote | null> {
   const patchNotesDirectory = path.join(contentDirectory, 'patch-notes');
   
   if (!fs.existsSync(patchNotesDirectory)) {
@@ -43,40 +43,50 @@ export function getLatestPatchNoteLight(): PatchNote | null {
   }
 
   const fileNames = fs.readdirSync(patchNotesDirectory);
-  const allPatchNotes = fileNames
-    .filter(name => name.endsWith('.md'))
-    .map((name) => {
-      const id = name.replace(/\.md$/, '');
-      const fullPath = path.join(patchNotesDirectory, name);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
-      const { data } = parseFrontMatter(fileContents);
+  const allPatchNotes = await Promise.all(
+    fileNames
+      .filter(name => name.endsWith('.md'))
+      .map(async (name) => {
+        const id = name.replace(/\.md$/, '');
+        const fullPath = path.join(patchNotesDirectory, name);
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const { data } = parseFrontMatter(fileContents);
 
-      const sectionsWithTitles = ((data.sections as unknown[]) || []).map((section: unknown) => {
-        if (typeof section !== 'object' || section === null) return null;
-        type Section = { items?: string[]; title?: string; type?: string };
-        const s = section as Section;
+        const sectionsWithTitles = await Promise.all(
+          ((data.sections as unknown[]) || []).map(async (section: unknown) => {
+            if (typeof section !== 'object' || section === null) return null;
+            type Section = { items?: string[]; title?: string; type?: string };
+            const s = section as Section;
+            const itemsHtml = await Promise.all(
+              (s.items || []).map(async (item: string) => {
+                return await processMarkdown(item);
+              })
+            );
+            return {
+              ...s,
+              title: s.title || getAutoTitle(typeof s.type === 'string' ? s.type : ''),
+              items: s.items || [],
+              itemsHtml
+            };
+          })
+        );
+
         return {
-          ...s,
-          title: s.title || getAutoTitle(typeof s.type === 'string' ? s.type : ''),
-          items: s.items || []
-        };
-      }).filter(Boolean);
-
-      return {
-        id,
-        slug: id.replace(/\./g, '-'),
-        version: data.version as string,
-        date: data.date ? new Date(data.date as string).toLocaleDateString('ja-JP', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        }) : '',
-        description: (data.description as string) || '',
-        sections: sectionsWithTitles,
-        published: (data.published as boolean) ?? true,
-        rawDate: data.date ? new Date(data.date as string) : new Date(0),
-      } as PatchNote & { rawDate: Date };
-    });
+          id,
+          slug: id.replace(/\./g, '-'),
+          version: data.version as string,
+          date: data.date ? new Date(data.date as string).toLocaleDateString('ja-JP', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : '',
+          description: (data.description as string) || '',
+          sections: sectionsWithTitles.filter(Boolean),
+          published: (data.published as boolean) ?? true,
+          rawDate: data.date ? new Date(data.date as string) : new Date(0),
+        } as PatchNote & { rawDate: Date };
+      })
+  );
 
   const sortedPatchNotes = allPatchNotes
     .filter(patchNote => patchNote.published)

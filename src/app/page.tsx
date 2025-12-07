@@ -368,7 +368,7 @@ export default function Home() {
     .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
 
   // Fetch patch note
-  const latestPatchNoteData = getLatestPatchNoteLight();
+  const latestPatchNoteData = await getLatestPatchNoteLight();
 
   // タグの表示名を取得する関数
   const getTagName = (type: string) => {

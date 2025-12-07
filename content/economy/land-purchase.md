@@ -3,6 +3,7 @@ title: 土地の購入・管理
 published: true
 type: license
 number: 2
+image: https://img.1necat.net/2025-03-21_21.02.15.png
 ---
 
 サーバー内で用意されている「分譲地」などの土地を購入する方法を解説します。

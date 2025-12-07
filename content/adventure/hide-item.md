@@ -2,6 +2,7 @@
 title: 隠しアイテム・隠し部屋の一覧とヒント
 published: true
 number: 2
+image: https://img.1necat.net/2023-09-24_21.08.46.png
 ---
 いねさばの随所に隠されていると噂のアイテム一覧と、ちょっと不思議な場所の一覧です。
 

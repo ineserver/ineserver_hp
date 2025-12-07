@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import Header from '@/components/Header';
 
@@ -9,6 +11,45 @@ interface ContentListPageProps {
   config: ContentPageConfig;
   content: ContentItem[];
   children?: React.ReactNode;
+}
+
+// コンテンツリンクコンポーネント
+function ContentLink({ item, basePath }: { item: ContentItem; basePath: string }) {
+  const linkContent = (
+    <>
+      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+      </svg>
+      <span className="text-lg font-medium">{item.title}</span>
+      {item.externalLink && (
+        <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      )}
+    </>
+  );
+
+  return (
+    <div className="py-2 pl-0">
+      {item.externalLink ? (
+        <a
+          href={item.externalLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="content-link"
+        >
+          {linkContent}
+        </a>
+      ) : (
+        <Link
+          href={`${basePath}/${item.id}`}
+          className="content-link"
+        >
+          {linkContent}
+        </Link>
+      )}
+    </div>
+  );
 }
 
 export default function ContentListPage({ config, content = [], children }: ContentListPageProps) {
@@ -38,44 +79,6 @@ export default function ContentListPage({ config, content = [], children }: Cont
       return acc;
     }, {} as Record<string, ContentItem[]>)
     : { all: content };
-
-  const renderContentItem = (item: ContentItem) => {
-    const linkContent = (
-      <>
-        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-        <span className="text-lg font-medium">{item.title}</span>
-        {item.externalLink && (
-          <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        )}
-      </>
-    );
-
-    return (
-      <div key={item.id} className="py-2 pl-0">
-        {item.externalLink ? (
-          <a
-            href={item.externalLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
-          >
-            {linkContent}
-          </a>
-        ) : (
-          <Link
-            href={`${config.basePath}/${item.id}`}
-            className="inline-flex items-center text-[#5b8064] hover:text-[#4a6b55] hover:underline transition-colors duration-200"
-          >
-            {linkContent}
-          </Link>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="bg-white flex flex-col h-full">
@@ -112,21 +115,35 @@ export default function ContentListPage({ config, content = [], children }: Cont
                 const groupLabel = config.groupLabels?.[type] || type;
                 const GroupIcon = groupIconMap[groupLabel] ? iconMap[groupIconMap[groupLabel]] : null;
 
-                return (
-                  <div key={type}>
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">
-                      {GroupIcon && <GroupIcon className="text-gray-800 mr-3" size={28} />}
-                      {groupLabel}
-                    </h1>
-                    <div className="space-y-2">
-                      {items.map(renderContentItem)}
+                  if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+                  if (indexA !== -1) return -1;
+                  if (indexB !== -1) return 1;
+                  return 0;
+                })
+                .map(([type, items]) => {
+                  const groupLabel = config.groupLabels?.[type] || type;
+                  const GroupIcon = groupIconMap[groupLabel] ? iconMap[groupIconMap[groupLabel]] : null;
+
+                  return (
+                    <div key={type}>
+                      <h1 className="text-2xl font-bold text-gray-900 mb-4 py-3 px-4 border-l-6 border-[#5b8064] bg-[#f0f4f1] flex items-center lg:-mx-4">
+                        {GroupIcon && <GroupIcon className="text-gray-800 mr-3" size={28} />}
+                        {groupLabel}
+                      </h1>
+                      <div className="space-y-2">
+                        {items.map((item) => (
+                          <ContentLink key={item.id} item={item} basePath={config.basePath} />
+                        ))}
+                      </div>
                     </div>
                   );
                 })}
             </div>
           ) : (
             <div className="space-y-2">
-              {content.map(renderContentItem)}
+              {content.map((item) => (
+                <ContentLink key={item.id} item={item} basePath={config.basePath} />
+              ))}
             </div>
           )}
         </section>
