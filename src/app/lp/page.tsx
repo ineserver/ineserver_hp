@@ -323,7 +323,7 @@ export default function LandingPage() {
                             街を積む。<br className="md:hidden" />日々を紡ぐ。
                         </h1>
                         <p className="text-base md:text-xl tracking-[0.15em] opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-8 inline-block font-helvetica text-gray-100">
-                            あなたらしい距離感で街に溶け込める。ひとりだけどひとりじゃない。そんな「都市計画サーバー」です。
+                            あなたらしい距離感で街に溶け込める。そんな「都市計画サーバー」です。
                         </p>
                     </div>
 
