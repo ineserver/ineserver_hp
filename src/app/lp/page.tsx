@@ -359,7 +359,7 @@ export default function LandingPage() {
                                 <FadeInSection delay={600}>
                                     <p className="text-lg md:text-2xl leading-loose text-gray-300 font-light mb-8" style={{ fontFamily: 'var(--font-noto-sans)' }}>
                                         街を作るのも、経済を動かすのも、ただのんびりと暮らすのもあなた次第。<br />
-                                        そんな、"自由な秩序"のあるサーバーを目指しています。<br />
+                                        そんな、&ldquo;自由な秩序&rdquo;のあるサーバーを目指しています。<br />
                                         この心地よい空間で、ちょっとのんびり過ごしてみませんか？
                                     </p>
                                     <button
