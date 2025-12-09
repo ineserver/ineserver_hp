@@ -142,7 +142,7 @@ export default function LandingPage() {
                     </h3>
                 </div>
                 <p className="text-gray-300 font-medium leading-relaxed">いねさばが目指す「居場所」とは、無理に繋がることではありません。 独自の<strong className="text-white">「意思疎通ステータス」システム</strong>により、会話を楽しみたい時は「雑談歓迎」、建築や採掘に集中したい時は「作業中」、少し席を外す時は「離席中」と、その時の気分を周囲に自然に伝えることができます。</p>
-                <p className="text-gray-300 font-medium leading-relaxed">「話さなくても、同じ空間に誰かがいる」。そんな緩やかな繋がりの中で、あなたの好きな街に住み、あなたらしい方法で経済に参加し、あなたらしい役割を見つける。 賑わいの中にも、一人になれる安心がある。それが私たちの考えるデジタル都市の在り方です。</p>
+                <p className="text-gray-300 font-medium leading-relaxed">「話さなくても、同じ空間に誰かがいる」。そんな緩やかな繋がりの中で、あなたの好きな街に住み、あなたらしい方法で経済に参加し、あなたらしい役割を見つける。 賑わいの中にも、一人になれる安心がある。それが『いねさば』の在り方です。</p>
             </Modal>
 
             <Modal isOpen={activeModal === 'economy'} onClose={closeModal} title="Real Price Fluctuation" theme="light">
@@ -323,7 +323,7 @@ export default function LandingPage() {
                             街を積む。<br className="md:hidden" />日々を紡ぐ。
                         </h1>
                         <p className="text-base md:text-xl tracking-[0.15em] opacity-0 animate-fade-in-up delay-500 font-light border-t border-white/30 pt-8 inline-block font-helvetica text-gray-100">
-                            心地よい距離感と、呼吸する経済。あなたが選ぶ生き方が、この有機的な都市の形になる。
+                            あなたらしい距離感で街に溶け込める。ひとりだけどひとりじゃない。そんな「都市計画サーバー」です。
                         </p>
                     </div>
 
@@ -345,7 +345,7 @@ export default function LandingPage() {
 
                         <FadeInSection delay={200}>
                             <h2 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight mb-24 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                                自由と秩序が<br />調和する場所。
+                                自由のある秩序
                             </h2>
                         </FadeInSection>
 
@@ -358,9 +358,9 @@ export default function LandingPage() {
                             <div className="w-full md:w-2/3">
                                 <FadeInSection delay={600}>
                                     <p className="text-lg md:text-2xl leading-loose text-gray-300 font-light mb-8" style={{ fontFamily: 'var(--font-noto-sans)' }}>
-                                        ここは単なるゲームサーバーではありません。<br />
-                                        一人ひとりの建築が織りなす、デジタルの都市空間です。<br />
-                                        忙しい日常を離れ、もう一つの「居場所」をあなたに。
+                                        街を作るのも、経済を動かすのも、ただのんびりと暮らすのもあなた次第。<br />
+                                        そんな、"自由な秩序"のあるサーバーを目指しています。<br />
+                                        この心地よい空間で、ちょっとのんびり過ごしてみませんか？
                                     </p>
                                     <button
                                         onClick={() => openModal('concept')}
@@ -420,7 +420,7 @@ export default function LandingPage() {
                                 <div className="w-full md:w-2/5 order-2 md:order-1 md:text-right">
                                     <FadeInSection delay={200}>
                                         <h3 className="text-3xl md:text-4xl font-serif mb-6 text-white" style={{ fontFamily: 'var(--font-noto-serif)' }}>中心部</h3>
-                                        <div className="w-12 h-[1px] bg-white mb-8 ml-auto md:ml-auto md:mr-0"></div>
+                                        <div className="w-12 h-[1px] bg-white mb-8 md:ml-auto"></div>
                                         <p className="text-gray-300 leading-relaxed mb-4" style={{ fontFamily: 'var(--font-noto-sans)' }}>
                                             経済の中心地。摩天楼が立ち並び、活気に満ちたエリア。<br />
                                             ビジネスと交流の拠点です。
@@ -642,7 +642,7 @@ export default function LandingPage() {
                     <div className="container mx-auto px-6 relative z-10">
                         <FadeInSection>
                             <h2 className="text-5xl md:text-7xl font-serif mb-12 leading-tight tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-serif)' }}>
-                                さあ、<br />旅に出よう。
+                                さあ、旅に出よう。
                             </h2>
                             <p className="text-lg md:text-xl text-gray-700 mb-20 font-light tracking-widest drop-shadow-sm" style={{ fontFamily: 'var(--font-noto-sans)' }}>
                                 無限の可能性が広がる世界が、<br className="md:hidden" />あなたを待っています。
