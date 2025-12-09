@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Noto_Serif_JP, Noto_Sans_JP } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
+import { trackLpModalOpen, trackLpCtaClick, trackExternalLink } from "@/lib/analytics";
 
 const notoSerifJP = Noto_Serif_JP({
     subsets: ["latin"],
@@ -105,7 +106,10 @@ export default function LandingPage() {
         return () => clearInterval(interval);
     }, []);
 
-    const openModal = (id: string) => setActiveModal(id);
+    const openModal = (id: string) => {
+        setActiveModal(id);
+        trackLpModalOpen(id);
+    };
     const closeModal = () => setActiveModal(null);
 
     useEffect(() => {
@@ -167,6 +171,7 @@ export default function LandingPage() {
                                     href="https://market.1necat.net"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => trackExternalLink('market', 'https://market.1necat.net')}
                                     className="inline-flex items-center gap-2 text-sm text-[#5b8064] hover:text-[#4a6b52] transition-colors font-bold group"
                                     style={{ fontFamily: 'var(--font-noto-sans)' }}
                                 >
@@ -646,7 +651,7 @@ export default function LandingPage() {
 
                         <div className="flex flex-col items-center gap-8">
                             <FadeInSection delay={200} className="w-full max-w-md flex flex-col items-center">
-                                <Link href="/tutorial" className="group">
+                                <Link href="/tutorial" className="group" onClick={() => trackLpCtaClick('tutorial')}>
                                     <div className="relative px-12 py-8 border border-black/30 bg-black/5 backdrop-blur-sm transition-all duration-500 group-hover:bg-black/10 group-hover:border-black group-hover:shadow-[0_0_20px_rgba(0,0,0,0.1)] flex flex-col items-center gap-3">
                                         <div className="flex items-center gap-4 text-black text-xl md:text-2xl font-serif tracking-[0.2em]" style={{ fontFamily: 'var(--font-noto-serif)' }}>
                                             <span>VISIT THE CITY</span>

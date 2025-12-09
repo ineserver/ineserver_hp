@@ -3,7 +3,9 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ContentData } from '../../lib/content';
+import { trackGuideCardClick, trackGuideCtaClick, trackExternalLink } from '@/lib/analytics';
 
 interface GuideSectionProps {
     title: string;
@@ -15,19 +17,22 @@ interface GuideSectionProps {
 // 個別のカードコンポーネント
 function GuideCard({ item, basePath }: { item: ContentData; basePath: string }) {
     const imageUrl = typeof item.image === 'string' ? item.image : null;
+    const category = basePath.replace('/', '');
 
     return (
         <Link
             href={`${basePath}/${item.id}`}
             className="group h-full"
+            onClick={() => trackGuideCardClick(item.title || '', category, `${basePath}/${item.id}`)}
         >
             <div className="h-full bg-white rounded-xl shadow-sm border border-gray-100 transition-all duration-300 hover:shadow-md hover:border-[#5b8064]/50 hover:-translate-y-1 flex flex-col overflow-hidden active:scale-[0.98]">
                 {imageUrl && (
                     <div className="relative w-full h-32 overflow-hidden bg-gray-100">
-                        <img
+                        <Image
                             src={imageUrl}
                             alt={item.title || ''}
-                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            fill
+                            className="object-cover transition-transform duration-300 group-hover:scale-105"
                         />
                     </div>
                 )}
@@ -144,6 +149,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                             <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                 <Link
                                     href="/qa"
+                                    onClick={() => trackGuideCtaClick('qa')}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-[#5b8064] text-white rounded-xl hover:bg-[#4a6b51] font-medium transition-colors shadow-lg shadow-[#5b8064]/20 active:scale-[0.98]"
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,6 +159,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                                 </Link>
                                 <Link
                                     href="/tutorial"
+                                    onClick={() => trackGuideCtaClick('tutorial')}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-xl hover:bg-gray-800 font-medium transition-colors shadow-lg shadow-gray-900/20 active:scale-[0.98]"
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,6 +171,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                                     href="https://discord.gg/tdefsEKYhp"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => { trackGuideCtaClick('discord'); trackExternalLink('discord', 'https://discord.gg/tdefsEKYhp'); }}
                                     className="inline-flex items-center justify-center px-6 py-3 bg-[#5865F2] text-white rounded-xl hover:bg-[#4752C4] font-medium transition-colors shadow-lg shadow-[#5865F2]/20 active:scale-[0.98]"
                                 >
                                     <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">

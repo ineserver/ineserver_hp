@@ -8,6 +8,7 @@ import Link from 'next/link';
 import CommandCode from '@/components/CommandCode';
 import CollapsibleDetail from '@/components/CollapsibleDetail';
 import ImageModal from '@/components/ImageModal';
+import { trackTutorialStepChange } from '@/lib/analytics';
 
 export default function TutorialPage() {
   const [currentStep, setCurrentStep] = useState(0);
@@ -462,20 +463,25 @@ export default function TutorialPage() {
 
   const nextStep = () => {
     if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
+      const nextIndex = currentStep + 1;
+      setCurrentStep(nextIndex);
+      trackTutorialStepChange(nextIndex, steps[nextIndex].title, 'next');
       scrollToTop();
     }
   };
 
   const prevStep = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      const prevIndex = currentStep - 1;
+      setCurrentStep(prevIndex);
+      trackTutorialStepChange(prevIndex, steps[prevIndex].title, 'prev');
       scrollToTop();
     }
   };
 
   const goToStep = (stepIndex: number) => {
     setCurrentStep(stepIndex);
+    trackTutorialStepChange(stepIndex, steps[stepIndex].title, 'jump');
     scrollToTop();
   };
 
