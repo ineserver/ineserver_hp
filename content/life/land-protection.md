@@ -32,14 +32,14 @@ image: https://img.1necat.net/2025-11-25_03.28.38.png
 
 
 :::command
-/rg create <自分の名前_保護名>
+/rg claim <自分の名前_保護名>
 :::
 
 <span class="text-red">**必ず、保護名は「自分の名前_保護名(保護名は自由)」にしてください！**</span>（保護名の重複を避けるためです）
 
 例：
 `
-/rg create 1necat_myhome
+/rg claim 1necat_myhome
 `
 
 これで、自分以外のプレイヤーはその場所を編集できなくなります。
