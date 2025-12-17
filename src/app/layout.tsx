@@ -5,6 +5,18 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "いねさば",
   description: "Minecraftサーバー「いねさば」の公式ホームページです。",
+  openGraph: {
+    title: "いねさば",
+    description: "Minecraftサーバー「いねさば」の公式ホームページです。",
+    type: "website",
+    url: "https://ineserver.net",
+    siteName: "いねさば",
+  },
+  twitter: {
+    card: "summary",
+    title: "いねさば",
+    description: "Minecraftサーバー「いねさば」の公式ホームページです。",
+  },
 };
 
 export const viewport: Viewport = {

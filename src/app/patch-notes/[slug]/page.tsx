@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Breadcrumb from '@/components/Breadcrumb';
 import { getPatchNoteBySlug, getAllPatchNotes } from '@/lib/patch-notes';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 // 静的生成: ビルド時に全ページを事前生成
 export async function generateStaticParams() {
@@ -10,6 +11,39 @@ export async function generateStaticParams() {
   return patchNotes.map((note) => ({
     slug: note.slug,
   }));
+}
+
+// OGP情報の生成
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const patchNote = await getPatchNoteBySlug(slug);
+
+  if (!patchNote) {
+    return {
+      title: 'ページが見つかりません | いねさば',
+      description: 'お探しのページは見つかりませんでした。',
+    };
+  }
+
+  const title = `${patchNote.date} パッチノート | いねさば`;
+  const description = patchNote.description || `${patchNote.date}のパッチノートです。`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'article',
+      url: `https://ineserver.net/patch-notes/${slug}`,
+      siteName: 'いねさば',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
 }
 
 interface PageProps {

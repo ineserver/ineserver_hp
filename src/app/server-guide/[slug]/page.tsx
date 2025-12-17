@@ -1,6 +1,7 @@
 import ContentArticlePage from '@/components/ContentArticlePage';
 import { getServerGuideData, getServerGuideFiles } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 const config = {
     title: 'サーバーガイド',
@@ -24,6 +25,66 @@ export async function generateStaticParams() {
     return files.map((file) => ({
         slug: file.id,
     }));
+}
+
+// OGP情報の生成
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { slug } = await params;
+    const contentData = await getServerGuideData(slug);
+
+    if (!contentData) {
+        return {
+            title: 'ページが見つかりません | いねさば',
+            description: 'お探しのページは見つかりませんでした。',
+        };
+    }
+
+    // 本文から数行抜粋（descriptionがない場合）
+    const getTextExcerpt = (htmlContent: string): string => {
+        const textContent = htmlContent
+            .replace(/<[^>]*>/g, '')
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/&lt;/g, '<')
+            .replace(/&gt;/g, '>')
+            .trim();
+        
+        const lines = textContent.split('\n').filter(line => line.trim().length > 0);
+        const excerpt = lines.slice(0, 3).join(' ').substring(0, 150);
+        return excerpt + (excerpt.length >= 150 ? '...' : '');
+    };
+
+    const title = `${contentData.title || 'サーバーガイド'} | いねさば`;
+    const description = contentData.description || getTextExcerpt(contentData.contentHtml || contentData.content || '');
+    const image = contentData.image as string | undefined;
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: 'article',
+            url: `https://ineserver.net/server-guide/${slug}`,
+            siteName: 'いねさば',
+            ...(image && {
+                images: [
+                    {
+                        url: image,
+                        alt: contentData.title || 'サーバーガイド記事画像',
+                    },
+                ],
+            }),
+        },
+        twitter: {
+            card: image ? 'summary_large_image' : 'summary',
+            title,
+            description,
+            ...(image && {
+                images: [image],
+            }),
+        },
+    };
 }
 
 interface PageProps {
