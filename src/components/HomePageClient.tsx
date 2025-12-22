@@ -415,18 +415,18 @@ export default function HomePageClient({
                                             : 'border-white/20 hover:bg-black/50 hover:border-white/50'
                                             }`}
                                     >
-                                        <div className="relative">
+                                        <div className="relative flex-shrink-0">
                                             <div
                                                 className="w-8 h-8 lg:w-12 lg:h-8 rounded-md bg-cover bg-center shadow-sm"
                                                 style={{ backgroundImage: `url('${slide.image}')` }}
                                             ></div>
                                         </div>
-                                        <div className="flex flex-col items-start">
-                                            <span className={`text-xs font-bold whitespace-nowrap ${index === currentSlide ? 'text-white' : 'text-white/70'
+                                        <div className="flex flex-col items-start min-w-0 flex-1 overflow-hidden">
+                                            <span className={`text-xs font-bold line-clamp-2 break-words w-full text-left ${index === currentSlide ? 'text-white' : 'text-white/70'
                                                 }`}>
                                                 {slide.title}
                                             </span>
-                                            <span className="text-[10px] text-white/50 font-mono">
+                                            <span className="text-[10px] text-white/50 font-mono whitespace-nowrap text-left">
                                                 {status === 'ongoing' ? '開催中' : status === 'upcoming' ? '開催予定' : ''}
                                             </span>
                                         </div>
