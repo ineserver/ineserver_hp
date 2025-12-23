@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'img.1necat.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.google.com',
+      },
     ],
   },
 };

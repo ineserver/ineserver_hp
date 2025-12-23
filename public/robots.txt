@@ -1,0 +1,8 @@
+# いねさば 公式ホームページ
+# https://www.1necat.net
+
+User-agent: *
+Allow: /
+
+# サイトマップの場所
+Sitemap: https://www.1necat.net/sitemap.xml

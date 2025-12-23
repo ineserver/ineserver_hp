@@ -2,6 +2,7 @@ import ContentArticlePage from '@/components/ContentArticlePage';
 import { getAnnouncementData, getAnnouncementFilesLight } from '../../../../lib/content';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
+import StructuredData from '@/components/StructuredData';
 
 const config = {
   title: 'お知らせ',
@@ -59,16 +60,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const title = `${contentData.title || 'お知らせ'} | いねさば`;
   const description = contentData.description || getTextExcerpt(contentData.contentHtml || contentData.content || '');
   const image = contentData.image as string | undefined;
+  const url = `https://www.1necat.net/announcements/${slug}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: url,
+    },
     openGraph: {
       title,
       description,
       type: 'article',
-      url: `https://ineserver.net/announcements/${slug}`,
+      url,
       siteName: 'いねさば',
+      locale: 'ja_JP',
+      publishedTime: contentData.date || new Date().toISOString(),
       ...(image && {
         images: [
           {
@@ -110,6 +117,34 @@ export default async function AnnouncementArticlePage({ params }: PageProps) {
     category: contentData.category,
   };
 
-  return <ContentArticlePage config={config} content={content} showDate={true} />;
+  const breadcrumbItems = [
+    { name: 'ホーム', url: 'https://www.1necat.net' },
+    { name: 'お知らせ', url: 'https://www.1necat.net/announcements' },
+    { name: content.title, url: `https://www.1necat.net/announcements/${slug}` },
+  ];
+
+  return (
+    <>
+      {/* パンくずリスト構造化データ */}
+      <StructuredData type="BreadcrumbList" data={{ items: breadcrumbItems }} />
+      
+      {/* 記事構造化データ */}
+      {contentData.date && (
+        <StructuredData
+          type="Article"
+          data={{
+            headline: content.title,
+            description: content.description,
+            image: contentData.image || 'https://www.1necat.net/server-icon.png',
+            datePublished: contentData.date,
+            dateModified: contentData.date,
+            url: `https://www.1necat.net/announcements/${slug}`,
+          }}
+        />
+      )}
+      
+      <ContentArticlePage config={config} content={content} showDate={true} />
+    </>
+  );
 }
 

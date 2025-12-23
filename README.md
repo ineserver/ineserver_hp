@@ -39,6 +39,7 @@ npm start
 | `NEXT_PUBLIC_MINECRAFT_SERVER_ADDRESS` | 公開用サーバーアドレス | `1necat.net` |
 | `NEXT_PUBLIC_RECOMMENDED_VERSION` | 推奨Minecraftバージョン | `1.21.4` |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics 測定ID | `G-XXXXXXXXXX` |
+| `NEXT_PUBLIC_GSC_VERIFICATION` | Google Search Console サイト確認コード | `vYtPF7pb...` |
 
 ---
 

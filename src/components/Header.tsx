@@ -164,10 +164,13 @@ const Header = () => {
                           onClick={() => handleExternalClick('minecraft_jp', 'https://minecraft.jp/servers/67de4f4ce22bc84120000007')}
                           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5b8064] transition-colors"
                         >
-                          <img 
-                            src="https://www.google.com/s2/favicons?domain=minecraft.jp&sz=32" 
-                            alt="minecraft.jp" 
+                          <Image
+                            src="https://www.google.com/s2/favicons?domain=minecraft.jp&sz=32"
+                            alt="minecraft.jp"
+                            width={16}
+                            height={16}
                             className="w-4 h-4 mr-3"
+                            unoptimized
                           />
                           <span className="flex-1">minecraft.jp</span>
                           <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -181,10 +184,13 @@ const Header = () => {
                           onClick={() => handleExternalClick('mine_portal', 'https://mineportal.jp/servers/cmjfvb3u000004j6pgfvpfcet')}
                           className="flex items-center px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5b8064] transition-colors"
                         >
-                          <img 
-                            src="https://www.google.com/s2/favicons?domain=mineportal.jp&sz=32" 
-                            alt="MinePortal" 
+                          <Image
+                            src="https://www.google.com/s2/favicons?domain=mineportal.jp&sz=32"
+                            alt="MinePortal"
+                            width={16}
+                            height={16}
                             className="w-4 h-4 mr-3"
+                            unoptimized
                           />
                           <span className="flex-1">MinePortal</span>
                           <svg className="w-3.5 h-3.5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1027,10 +1033,13 @@ const Header = () => {
                         rel="noopener noreferrer"
                         className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                       >
-                        <img 
-                          src="https://www.google.com/s2/favicons?domain=minecraft.jp&sz=32" 
-                          alt="minecraft.jp" 
+                        <Image
+                          src="https://www.google.com/s2/favicons?domain=minecraft.jp&sz=32"
+                          alt="minecraft.jp"
+                          width={16}
+                          height={16}
                           className="w-4 h-4 mr-3 flex-shrink-0"
+                          unoptimized
                         />
                         <span className="flex-1">minecraft.jp</span>
                         <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1043,10 +1052,13 @@ const Header = () => {
                         rel="noopener noreferrer"
                         className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
                       >
-                        <img 
-                          src="https://www.google.com/s2/favicons?domain=mineportal.jp&sz=32" 
-                          alt="MinePortal" 
+                        <Image
+                          src="https://www.google.com/s2/favicons?domain=mineportal.jp&sz=32"
+                          alt="MinePortal"
+                          width={16}
+                          height={16}
                           className="w-4 h-4 mr-3 flex-shrink-0"
+                          unoptimized
                         />
                         <span className="flex-1">MinePortal</span>
                         <svg className="w-3.5 h-3.5 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1055,7 +1067,7 @@ const Header = () => {
                       </a>
                     </div>
                   </div>
-                  
+
                   <a
                     href="https://stats.uptimerobot.com/Rw0L1innjO"
                     className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"

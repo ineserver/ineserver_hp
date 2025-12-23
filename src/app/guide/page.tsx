@@ -8,6 +8,12 @@ import GuideClientPage from '@/components/GuideClientPage';
 
 export const metadata = {
   title: 'ガイド | いねさば',
+  description: 'いねさばの便利機能やシステムをカテゴリ別に解説。経済、くらし、娯楽、交通の各分野のガイドを確認できます。',
+  openGraph: {
+    title: 'ガイド | いねさば',
+    description: 'いねさばの便利機能やシステムをカテゴリ別に解説します。',
+    images: ['/server-icon.png'],
+  },
 };
 
 export default async function GuidePage() {
