@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { parseFrontMatter } from '../../lib/front-matter-parser';
 import { remark } from 'remark';
+import remarkGfm from 'remark-gfm';
 import remarkHtml from 'remark-html';
 
 const contentDirectory = path.join(process.cwd(), 'content');
@@ -10,7 +11,9 @@ const contentDirectory = path.join(process.cwd(), 'content');
 async function processMarkdown(markdown: string): Promise<string> {
   // 引用符で囲まれた文字列から、Markdownの**を正しく処理するため、
   // 文字列をそのままMarkdownとして扱う
+  // remarkGfmを使用してURLを自動的にリンクに変換
   const result = await remark()
+    .use(remarkGfm)
     .use(remarkHtml, { sanitize: false })
     .process(markdown);
   return result.toString();
@@ -37,7 +40,7 @@ export interface PatchNote {
 // 軽量版: 最新1件取得（HTMLレンダリングあり）
 export async function getLatestPatchNoteLight(): Promise<PatchNote | null> {
   const patchNotesDirectory = path.join(contentDirectory, 'patch-notes');
-  
+
   if (!fs.existsSync(patchNotesDirectory)) {
     return null;
   }
@@ -106,7 +109,7 @@ export async function getLatestPatchNoteLight(): Promise<PatchNote | null> {
 
 export async function getAllPatchNotes(): Promise<PatchNote[]> {
   const patchNotesDirectory = path.join(contentDirectory, 'patch-notes');
-  
+
   // ディレクトリが存在しない場合は空配列を返す
   if (!fs.existsSync(patchNotesDirectory)) {
     return [];
@@ -124,21 +127,21 @@ export async function getAllPatchNotes(): Promise<PatchNote[]> {
 
         // タイプに基づいてタイトルを自動生成（既存のタイトルがある場合はそれを優先）
         const sectionsWithTitles = await Promise.all(
-  ((data.sections as unknown[]) || []).map(async (section: unknown) => {
-    if (typeof section !== 'object' || section === null) return null;
-    type Section = { items?: string[]; title?: string; type?: string };
-    const s = section as Section;
-    const itemsHtml = await Promise.all(
-      (s.items || []).map(async (item: string) => {
-        return await processMarkdown(item);
-      })
-    );
-    return {
-      ...s,
-      title: s.title || getAutoTitle(typeof s.type === 'string' ? s.type : ''),
-      itemsHtml
-    };
-  })
+          ((data.sections as unknown[]) || []).map(async (section: unknown) => {
+            if (typeof section !== 'object' || section === null) return null;
+            type Section = { items?: string[]; title?: string; type?: string };
+            const s = section as Section;
+            const itemsHtml = await Promise.all(
+              (s.items || []).map(async (item: string) => {
+                return await processMarkdown(item);
+              })
+            );
+            return {
+              ...s,
+              title: s.title || getAutoTitle(typeof s.type === 'string' ? s.type : ''),
+              itemsHtml
+            };
+          })
         );
 
         return {
