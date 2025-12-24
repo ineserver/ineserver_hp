@@ -69,6 +69,10 @@ export default function ContentListPage({ config, content = [], children }: Cont
     '観光': 'map',
     '便利機能': 'tools',
     'ガイドライン': 'fileText',
+    // 娯楽カテゴリ
+    'ゲーム': 'gameController',
+    'アイテム': 'package',
+    'システム': 'settings',
   };
 
   // typeに基づいてグループ分け

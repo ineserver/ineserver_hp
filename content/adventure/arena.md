@@ -1,6 +1,7 @@
 ---
 title: アリーナの遊び方
 published: true
+type: game
 number: 1
 image: https://img.1necat.net/2023-09-12_10.10.08.png
 ---

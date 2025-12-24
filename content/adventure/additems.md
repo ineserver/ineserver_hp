@@ -1,6 +1,7 @@
 ---
 title: レシピのないアイテムの入手方法 
 published: true 
+type: item
 number: 3
 image: https://img.1necat.net/2025-11-29_01.41.15.png
 ---

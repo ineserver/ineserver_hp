@@ -13,7 +13,13 @@ const config = {
     emptyMessage: '娯楽に関する記事がありません',
     pageTitle: '娯楽 | Ineサーバー',
     backButtonText: '娯楽一覧に戻る',
-    enableGrouping: false
+    enableGrouping: true,
+    groupLabels: {
+        game: 'ゲーム',
+        item: 'アイテム',
+        system: 'システム',
+        other: 'その他'
+    }
 };
 
 export default async function AdventurePage() {

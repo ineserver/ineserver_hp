@@ -1,6 +1,7 @@
 ---
 title: 隠しアイテム・隠し部屋の一覧とヒント
 published: true
+type: item
 number: 2
 image: https://img.1necat.net/2023-09-24_21.08.46.png
 ---
