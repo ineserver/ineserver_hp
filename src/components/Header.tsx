@@ -434,6 +434,7 @@ const Header = () => {
                       </h3>
                       <ul className="space-y-1">
                         <li><Link href="/life/mcmmo" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />スキルシステム (mcMMO)</Link></li>
+                        <li><Link href="/life/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業システム</Link></li>
                         <li><Link href="/life/imageflame" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />画像地図の作成と使い方</Link></li>
                         <li><Link href="/life/status" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />意思疎通ステータス機能</Link></li>
                         <li><Link href="/life/sort" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />自動整理機能の使い方</Link></li>
@@ -795,6 +796,9 @@ const Header = () => {
                         <div className="pl-4 space-y-1">
                           <Link href="/life/mcmmo" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             スキルシステム (mcMMO)
+                          </Link>
+                          <Link href="/life/jobs" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            職業システム
                           </Link>
                           <Link href="/life/imageflame" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             画像地図の作成と使い方

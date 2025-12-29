@@ -96,9 +96,9 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
       <Header />
       <Breadcrumb items={breadcrumbItems} />
 
-      <article className="flex-grow max-w-4xl mx-auto px-6 py-8">
+      <article className="flex-grow max-w-4xl mx-auto px-6 py-8 w-full">
         {/* パッチノートヘッダー */}
-        <header className="bg-white rounded-lg shadow-md p-8 mb-8">
+        <header className="bg-white rounded-lg shadow-md p-8 mb-8 w-full">
           {/* 一覧に戻るボタン - モバイル優先で上部に配置 */}
           <div className="mb-6 -ml-4">
             <Link href="/patch-notes">
@@ -131,20 +131,20 @@ export default async function PatchNoteDetailPage({ params }: PageProps) {
         </header>
 
         {/* パッチノート詳細セクション */}
-        <section className="space-y-6">
+        <section className="w-full space-y-6 flex flex-col">
           {patchNote.sections.map((section, index) => (
-            <div key={index} className={`rounded-lg border p-6 ${getSectionColor(section.type)}`}>
-              <h3 className="flex items-center text-lg font-semibold mb-4">
+            <div key={index} className={`w-full rounded-lg border p-6 ${getSectionColor(section.type)}`}>
+              <h3 className="flex items-center text-lg font-semibold mb-4 w-full">
                 <span className="text-2xl mr-3">{getSectionIcon(section.type)}</span>
                 {section.title}
               </h3>
 
-              <ul className="space-y-3">
+              <ul className="w-full space-y-3">
                 {section.items.map((item, itemIndex) => (
-                  <li key={itemIndex} className="flex items-start">
+                  <li key={itemIndex} className="flex items-start w-full">
                     <span className="inline-block w-2 h-2 bg-current rounded-full mt-2 mr-3 flex-shrink-0"></span>
                     <div
-                      className="text-gray-700 leading-relaxed prose-sm max-w-none markdown-content [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_ul]:list-none [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square]"
+                      className="flex-1 text-gray-700 leading-relaxed prose-sm max-w-none markdown-content [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-gray-900 [&_ul]:list-none [&_ul_ul]:list-[circle] [&_ul_ul_ul]:list-[square]"
                       dangerouslySetInnerHTML={{
                         __html: section.itemsHtml && section.itemsHtml[itemIndex]
                           ? section.itemsHtml[itemIndex]

@@ -57,18 +57,6 @@ image: https://img.1necat.net/2025-12-07_15.52.55.png
 :::
 ※または :command[/status afk お風呂] など
 
-**キーワードとエフェクトの変化:**
-
-| 理由に含まれる言葉 | 表示されるエフェクト |
-| :--- | :--- |
-| **寝る, 睡眠, sleep** | <span style="color: gray;">**雲**</span> |
-| **ご飯, 飯, food** | <span class="text-red">**ハート**</span> |
-| **風呂, bath, shower** | <span style="color: blue;">**泡**</span> |
-| **トイレ, wc** | <span style="color: aqua;">**水滴**</span> |
-| **散歩, 運動, run** | <span style="color: green;">**キラキラ**</span> |
-| **作業, work** | <span style="color: purple;">**古代文字**</span> |
-| **(その他)** | **音符** |
-
 # 3. コマンド一覧
 
 メニューを開かずに直接コマンドで切り替えることも可能です。

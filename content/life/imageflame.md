@@ -2,7 +2,7 @@
 title: 画像地図の作成と使い方
 published: true
 type: utility
-number: 2
+number: 8
 image: https://img.1necat.net/2025-12-07_15.51.46.png
 ---
 

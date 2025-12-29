@@ -80,8 +80,8 @@ export default async function PatchNotesArchive() {
                   </div>
                   
                   {/* コンテンツ */}
-                  <div className="flex-1">
-                    <div className="group">
+                  <div className="flex-1 w-full">
+                    <div className="group w-full">
                       {/* ヘッダー */}
                       <div className="mb-3">
                         <Link href={`/patch-notes/${patchNote.slug || patchNote.id}`}>
@@ -104,7 +104,7 @@ export default async function PatchNotesArchive() {
                       </p>
                       
                       {/* セクション概要 */}
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-2 w-full">
                         {patchNote.sections.slice(0, 3).map((section, sectionIndex) => (
                           <span
                             key={sectionIndex}
