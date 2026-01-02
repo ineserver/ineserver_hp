@@ -394,6 +394,45 @@ export default function TutorialClientPage() {
               <p>また、経済ワールドでの<b className="text-red">資源採集のための探索は固く禁じられております</b>のでご注意ください。</p>
             </CollapsibleDetail>
 
+            <h1>職業に就こう</h1>
+            <p>いねさばでは「職業（Jobs）」に就くことで、採掘や建築など普段の作業から経験値やポイントを獲得できるようになります！</p>
+            <p><CommandCode>/jobs browse</CommandCode>コマンドで職業メニューを開けます。8種類の職業から最大2つまで就くことができます。</p>
+            <CollapsibleDetail title="職業の種類">
+              <p>⛏️ <b>鉱夫</b> - 石や鉱石の採掘</p>
+              <p>🪓 <b>木こり</b> - 原木の伐採</p>
+              <p>🌾 <b>農家</b> - 作物の収穫、畜産、料理</p>
+              <p>🧱 <b>建築家</b> - 建材の設置</p>
+              <p>🏗️ <b>整地師</b> - 土・砂・砂利の破壊</p>
+              <p>⚔️ <b>冒険家</b> - モンスター討伐、釣り</p>
+              <p>🔨 <b>鍛冶屋</b> - 精錬、装備の作成</p>
+              <p>⚗️ <b>錬金術師</b> - ポーション醸造、エンチャント</p>
+            </CollapsibleDetail>
+            <p>貯めた「職業ポイント」は、エンチャント本の購入やどこでも作業台を開ける機能など、便利機能と交換できます！</p>
+            <p>また、職業ごとに用意された<b className="text-red">「デイリークエスト」</b>（<CommandCode>/jobs quests</CommandCode>）を達成すると、まとまったお金（ine）を稼げます。</p>
+            <p><Link className="inline-flex items-center" href="/life/jobs" target="_blank" rel="noopener noreferrer">職業システムについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link></p>
+
+            <h1>実績・称号を集めよう</h1>
+            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/2025-12-10_02.54.34.png', alt: '実績メニュー' })}>
+              <Image
+                src="https://img.1necat.net/2025-12-10_02.54.34.png"
+                alt="実績メニュー"
+                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
+                width={1200}
+                height={675}
+              />
+            </div>
+            <p>いねさばには「実績・称号システム」があります！特定の条件を達成すると実績が解除され、その証として<b>称号</b>を獲得できます。</p>
+            <p><CommandCode>/ach</CommandCode>コマンドで実績メニューを開けます。</p>
+            <p>称号は自分の名前の上に表示できるので、レアな称号を手に入れて他のプレイヤーに自慢しましょう！</p>
+            <CollapsibleDetail title="実績の種類">
+              <p><b>プレイ時間</b> - 10時間、100時間プレイなど</p>
+              <p><b>チュートリアル</b> - 初めての採掘、作製など</p>
+              <p><b>McMMO / Jobs</b> - スキルや職業レベルに応じた実績</p>
+              <p><b>投票</b> - サーバーへの投票回数に応じた実績</p>
+              <p><b>シークレット</b> - 条件が隠されている特別な実績</p>
+            </CollapsibleDetail>
+            <p><Link className="inline-flex items-center" href="/adventure/achivements" target="_blank" rel="noopener noreferrer">実績・称号システムについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link></p>
+
             <h1>さいごに</h1>
             <p>お疲れ様でした！いねさばの基本的な遊び方は以上で終了です！</p>
             <p>最後に、いねさばで役に立つ情報を幾つかご案内します！</p>
