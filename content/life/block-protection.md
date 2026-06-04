@@ -1,5 +1,5 @@
 ---
-title: ブロック保護のやり方
+title: ブロック保護
 published: true
 type: protection
 number: 2

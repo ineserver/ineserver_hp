@@ -1,5 +1,5 @@
 ---
-title: メールシステムの使い方
+title: メールシステム
 published: true
 type: utility
 number: 6

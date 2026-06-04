@@ -1,5 +1,5 @@
 ---
-title: 土地の保護のやり方
+title: 土地の保護
 published: true
 type: protection
 number: 1

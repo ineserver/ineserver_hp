@@ -1,5 +1,5 @@
 ---
-title: アリーナの遊び方
+title: アリーナ
 published: true
 type: game
 number: 1

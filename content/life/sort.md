@@ -1,5 +1,5 @@
 ---
-title: 自動整理機能の使い方 
+title: 自動整理機能
 published: true 
 type: utility
 number: 4

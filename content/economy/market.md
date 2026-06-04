@@ -1,5 +1,5 @@
 ---
-title: アイテム市場取引のやり方
+title: アイテム市場取引
 published: true
 type: item
 number: 1
