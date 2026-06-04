@@ -85,12 +85,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // お知らせページ
   const announcements = getAnnouncementFilesLight();
-  const announcementPages: MetadataRoute.Sitemap = announcements.map((item) => ({
-    url: `${baseUrl}/announcements/${item.id}`,
-    lastModified: item.date ? new Date(item.date) : currentDate,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
+  const announcementPages: MetadataRoute.Sitemap = announcements.map((item) => {
+    let lastModified = currentDate;
+    if (item.date) {
+      const parsed = new Date(item.date);
+      if (!isNaN(parsed.getTime())) {
+        lastModified = parsed;
+      }
+    }
+    return {
+      url: `${baseUrl}/announcements/${item.id}`,
+      lastModified,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    };
+  });
 
   // パッチノートページ
   const patchNotesDir = path.join(process.cwd(), 'content', 'patch-notes');
