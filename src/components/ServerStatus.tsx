@@ -344,6 +344,41 @@ export default function ServerStatus({
             </div>
           </a>
 
+          {/* 処罰リスト */}
+          <a
+            href="/bans"
+            className="group block bg-white rounded-lg border border-gray-200 p-4 bg-red-50/50 border-red-200/50 hover:bg-red-50 md:active:bg-red-50 transition-all duration-300 cursor-pointer overflow-visible relative"
+          >
+            <div className="flex items-center">
+              <div className="mr-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+              </div>
+              <div className="flex-grow flex items-center justify-between">
+                <div>
+                  <h4 className="font-semibold text-gray-900">処罰リスト</h4>
+                </div>
+                <svg className="w-5 h-5 text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+            {/* ホバー時の詳細テキスト */}
+            <div className="absolute inset-0 bg-red-50 border border-red-300 rounded-lg p-4 opacity-0 group-hover:opacity-100 md:group-active:opacity-100 transition-all duration-300 pointer-events-none flex items-center">
+              <div className="mr-4">
+                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                </svg>
+              </div>
+              <div className="flex-grow">
+                <p className="text-sm text-gray-700 font-medium">サーバールールに違反したプレイヤーの処罰履歴</p>
+              </div>
+            </div>
+          </a>
+
           {/* 既知の不具合 */}
           <a
             href="https://github.com/ineserver/ineserver-Public/issues"
