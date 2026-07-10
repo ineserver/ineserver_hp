@@ -114,8 +114,8 @@ function ChangeBadge({
   if (isZero) {
     return (
       <div className={`flex flex-col items-end ${size === 'sm' ? 'gap-0' : 'gap-0.5'}`}>
-        <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} font-mono text-gray-400`}>±0</span>
-        <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} text-gray-400`}>0.00%</span>
+        <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} text-gray-400 tabular-nums`}>±0</span>
+        <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} text-gray-400 tabular-nums`}>0.00%</span>
       </div>
     );
   }
@@ -125,7 +125,7 @@ function ChangeBadge({
 
   return (
     <div className={`flex flex-col items-end ${size === 'sm' ? 'gap-0' : 'gap-0.5'}`}>
-      <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} font-mono font-semibold ${colorClass}`}>
+      <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} font-semibold tabular-nums ${colorClass}`}>
         {arrow} {valueStr}
       </span>
       <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} font-semibold ${colorClass}`}>
@@ -638,22 +638,27 @@ function MarketChart({
 
         {hoveredPoint && (
           <div
-            className="absolute z-50 min-w-[200px] bg-gray-900/95 backdrop-blur-md text-white rounded-xl px-5 py-4 pointer-events-none shadow-2xl border border-white/20 transition-transform duration-75"
+            className="absolute z-[100] min-w-[200px] whitespace-nowrap bg-gray-900/95 backdrop-blur-md text-white rounded-xl px-5 py-4 pointer-events-none shadow-2xl border border-white/20 transition-transform duration-75"
             style={{
               left: `${(hoveredPoint.x / width) * 100}%`,
-              top: `${(hoveredPoint.y / height) * 100}%`,
-              transform: `translate(${hoveredPoint.x > width * 0.6 ? '-100%' : hoveredPoint.x < width * 0.4 ? '0%' : '-50%'}, ${hoveredPoint.y < height * 0.3 ? '15%' : '-115%'})`,
+              top: chartType === 'line'
+                ? `clamp(80px, ${hoveredPoint.y}px, calc(100% - 80px))`
+                : `clamp(120px, ${hoveredPoint.y}px, calc(100% - 140px))`,
+              transform: `translate(${hoveredPoint.x > width * 0.6 ? '-100%' : hoveredPoint.x < width * 0.4 ? '0%' : '-50%'}, -50%)`,
             }}
           >
             <div className="font-semibold text-gray-300 text-sm border-b border-gray-700/50 pb-2 mb-2">{formatDate(hoveredPoint.point.date, hoveredPoint.point.isCurrent)}</div>
             {chartType === 'line' ? (
-              <div className="font-bold tabular-nums text-xl">{formatIndex(hoveredPoint.point.index)}</div>
+              <div className="flex items-baseline font-bold text-xl">
+                <span className="tabular-nums">{formatIndex(hoveredPoint.point.index)}</span>
+                <span className="text-xs font-normal text-gray-400 ml-1">ine</span>
+              </div>
             ) : (
               <div className="flex flex-col gap-y-2 text-sm sm:text-base">
-                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">始値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.open)}</span></div>
-                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">高値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.high)}</span></div>
-                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">終値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.close)}</span></div>
-                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">安値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.low)}</span></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">始値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.open)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">高値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.high)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">終値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.close)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">安値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.low)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
               </div>
             )}
           </div>
@@ -699,7 +704,7 @@ export default function MarketPageClient() {
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [autoRefresh, setAutoRefresh] = useState(true);
 
   const fetchAll = useCallback(async (showLoading = false) => {
     if (showLoading) setIsLoading(true);
@@ -808,7 +813,7 @@ export default function MarketPageClient() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} lastUpdated={null} todayCandle={null} />
+        <PageHeader indexData={null} todayCandle={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#5b8064]/10 mb-4">
@@ -825,7 +830,7 @@ export default function MarketPageClient() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} lastUpdated={null} todayCandle={null} />
+        <PageHeader indexData={null} todayCandle={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <div className="text-2xl mb-2">⚠️</div>
@@ -838,22 +843,12 @@ export default function MarketPageClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader indexData={indexData} lastUpdated={lastUpdated} todayCandle={todayCandle} />
+      <PageHeader indexData={indexData} todayCandle={todayCandle} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* グラフ */}
-        {indexData && indexData.chartData30Days && (
-          <MarketChart
-            chartData={indexData.chartData30Days}
-            currentIndex={indexData.currentIndex}
-            candles={candles}
-            todayCandle={todayCandle}
-          />
-        )}
-
         {/* 自動更新トグル＆30秒間隔） */}
-        <div className="flex items-center justify-end mb-4 -mt-2">
+        <div className="flex items-center justify-end mb-3">
           {lastUpdated && (
             <span className="text-xs text-gray-400 mr-3">
               最終更新: {lastUpdated.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -870,6 +865,16 @@ export default function MarketPageClient() {
             自動更新 {autoRefresh ? 'ON' : 'OFF'}
           </button>
         </div>
+
+        {/* グラフ */}
+        {indexData && indexData.chartData30Days && (
+          <MarketChart
+            chartData={indexData.chartData30Days}
+            currentIndex={indexData.currentIndex}
+            candles={candles}
+            todayCandle={todayCandle}
+          />
+        )}
 
         {/* コントロールバー */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between flex-wrap">
@@ -954,11 +959,11 @@ export default function MarketPageClient() {
 
                   return (
                     <tr key={item.itemKey} className={`${rowBg} hover:bg-[#5b8064]/5 transition-colors`}>
-                      <td className="px-5 py-3.5 text-xs text-gray-400 tabular-nums font-mono">{idx + 1}</td>
+                      <td className="px-5 py-3.5 text-xs text-gray-400 tabular-nums">{idx + 1}</td>
                       <td className="px-5 py-3.5">
                         <div className="flex items-center gap-3">                          <div>
                           <div className="font-semibold text-gray-900">{meta.label}</div>
-                          <div className="text-xs text-gray-400 font-mono">{item.itemKey}</div>
+                          <div className="text-xs text-gray-400">{item.itemKey}</div>
                         </div>
                           <span className="ml-1 px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-100 text-gray-500">
                             {meta.category}
@@ -966,7 +971,7 @@ export default function MarketPageClient() {
                         </div>
                       </td>
                       <td className="px-5 py-3.5 text-right whitespace-nowrap">
-                        <span className="text-base font-bold text-gray-900 tabular-nums font-mono">
+                        <span className="text-base font-bold text-gray-900 tabular-nums">
                           {formatPrice(item.currentPrice)}
                         </span>
                         <span className="text-xs text-gray-400 ml-1">ine</span>
@@ -1003,14 +1008,14 @@ export default function MarketPageClient() {
                     <div className="flex items-center gap-3">
                       <div>
                         <div className="font-semibold text-gray-900">{meta.label}</div>
-                        <div className="text-xs text-gray-400 font-mono">{item.itemKey}</div>
+                        <div className="text-xs text-gray-400">{item.itemKey}</div>
                         <span className="inline-block mt-1 px-2 py-0.5 text-[10px] font-medium rounded-full bg-gray-100 text-gray-500">
                           {meta.category}
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-gray-900 tabular-nums font-mono">
+                      <div className="text-xl font-bold text-gray-900 tabular-nums">
                         {formatPrice(item.currentPrice)}
                         <span className="text-sm text-gray-400 ml-0.5">ine</span>
                       </div>
@@ -1044,11 +1049,9 @@ export default function MarketPageClient() {
 
 function PageHeader({
   indexData,
-  lastUpdated,
   todayCandle,
 }: {
   indexData: MarketIndexData | null;
-  lastUpdated: Date | null;
   todayCandle: { open: number; high: number; low: number; close: number } | null;
 }) {
   // 当日の始値との比較を計算
@@ -1095,25 +1098,27 @@ function PageHeader({
 
           {indexData && (
             <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 border border-white/20 self-start sm:self-auto">
-              <div className="text-xs text-white/60 mb-0.5">全体相場インデックス</div>
-              <div className="flex items-end gap-3">
-                <span className="text-3xl font-bold tabular-nums">
-                  {indexData.currentIndex.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </span>
-                <div className={`flex flex-col items-end pb-0.5 ${changeColor}`}>
-                  <span className="text-sm font-bold tabular-nums">
-                    {changeArrow} {changeSign}{Math.abs(changeValue).toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <div className="flex items-center gap-4">
+                <div>
+                  <div className="text-xs text-white/60 mb-0.5">全体相場インデックス</div>
+                  <div className="flex items-baseline">
+                    <span className="text-3xl font-bold tabular-nums">
+                      {indexData.currentIndex.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </span>
+                    <span className="text-sm text-white/60 ml-1 font-normal">ine</span>
+                  </div>
+                </div>
+                <div className={`flex flex-col items-end ${changeColor}`}>
+                  <div className="text-[10px] text-white/60 font-normal mb-0.5 leading-none">前日比</div>
+                  <span className="text-sm font-bold flex items-baseline">
+                    <span className="tabular-nums">{changeArrow} {changeSign}{Math.abs(changeValue).toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="text-[10px] opacity-80 font-normal ml-0.5">ine</span>
                   </span>
-                  <span className="text-xs font-semibold">
+                  <span className="text-xs font-semibold tabular-nums">
                     {changeSign}{changePercentage.toFixed(2)}%
                   </span>
                 </div>
               </div>
-              {lastUpdated && (
-                <div className="text-[10px] text-white/40 mt-1 text-right">
-                  {lastUpdated.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} 更新
-                </div>
-              )}
             </div>
           )}
         </div>

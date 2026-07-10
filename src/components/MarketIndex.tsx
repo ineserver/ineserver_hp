@@ -241,7 +241,10 @@ export default function MarketIndex() {
             }}
           >
             <div className="font-semibold">{formatDate(hoveredPoint.point.date)}</div>
-            <div>{formatIndex(hoveredPoint.point.index)}</div>
+            <div className="flex items-baseline">
+              <span className="tabular-nums">{formatIndex(hoveredPoint.point.index)}</span>
+              <span className="text-[10px] text-gray-400 ml-0.5">ine</span>
+            </div>
           </div>
         )}
       </div>
@@ -320,16 +323,19 @@ export default function MarketIndex() {
 
       <div className="p-4">
         {/* 現在値と前日比 */}
-        <div className="flex items-end justify-between mb-3">
+        <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-xs text-gray-500 mb-0.5">現在の市場インデックス</div>
-            <div className="text-2xl font-bold text-gray-900 tabular-nums">
-              {formatIndex(data.currentIndex)}
+            <div className="text-[10px] text-gray-500 mb-0.5">現在の市場インデックス</div>
+            <div className="text-2xl font-bold text-gray-900 flex items-baseline">
+              <span className="tabular-nums">{formatIndex(data.currentIndex)}</span>
+              <span className="text-sm font-medium text-gray-500 ml-1">ine</span>
             </div>
           </div>
           <div className={`flex flex-col items-end px-3 py-1.5 rounded-lg border ${changeBg} ${changeBorder}`}>
-            <div className={`text-sm font-bold tabular-nums ${changeColor}`}>
-              {changeArrow} {changeSign}{formatIndex(Math.abs(changeValue))}
+            <div className="text-[10px] text-gray-500 font-normal mb-0.5 leading-none">前日比</div>
+            <div className={`text-sm font-bold flex items-baseline ${changeColor}`}>
+              <span className="tabular-nums">{changeArrow} {changeSign}{formatIndex(Math.abs(changeValue))}</span>
+              <span className="text-[10px] font-normal opacity-80 ml-0.5">ine</span>
             </div>
             <div className={`text-xs font-semibold tabular-nums ${changeColor}`}>
               {changeSign}{changePercentage.toFixed(2)}%
