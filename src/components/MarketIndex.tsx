@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 interface ChartDataPoint {
   date: string;
@@ -24,8 +24,18 @@ interface MarketIndexResponse {
   data: MarketIndexData;
 }
 
+interface CandleData {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
 export default function MarketIndex() {
   const [data, setData] = useState<MarketIndexData | null>(null);
+  const [candles, setCandles] = useState<CandleData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: ChartDataPoint } | null>(null);
@@ -35,15 +45,24 @@ export default function MarketIndex() {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await fetch('https://api.1necat.net/api/market/index');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+        const [indexRes, candlesRes] = await Promise.all([
+          fetch('https://api.1necat.net/api/market/index'),
+          fetch('https://api.1necat.net/api/market/index/candles?timeframe=1d'),
+        ]);
+        if (!indexRes.ok) {
+          throw new Error(`HTTP error! status: ${indexRes.status}`);
         }
-        const json: MarketIndexResponse = await response.json();
-        if (json.status === 'success') {
-          setData(json.data);
+        const indexJson: MarketIndexResponse = await indexRes.json();
+        const candlesJson = candlesRes.ok ? await candlesRes.json() : null;
+
+        if (indexJson.status === 'success') {
+          setData(indexJson.data);
         } else {
           throw new Error('APIからデータを取得できませんでした');
+        }
+
+        if (candlesJson && candlesJson.status === 'success') {
+          setCandles(candlesJson.data.candles);
         }
       } catch (err) {
         console.error('Failed to fetch market index:', err);
@@ -59,6 +78,30 @@ export default function MarketIndex() {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // 当日の始値との比較用の計算
+  const todayCandle = useMemo(() => {
+    if (!data) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayRaw = candles.length > 0
+      ? candles[candles.length - 1]
+      : null;
+    const todayIsToday = todayRaw ? new Date(todayRaw.time * 1000) >= today : false;
+    return todayIsToday && todayRaw
+      ? {
+          open: todayRaw.open,
+          high: Math.max(todayRaw.high, data.currentIndex),
+          low: Math.min(todayRaw.low, data.currentIndex),
+          close: data.currentIndex,
+        }
+      : {
+          open: data.currentIndex,
+          high: data.currentIndex,
+          low: data.currentIndex,
+          close: data.currentIndex,
+        };
+  }, [candles, data]);
 
   const formatIndex = (value: number) => {
     return value.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -89,9 +132,9 @@ export default function MarketIndex() {
     const toY = (val: number) => padding.top + chartHeight - ((val - minVal) / range) * chartHeight;
 
     const points = chartData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
-    const firstPoint = chartData[0];
     const lastPoint = chartData[chartData.length - 1];
-    const isPositive = lastPoint.index >= firstPoint.index;
+    // 配色は「当日の始値」との比較で決定する
+    const isPositive = lastPoint.index >= todayOpen;
     const lineColor = isPositive ? '#22c55e' : '#ef4444';
 
 
@@ -220,7 +263,12 @@ export default function MarketIndex() {
 
   if (!data) return null;
 
-  const isPositiveChange = data.comparisonPreviousDay.value >= 0;
+  // 当日の始値との比較を計算
+  const todayOpen = todayCandle?.open ?? data?.currentIndex ?? 0;
+  const changeValue = data ? data.currentIndex - todayOpen : 0;
+  const changePercentage = todayOpen > 0 ? (changeValue / todayOpen) * 100 : 0;
+
+  const isPositiveChange = changeValue >= 0;
   const changeColor = isPositiveChange ? 'text-green-600' : 'text-red-600';
   const changeBg = isPositiveChange ? 'bg-green-50' : 'bg-red-50';
   const changeBorder = isPositiveChange ? 'border-green-200' : 'border-red-200';
@@ -253,10 +301,10 @@ export default function MarketIndex() {
           </div>
           <div className={`flex flex-col items-end px-3 py-1.5 rounded-lg border ${changeBg} ${changeBorder}`}>
             <div className={`text-sm font-bold tabular-nums ${changeColor}`}>
-              {changeArrow} {changeSign}{formatIndex(Math.abs(data.comparisonPreviousDay.value))}
+              {changeArrow} {changeSign}{formatIndex(Math.abs(changeValue))}
             </div>
             <div className={`text-xs font-semibold tabular-nums ${changeColor}`}>
-              {changeSign}{data.comparisonPreviousDay.percentage.toFixed(2)}%
+              {changeSign}{changePercentage.toFixed(2)}%
             </div>
           </div>
         </div>

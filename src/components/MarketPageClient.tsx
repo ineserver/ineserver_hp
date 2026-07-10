@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
 // ============================================================
 // 型定義
@@ -23,6 +23,23 @@ interface MarketIndexData {
   currentIndex: number;
   comparisonPreviousDay: ComparisonData;
   chartData30Days: { date: string; index: number }[];
+}
+
+interface CandleData {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+}
+
+interface CandleResponse {
+  status: string;
+  data: {
+    timeframe: string;
+    candles: CandleData[];
+  };
 }
 
 // ============================================================
@@ -133,47 +150,189 @@ type CategoryFilter = 'all' | string;
 // グラフコンポーネント
 // ============================================================
 
-function MarketChart({ chartData, currentIndex }: { chartData: { date: string; index: number }[], currentIndex: number }) {
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: { date: string; index: number; isCurrent?: boolean } } | null>(null);
+function MarketChart({
+  chartData,
+  currentIndex,
+  candles,
+  todayCandle,
+}: {
+  chartData: { date: string; index: number }[];
+  currentIndex: number;
+  candles: CandleData[];
+  todayCandle: { open: number; high: number; low: number; close: number } | null;
+}) {
+  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: { date: string; index: number; isCurrent?: boolean; open: number; close: number; high: number; low: number } } | null>(null);
+  const [chartType, setChartType] = useState<'line' | 'candlestick'>('line');
 
-  // chartDataの最後に現在のインデックスを「現在」として追加する
-  const displayData = useMemo(() => {
-    if (!chartData || chartData.length === 0) return [];
-    const extended: Array<{ date: string; index: number; isCurrent?: boolean }> = [...chartData];
-    extended.push({
+  // 折れ線グラフ用: chartDataの最後に現在のインデックスを「現在」として追加する
+  // chartData30Days が空（データ蓄積前）の場合でも currentIndex のみで表示できるようにする
+  const lineDisplayData = useMemo(() => {
+    const baseData: Array<{ date: string; index: number; isCurrent?: boolean; open: number; close: number; high: number; low: number }> = (chartData ?? []).map(d => ({
+      ...d,
+      isCurrent: false,
+      open: d.index,
+      close: d.index,
+      high: d.index,
+      low: d.index,
+    }));
+    baseData.push({
       date: new Date().toISOString(),
       index: currentIndex,
-      isCurrent: true
+      isCurrent: true,
+      open: currentIndex,
+      close: currentIndex,
+      high: currentIndex,
+      low: currentIndex,
     });
-    return extended;
+    return baseData;
   }, [chartData, currentIndex]);
 
-  if (displayData.length < 2) return null;
+  // ローソク足グラフ用: APIから取得したキャンドルデータをチャート形式に変換し、当日分を末尾に追加
+  // candles が空（データ蓄積前）の場合でも currentIndex のみで当日分を表示できるようにする
+  const candleDisplayData = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // 今日の0時
+
+    const mapped = (candles ?? []).map(c => ({
+      date: new Date(c.time * 1000).toISOString(),
+      index: c.close,
+      isCurrent: false,
+      open: c.open,
+      close: c.close,
+      high: c.high,
+      low: c.low,
+    }));
+
+    // APIの最後のキャンドルが今日のものかチェック
+    const lastCandle = mapped.length > 0 ? mapped[mapped.length - 1] : null;
+    const lastCandleDate = lastCandle ? new Date(lastCandle.date) : null;
+    const lastCandleIsToday = lastCandleDate !== null && lastCandleDate >= today;
+
+    if (lastCandleIsToday && lastCandle) {
+      // 最新キャンドルが今日分なら、closeをcurrentIndexで上書き（high/lowも更新）
+      mapped[mapped.length - 1] = {
+        ...lastCandle,
+        close: currentIndex,
+        index: currentIndex,
+        isCurrent: true,
+        high: Math.max(lastCandle.high, currentIndex),
+        low: Math.min(lastCandle.low, currentIndex),
+      };
+    } else {
+      // 今日分がなければ新規追加: 前日終値を始値とし、currentIndex を終値とする
+      const prevClose = mapped.length > 0 ? mapped[mapped.length - 1].close : currentIndex;
+      mapped.push({
+        date: new Date().toISOString(),
+        index: currentIndex,
+        isCurrent: true,
+        open: prevClose,
+        close: currentIndex,
+        high: Math.max(prevClose, currentIndex),
+        low: Math.min(prevClose, currentIndex),
+      });
+    }
+
+    return mapped;
+  }, [candles, currentIndex]);
+
+  const displayData = chartType === 'candlestick' ? candleDisplayData : lineDisplayData;
+
+  // データが1点のみ（蓄積前）かどうか
+  const isSinglePoint = displayData.length === 1;
 
   const width = 1000;
   const height = 240;
-  const padding = { top: 20, right: 60, bottom: 20, left: 20 }; // 右側にラベル用の余白を増やす
+  const padding = { top: 20, right: 90, bottom: 35, left: 20 }; // 右側の余白を広げて価格軸とバッジを収める
 
-  const values = displayData.map(d => d.index);
-  const minVal = Math.min(...values);
-  const maxVal = Math.max(...values);
-  // 値の変動がない場合（rangeが0）も考慮
-  const range = maxVal - minVal || 1;
+  // 横軸の目盛りを表示するインデックスを決定
+  const tickIndices = useMemo(() => {
+    const indices: number[] = [];
+    const step = Math.max(1, Math.ceil(displayData.length / 6)); // 最大6個程度の目盛り
+    for (let i = 0; i < displayData.length; i += step) {
+      indices.push(i);
+    }
+    // 最後の要素が含まれておらず、かつ最後から離れている場合は追加
+    if (indices.length > 0 && indices[indices.length - 1] !== displayData.length - 1) {
+      if (displayData.length - 1 - indices[indices.length - 1] > step / 2) {
+        indices.push(displayData.length - 1);
+      } else {
+        indices[indices.length - 1] = displayData.length - 1;
+      }
+    }
+    return indices;
+  }, [displayData.length]);
+
+  const rawMinVal = chartType === 'candlestick'
+    ? Math.min(...displayData.map(d => d.low))
+    : Math.min(...displayData.map(d => d.index));
+  const rawMaxVal = chartType === 'candlestick'
+    ? Math.max(...displayData.map(d => d.high))
+    : Math.max(...displayData.map(d => d.index));
+  const rawRange = rawMaxVal - rawMinVal || 1;
+
+  // 上下に10%のマージンを追加して、グラフの端がクリップされるのを防ぐ
+  const minVal = rawMinVal - rawRange * 0.1;
+  const maxVal = rawMaxVal + rawRange * 0.1;
+  const range = maxVal - minVal;
 
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
 
-  const toX = (i: number) => padding.left + (i / (displayData.length - 1)) * chartWidth;
+  // 最新（一番右端）のローソク足や線がY軸と重なって削れないように右側にマージンを設ける
+  const chartMarginRight = 10;
+  const usableWidth = chartWidth - chartMarginRight;
+
+  // データが少ない場合でも左右に広がりすぎないように、最低30日分の幅を基準にする
+  const minPoints = 30;
+  const xPoints = Math.max(minPoints, displayData.length - 1);
+  const pointSpacing = usableWidth / (xPoints || 1);
+
+  // 右寄せで最新データが Y軸の Y軸線より chartMarginRight だけ左に来るようにX座標を計算する
+  const toX = (i: number) => padding.left + usableWidth - ((displayData.length - 1 - i) * pointSpacing);
   // 上下逆転させてY座標を計算
   const toY = (val: number) => padding.top + chartHeight - ((val - minVal) / range) * chartHeight;
 
-  const points = displayData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
-  const firstPoint = displayData[0];
-  const lastPoint = displayData[displayData.length - 1];
-  const isPositive = lastPoint.index >= firstPoint.index;
-  const lineColor = isPositive ? '#22c55e' : '#ef4444';
+  // きりの良いステップ値を用いてY軸目盛り（グリッド線・ラベル用）を動的に計算する
+  const yTicks = useMemo(() => {
+    if (range <= 0) return [minVal];
+    const targetTicks = 5;
+    const rawStep = range / (targetTicks - 1);
+    const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const normalized = rawStep / magnitude;
+    let step = magnitude;
+    if (normalized < 1.5) {
+      step = magnitude * 1;
+    } else if (normalized < 3) {
+      step = magnitude * 2;
+    } else if (normalized < 7) {
+      step = magnitude * 5;
+    } else {
+      step = magnitude * 10;
+    }
+    const start = Math.ceil(minVal / step) * step;
+    const ticks: number[] = [];
+    for (let val = start; val <= maxVal; val += step) {
+      ticks.push(val);
+    }
+    if (ticks.length < 3 || ticks.length > 8) {
+      const fallbackTicks: number[] = [];
+      for (let i = 0; i < targetTicks; i++) {
+        fallbackTicks.push(minVal + (range * i) / (targetTicks - 1));
+      }
+      return fallbackTicks;
+    }
+    return ticks;
+  }, [minVal, maxVal, range]);
 
-  const fillPath = `M ${toX(0)},${toY(displayData[0].index)} ` +
+  const points = displayData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
+  const lastPoint = displayData[displayData.length - 1];
+  // 配色は「当日の始値」との比較で決定する
+  const todayOpen = todayCandle?.open ?? lastPoint.index;
+  const isOverallPositive = lastPoint.index >= todayOpen;
+  const lineColor = isOverallPositive ? '#22c55e' : '#ef4444';
+
+  const fillPath = isSinglePoint ? '' :
+    `M ${toX(0)},${toY(displayData[0].index)} ` +
     displayData.slice(1).map((d, i) => `L ${toX(i + 1)},${toY(d.index)}`).join(' ') +
     ` L ${toX(displayData.length - 1)},${height - padding.bottom} L ${toX(0)},${height - padding.bottom} Z`;
 
@@ -190,10 +349,26 @@ function MarketChart({ chartData, currentIndex }: { chartData: { date: string; i
   const lastX = toX(displayData.length - 1);
   const lastY = toY(lastPoint.index);
 
+  const candleWidth = Math.max(2, (chartWidth / Math.max(minPoints + 1, displayData.length)) * 0.6);
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-base sm:text-lg font-bold text-gray-800">全体相場インデックス (過去30日間)</h2>
+        <div className="flex bg-gray-100 rounded-lg p-1">
+          <button
+            onClick={() => setChartType('line')}
+            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${chartType === 'line' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            折れ線
+          </button>
+          <button
+            onClick={() => setChartType('candlestick')}
+            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${chartType === 'candlestick' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+          >
+            ローソク（1日足）
+          </button>
+        </div>
       </div>
       <div className="relative w-full" style={{ aspectRatio: `${width}/${height}` }}>
         <svg
@@ -202,57 +377,162 @@ function MarketChart({ chartData, currentIndex }: { chartData: { date: string; i
           onMouseLeave={() => setHoveredPoint(null)}
         >
           <defs>
-            <linearGradient id={`bigChartGrad-${isPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isPositive ? '#22c55e' : '#ef4444'} stopOpacity="0.2" />
-              <stop offset="100%" stopColor={isPositive ? '#22c55e' : '#ef4444'} stopOpacity="0" />
+            <linearGradient id={`bigChartGrad-${isOverallPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0" />
             </linearGradient>
+            <clipPath id="chart-area-clip">
+              <rect
+                x={padding.left}
+                y={padding.top}
+                width={chartWidth}
+                height={chartHeight}
+              />
+            </clipPath>
           </defs>
 
-          <path d={fillPath} fill={`url(#bigChartGrad-${isPositive ? 'up' : 'down'})`} />
+          {/* Y軸のグリッド線と目盛りラベル */}
+          {yTicks.map((val, idx) => {
+            const cy = toY(val);
+            return (
+              <g key={`y-tick-${idx}`}>
+                {/* 水平グリッド線 */}
+                <line
+                  x1={padding.left}
+                  y1={cy}
+                  x2={width - padding.right}
+                  y2={cy}
+                  stroke="#f3f4f6"
+                  strokeWidth={1}
+                  strokeDasharray="4 4"
+                />
+                {/* 目盛りラベル */}
+                <text
+                  x={width - padding.right + 8}
+                  y={cy + 3.5}
+                  className="text-[10px] fill-gray-400 font-medium select-none"
+                >
+                  {formatIndex(val)}
+                </text>
+              </g>
+            );
+          })}
 
-          <polyline
-            points={points}
-            fill="none"
-            stroke={lineColor}
-            strokeWidth="3"
-            strokeLinejoin="round"
-            strokeLinecap="round"
+          {/* Y軸の線 */}
+          <line
+            x1={width - padding.right}
+            y1={padding.top}
+            x2={width - padding.right}
+            y2={height - padding.bottom}
+            stroke="#e5e7eb"
+            strokeWidth={1.5}
           />
 
-          {/* 最後のポイント（現在値）の強調 */}
-          <circle
-            cx={lastX}
-            cy={lastY}
-            r="4"
-            fill={lineColor}
-            stroke="white"
-            strokeWidth="2"
-          />
-          {/* 最後のポイントのラベル（右側に常時表示） */}
-          <text
-            x={lastX + 8}
-            y={lastY + 4}
-            fill={lineColor}
-            fontSize="12"
-            fontWeight="bold"
-          >
-            {formatIndex(lastPoint.index)}
-          </text>
+          {chartType === 'line' ? (
+            <>
+              {!isSinglePoint && (
+                <path d={fillPath} fill={`url(#bigChartGrad-${isOverallPositive ? 'up' : 'down'})`} />
+              )}
 
+              {!isSinglePoint && (
+                <polyline
+                  points={points}
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth="3"
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                />
+              )}
+
+              {/* 点を消して線のみにする（線を描画できないデータ1点のみの時だけ小さい点を入れる） */}
+              {isSinglePoint && (
+                <circle
+                  cx={lastX}
+                  cy={lastY}
+                  r="3"
+                  fill={lineColor}
+                />
+              )}
+            </>
+          ) : (
+            <g clipPath="url(#chart-area-clip)">
+              {displayData.map((d, i) => {
+                const cx = toX(i);
+                const isUp = d.close >= d.open;
+                const color = isUp ? '#22c55e' : '#ef4444';
+
+                return (
+                  <g key={`candle-${i}`}>
+                    <line
+                      x1={cx} y1={toY(d.high)}
+                      x2={cx} y2={toY(d.low)}
+                      stroke={color} strokeWidth={2}
+                    />
+                    <rect
+                      x={cx - candleWidth / 2}
+                      y={toY(Math.max(d.open, d.close))}
+                      width={candleWidth}
+                      height={Math.max(1, Math.abs(toY(d.open) - toY(d.close)))}
+                      fill={color}
+                    />
+                  </g>
+                );
+              })}
+            </g>
+          )}
+
+          {/* X軸の目盛りラベルのみ描画（横線とティック線は削除） */}
+          {tickIndices.map(i => {
+            const cx = toX(i);
+            const d = displayData[i];
+            return (
+              <g key={`tick-${i}`}>
+                <text
+                  x={cx}
+                  y={height - padding.bottom + 16}
+                  textAnchor="middle"
+                  className="text-[10px] fill-gray-400 font-medium select-none"
+                >
+                  {formatDate(d.date, d.isCurrent)}
+                </text>
+              </g>
+            );
+          })}
+
+          {/* 最新価格のバッジ（右端のY軸上に重ねる、角丸をなくし直角化） */}
+          <g>
+            <rect
+              x={width - padding.right + 4}
+              y={lastY - 10}
+              width={76}
+              height={20}
+              fill={isOverallPositive ? '#149884' : '#ef4444'}
+            />
+            <text
+              x={width - padding.right + 8}
+              y={lastY + 3.5}
+              className="text-[10px] fill-white font-bold select-none"
+            >
+              {formatIndex(lastPoint.index)}
+            </text>
+          </g>
+
+          {/* ホバー用レイヤー */}
           {displayData.map((d, i) => {
             const cx = toX(i);
-            const cy = toY(d.index);
+            const cy = toY(chartType === 'candlestick' ? d.close : d.index);
             return (
-              <g key={i}>
+              <g key={`hover-${i}`}>
                 <circle
                   cx={cx}
                   cy={cy}
-                  r="12"
+                  r={chartType === 'candlestick' ? Math.max(12, candleWidth) : 12}
                   fill="transparent"
                   style={{ cursor: 'pointer' }}
                   onMouseEnter={() => setHoveredPoint({ x: cx, y: cy, point: d })}
                 />
-                {hoveredPoint?.point.date === d.date && (
+                {hoveredPoint?.point.date === d.date && chartType === 'line' && (
                   <circle
                     cx={cx}
                     cy={cy}
@@ -262,6 +542,18 @@ function MarketChart({ chartData, currentIndex }: { chartData: { date: string; i
                     strokeWidth="2"
                   />
                 )}
+                {hoveredPoint?.point.date === d.date && chartType === 'candlestick' && (
+                  <rect
+                    x={cx - candleWidth / 2 - 2}
+                    y={toY(Math.max(d.open, d.close)) - 2}
+                    width={candleWidth + 4}
+                    height={Math.max(1, Math.abs(toY(d.open) - toY(d.close))) + 4}
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    pointerEvents="none"
+                  />
+                )}
               </g>
             );
           })}
@@ -269,22 +561,48 @@ function MarketChart({ chartData, currentIndex }: { chartData: { date: string; i
 
         {hoveredPoint && (
           <div
-            className="absolute z-10 bg-gray-900/90 backdrop-blur-sm text-white text-sm rounded-lg px-3 py-2 pointer-events-none shadow-xl whitespace-nowrap border border-white/10"
+            className="absolute z-50 min-w-[200px] bg-gray-900/95 backdrop-blur-md text-white rounded-xl px-5 py-4 pointer-events-none shadow-2xl border border-white/20 transition-transform duration-75"
             style={{
               left: `${(hoveredPoint.x / width) * 100}%`,
               top: `${(hoveredPoint.y / height) * 100}%`,
-              transform: 'translate(-50%, -120%)',
+              transform: `translate(${hoveredPoint.x > width * 0.6 ? '-100%' : hoveredPoint.x < width * 0.4 ? '0%' : '-50%'}, ${hoveredPoint.y < height * 0.3 ? '15%' : '-115%'})`,
             }}
           >
-            <div className="font-semibold text-gray-300 text-xs mb-0.5">{formatDate(hoveredPoint.point.date, hoveredPoint.point.isCurrent)}</div>
-            <div className="font-bold tabular-nums">{formatIndex(hoveredPoint.point.index)}</div>
+            <div className="font-semibold text-gray-300 text-sm border-b border-gray-700/50 pb-2 mb-2">{formatDate(hoveredPoint.point.date, hoveredPoint.point.isCurrent)}</div>
+            {chartType === 'line' ? (
+              <div className="font-bold tabular-nums text-xl">{formatIndex(hoveredPoint.point.index)}</div>
+            ) : (
+              <div className="flex flex-col gap-y-2 text-sm sm:text-base">
+                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">始値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.open)}</span></div>
+                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">高値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.high)}</span></div>
+                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">終値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.close)}</span></div>
+                <div className="flex justify-between items-center gap-8"><span className="text-gray-400 font-medium">安値</span><span className="font-mono font-semibold">{formatIndex(hoveredPoint.point.low)}</span></div>
+              </div>
+            )}
           </div>
         )}
       </div>
-      <div className="flex justify-between mt-2 px-1 sm:px-5">
-        <span className="text-xs text-gray-400 font-medium">{formatDate(displayData[0].date)}</span>
-        <span className="text-xs text-gray-400 font-medium">現在</span>
-      </div>
+
+      {/* 本日のOHLバー */}
+      {todayCandle && (
+        <div className="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-1 text-gray-700">
+          <div className="flex items-baseline">
+            <span className="text-xs text-gray-400 font-medium mr-1.5">始値</span>
+            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.open)}</span>
+            <span className="text-xs text-gray-400 ml-0.5">ine</span>
+          </div>
+          <div className="flex items-baseline">
+            <span className="text-xs text-gray-400 font-medium mr-1.5">高値</span>
+            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.high)}</span>
+            <span className="text-xs text-gray-400 ml-0.5">ine</span>
+          </div>
+          <div className="flex items-baseline">
+            <span className="text-xs text-gray-400 font-medium mr-1.5">安値</span>
+            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.low)}</span>
+            <span className="text-xs text-gray-400 ml-0.5">ine</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -296,38 +614,55 @@ function MarketChart({ chartData, currentIndex }: { chartData: { date: string; i
 export default function MarketPageClient() {
   const [items, setItems] = useState<MarketItem[]>([]);
   const [indexData, setIndexData] = useState<MarketIndexData | null>(null);
+  const [candles, setCandles] = useState<CandleData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('price_desc');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [autoRefresh, setAutoRefresh] = useState(false);
 
-  useEffect(() => {
-    const fetchAll = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const [blocksRes, indexRes] = await Promise.all([
-          fetch('https://api.1necat.net/api/market/blocks'),
-          fetch('https://api.1necat.net/api/market/index'),
-        ]);
-        if (!blocksRes.ok || !indexRes.ok) throw new Error('データの取得に失敗しました');
+  const fetchAll = useCallback(async (showLoading = false) => {
+    if (showLoading) setIsLoading(true);
+    setError(null);
+    try {
+      const [blocksRes, indexRes, candlesRes] = await Promise.all([
+        fetch('https://api.1necat.net/api/market/blocks'),
+        fetch('https://api.1necat.net/api/market/index'),
+        fetch('https://api.1necat.net/api/market/index/candles?timeframe=1d'),
+      ]);
+      if (!blocksRes.ok || !indexRes.ok) throw new Error('データの取得に失敗しました');
 
-        const [blocksJson, indexJson] = await Promise.all([blocksRes.json(), indexRes.json()]);
+      const [blocksJson, indexJson] = await Promise.all([blocksRes.json(), indexRes.json()]);
+      const candlesJson: CandleResponse = candlesRes.ok ? await candlesRes.json() : { status: 'error', data: { timeframe: '1d', candles: [] } };
 
-        if (blocksJson.status === 'success') setItems(blocksJson.data.items);
-        if (indexJson.status === 'success') setIndexData(indexJson.data);
-        setLastUpdated(new Date());
-      } catch (err) {
-        console.error(err);
-        setError('相場データの取得に失敗しました。しばらくしてから再度お試しください。');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchAll();
+      if (blocksJson.status === 'success') setItems(blocksJson.data.items);
+      if (indexJson.status === 'success') setIndexData(indexJson.data);
+      if (candlesJson.status === 'success') setCandles(candlesJson.data.candles);
+      setLastUpdated(new Date());
+    } catch (err) {
+      console.error(err);
+      setError('相場データの取得に失敗しました。しばらくしてから再度お試しください。');
+    } finally {
+      if (showLoading) setIsLoading(false);
+    }
   }, []);
+
+  // 初回ロード
+  useEffect(() => {
+    setIsLoading(true);
+    fetchAll(true);
+  }, [fetchAll]);
+
+  // 自動更新（30秒間隔）
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(() => {
+      fetchAll(false);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, fetchAll]);
 
   const categories = useMemo(() => {
     const cats = new Set<string>();
@@ -367,11 +702,35 @@ export default function MarketPageClient() {
     return result;
   }, [items, categoryFilter, searchQuery, sortKey]);
 
+  // 当日の始値データを事前に計算
+  const todayCandle = useMemo(() => {
+    if (!indexData) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayRaw = candles.length > 0
+      ? candles[candles.length - 1]
+      : null;
+    const todayIsToday = todayRaw ? new Date(todayRaw.time * 1000) >= today : false;
+    return todayIsToday && todayRaw
+      ? {
+          open: todayRaw.open,
+          high: Math.max(todayRaw.high, indexData.currentIndex),
+          low: Math.min(todayRaw.low, indexData.currentIndex),
+          close: indexData.currentIndex,
+        }
+      : {
+          open: indexData.currentIndex,
+          high: indexData.currentIndex,
+          low: indexData.currentIndex,
+          close: indexData.currentIndex,
+        };
+  }, [candles, indexData]);
+
   // ローディング
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} lastUpdated={null} />
+        <PageHeader indexData={null} lastUpdated={null} todayCandle={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#5b8064]/10 mb-4">
@@ -388,7 +747,7 @@ export default function MarketPageClient() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} lastUpdated={null} />
+        <PageHeader indexData={null} lastUpdated={null} todayCandle={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <div className="text-2xl mb-2">⚠️</div>
@@ -401,14 +760,38 @@ export default function MarketPageClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader indexData={indexData} lastUpdated={lastUpdated} />
+      <PageHeader indexData={indexData} lastUpdated={lastUpdated} todayCandle={todayCandle} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* グラフ */}
         {indexData && indexData.chartData30Days && (
-          <MarketChart chartData={indexData.chartData30Days} currentIndex={indexData.currentIndex} />
+          <MarketChart
+            chartData={indexData.chartData30Days}
+            currentIndex={indexData.currentIndex}
+            candles={candles}
+            todayCandle={todayCandle}
+          />
         )}
+
+        {/* 自動更新トグル＆30秒間隔） */}
+        <div className="flex items-center justify-end mb-4 -mt-2">
+          {lastUpdated && (
+            <span className="text-xs text-gray-400 mr-3">
+              最終更新: {lastUpdated.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+            </span>
+          )}
+          <button
+            onClick={() => setAutoRefresh(prev => !prev)}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${autoRefresh
+              ? 'bg-[#5b8064] text-white border-[#5b8064] shadow-sm'
+              : 'bg-white text-gray-500 border-gray-200 hover:border-[#5b8064] hover:text-[#5b8064]'
+              }`}
+          >
+            <span className={`w-1.5 h-1.5 rounded-full ${autoRefresh ? 'bg-white animate-pulse' : 'bg-gray-300'}`} />
+            自動更新 {autoRefresh ? 'ON' : 'OFF'}
+          </button>
+        </div>
 
         {/* コントロールバー */}
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between flex-wrap">
@@ -581,9 +964,22 @@ export default function MarketPageClient() {
 // ページヘッダー（インデックスバナー）
 // ============================================================
 
-function PageHeader({ indexData, lastUpdated }: { indexData: MarketIndexData | null; lastUpdated: Date | null }) {
-  const isPositive = (indexData?.comparisonPreviousDay.value ?? 0) >= 0;
-  const changeColor = isPositive ? 'text-green-400' : 'text-red-400';
+function PageHeader({
+  indexData,
+  lastUpdated,
+  todayCandle,
+}: {
+  indexData: MarketIndexData | null;
+  lastUpdated: Date | null;
+  todayCandle: { open: number; high: number; low: number; close: number } | null;
+}) {
+  // 当日の始値との比較を計算
+  const todayOpen = todayCandle?.open ?? indexData?.currentIndex ?? 0;
+  const changeValue = indexData ? indexData.currentIndex - todayOpen : 0;
+  const changePercentage = todayOpen > 0 ? (changeValue / todayOpen) * 100 : 0;
+
+  const isPositive = changeValue >= 0;
+  const changeColor = isPositive ? 'text-emerald-300' : 'text-red-300';
   const changeSign = isPositive ? '+' : '';
   const changeArrow = isPositive ? '▲' : '▼';
 
@@ -607,7 +1003,16 @@ function PageHeader({ indexData, lastUpdated }: { indexData: MarketIndexData | n
               </svg>
               <h1 className="text-2xl sm:text-3xl font-bold">アイテム市場相場</h1>
             </div>
-            <p className="text-white/70 text-sm">いねさば経済圏の全アイテム価格と変動データ</p>
+            <p className="text-white/70 text-sm mb-3">いねさば経済圏の全アイテム価格と変動データ</p>
+            <Link
+              href="/economy/market"
+              className="inline-flex items-center text-sm font-medium text-white hover:text-white/80 underline decoration-white/40 hover:decoration-white transition-all underline-offset-4"
+            >
+              取引の方法はこちら
+              <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </Link>
           </div>
 
           {indexData && (
@@ -619,10 +1024,10 @@ function PageHeader({ indexData, lastUpdated }: { indexData: MarketIndexData | n
                 </span>
                 <div className={`flex flex-col items-end pb-0.5 ${changeColor}`}>
                   <span className="text-sm font-bold tabular-nums">
-                    {changeArrow} {changeSign}{Math.abs(indexData.comparisonPreviousDay.value).toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    {changeArrow} {changeSign}{Math.abs(changeValue).toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </span>
                   <span className="text-xs font-semibold">
-                    {changeSign}{indexData.comparisonPreviousDay.percentage.toFixed(2)}%
+                    {changeSign}{changePercentage.toFixed(2)}%
                   </span>
                 </div>
               </div>
