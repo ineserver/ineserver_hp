@@ -13,6 +13,7 @@ const config = {
     emptyMessage: '娯楽に関する記事がありません',
     pageTitle: '娯楽 | Ineサーバー',
     backButtonText: '娯楽一覧に戻る',
+    backgroundImage: 'https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg',
     enableGrouping: true,
     groupLabels: {
         game: 'ゲーム',

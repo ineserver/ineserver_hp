@@ -302,47 +302,6 @@ export default function TutorialClientPage() {
               </svg></Link></p>
             <p>また、<CommandCode>/spawn</CommandCode>コマンドで、スポーン地点に戻ることができます。道に迷ったら、/spawnを使いましょう！</p>
 
-            <h1>お腹が空いたら</h1>
-            <p>散策中、お腹が減ると思います。</p>
-            <p>そんなときには、<b className="text-red">市場取引機能</b>を利用しましょう！</p>
-            <p><CommandCode>/market</CommandCode>コマンドで、取引画面を開くことができます。</p>
-
-            <h2>カテゴリを選ぶ</h2>
-            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/84f0e56743771bf49598a875d4f85905.png', alt: 'カテゴリ説明画像' })}>
-              <Image
-                src="https://img.1necat.net/84f0e56743771bf49598a875d4f85905.png"
-                alt="カテゴリ説明画像"
-                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
-                width={1200}
-                height={675}
-              />
-            </div>
-            <p>今回は食料カテゴリ→購入したい食べ物を選択します。</p>
-
-            <h2>購入する</h2>
-            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/eb8be81f07fbad47458c2109cb0f7bce.png', alt: '購入説明画像' })}>
-              <Image
-                src="https://img.1necat.net/eb8be81f07fbad47458c2109cb0f7bce.png"
-                alt="購入説明画像"
-                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
-                width={1200}
-                height={675}
-              />
-            </div>
-            <p>左側の緑色のロウソクをクリックすると購入できます。ロウソクの本数は購入数です。</p>
-
-            <h2>これで食料を購入できました！</h2>
-            <p>市場取引では食料以外でも、<b>建材や鉱石</b>も購入することができます。</p>
-            <p>ホームページ上からも最新の物価を確認できます。→
-              <Link className="inline-flex items-center" href="https://market.1necat.net" target="_blank" rel="noopener noreferrer">市場状況はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg></Link></p>
-            <p>ちなみに、初回ログイン時に<b className="text-red">全員に2000ineをプレゼントしております！</b>&ldquo;ine&rdquo;は、市場取引の他に他の住民のショップから物を買ったり、土地を購入したり、車を買ったりなど様々なことに使えます！</p>
-            <CollapsibleDetail title="通貨：ineについて">
-              <p>&ldquo;ine&rdquo;は、このサーバーでの基本的な通貨です。</p>
-              <p>ineを使うことで、「市場取引」「ユーザー同士の取引（ショップ等）」「土地購入」「車購入」「コマンド購入」など様々なことに使えます。</p>
-              <p>現在の所有している金額は<CommandCode>/money show</CommandCode>コマンドで確認できます。</p>
-            </CollapsibleDetail>
-
             <h1>拠点を決めよう</h1>
             <p>次に、生活の拠点となる自宅を決めましょう！</p>
             <p>いねさばでは、<b className='text-red'>賃貸に住む・土地代を払って中心地に家を建てる・土地代無料の郊外に家を建てる</b>など、さまざまな選択肢があります。</p>
@@ -374,6 +333,7 @@ export default function TutorialClientPage() {
             <h2>選択肢① 市場取引機能</h2>
             <p>上記の食料で使った市場取引機能を使うことで、建材や鉱石を入手することが出来ます！</p>
             <p><CommandCode>/market</CommandCode>コマンドで、取引画面を開くことができます。</p>
+            <p>詳しくはこちら→</p><Link className="inline-flex items-center" href="https://www.1necat.net/economy/market" target="_blank" rel="noopener noreferrer">市場取引の詳細はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link>
 
             <h2>選択肢② 資源ワールドを使う</h2>
             <p>いねさばには、「資源ワールド」という資源を集めるためのワールドがあります。</p>

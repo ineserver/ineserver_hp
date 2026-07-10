@@ -14,6 +14,7 @@ const config = {
     emptyMessage: 'くらしに関する記事がありません',
     pageTitle: 'くらし | Ineサーバー',
     backButtonText: 'くらし一覧に戻る',
+    backgroundImage: 'https://img.1necat.net/2025-11-29_15.48.01.png',
     enableGrouping: true,
     groupLabels: {
         protection: '保護',

@@ -13,6 +13,7 @@ const config = {
   emptyMessage: '経済に関するコンテンツがまだありません。',
   pageTitle: '経済 | Ineサーバー',
   backButtonText: '経済一覧に戻る',
+  backgroundImage: 'https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg',
   enableGrouping: true,
   groupLabels: {
     job: '職業',

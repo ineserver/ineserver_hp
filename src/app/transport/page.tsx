@@ -13,6 +13,7 @@ const config = {
     emptyMessage: '交通に関する記事がありません',
     pageTitle: '交通 | Ineサーバー',
     backButtonText: '交通一覧に戻る',
+    backgroundImage: 'https://img.1necat.net/2025-11-28_02.41.46.png',
     enableGrouping: true,
     groupLabels: {
         sightseeing: '観光',

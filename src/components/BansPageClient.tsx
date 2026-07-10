@@ -162,18 +162,32 @@ export default function BansPageClient({ bans }: { bans: BanRecordResolved[] }) 
 
   return (
     <div className="bg-white flex flex-col h-full">
-      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
-        {/* ページヘッダー */}
-        <header className="mb-8">
-          <div className="flex items-center mb-6">
-            <div className="text-red-600 mr-6">
-              <BanIcon className="w-10 h-10" />
-            </div>
+      <div className="bg-[#5b8064] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
+            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-white/90">処罰リスト</span>
+          </nav>
+
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">処罰リスト</div>
-              <p className="text-gray-600">サーバールールに違反したプレイヤーの処罰履歴です</p>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="text-white/80">
+                  <BanIcon className="w-8 h-8" />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold">処罰リスト</h1>
+              </div>
+              <p className="text-white/70 text-sm">サーバールールに違反したプレイヤーの処罰履歴です</p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
+        <header className="mb-8">
 
           {/* 関連リンク */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 mb-4">

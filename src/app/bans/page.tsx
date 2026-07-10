@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
-import Breadcrumb from "@/components/Breadcrumb";
 import BansPageClient from "@/components/BansPageClient";
 
 export const revalidate = 60;
@@ -95,12 +94,6 @@ export default async function BansPage() {
   return (
     <>
       <Header />
-      <Breadcrumb
-        items={[
-          { label: "いねさば", href: "/" },
-          { label: "処罰リスト" },
-        ]}
-      />
       <div className="flex-grow bg-white">
         <BansPageClient bans={bans} />
       </div>

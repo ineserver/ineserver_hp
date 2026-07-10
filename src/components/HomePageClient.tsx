@@ -55,6 +55,7 @@ export default function HomePageClient({
     const [activeTab, setActiveTab] = useState('all');
     const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isAnnouncementsExpanded, setIsAnnouncementsExpanded] = useState(false);
 
     // タブのref
     const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
@@ -103,6 +104,7 @@ export default function HomePageClient({
         setActiveTab(tab);
         updateIndicator(tab);
         setIsDropdownOpen(false); // プルダウンを閉じる
+        setIsAnnouncementsExpanded(false); // タブ切り替え時に折りたたむ
     };
 
     // プルダウンの開閉
@@ -279,6 +281,67 @@ export default function HomePageClient({
         const endStr = end.toLocaleDateString('ja-JP', { month: 'short', day: 'numeric' });
         return `${startStr} - ${endStr}`;
     };
+
+    // お知らせカードをレンダリングする関数
+    const renderAnnouncement = (announcement: Announcement) => (
+        <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
+            {/* モバイル表示 */}
+            <div className="sm:hidden space-y-3">
+                {/* タグと日付 */}
+                <div className="flex items-center justify-between">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)}`}>
+                        {getTagName(announcement.type)}
+                    </span>
+                    <span className="text-sm text-gray-500">{announcement.date}</span>
+                </div>
+
+                {/* タイトル */}
+                <div>
+                    <Link href={`/announcements/${announcement.id}`}>
+                        <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200">
+                            {announcement.title}
+                        </h3>
+                    </Link>
+                </div>
+
+                {/* 内容 */}
+                <div>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                        {announcement.description}
+                    </p>
+                </div>
+            </div>
+
+            {/* PC表示（従来通りの横並び形式） */}
+            <div className="hidden sm:block">
+                <div className="flex items-start justify-between">
+                    <div className="flex items-start space-x-4 flex-1">
+                        {/* タグ */}
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)} flex-shrink-0`}>
+                            {getTagName(announcement.type)}
+                        </span>
+
+                        {/* タイトルと内容 */}
+                        <div className="flex-1 min-w-0">
+                            <Link href={`/announcements/${announcement.id}`}>
+                                <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200 mb-1">
+                                    {announcement.title}
+                                </h3>
+                            </Link>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                                {announcement.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* 日付 */}
+                    <span className="text-sm text-gray-500 flex-shrink-0 ml-4">
+                        {announcement.date}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
     return (
         <>
             {/* カルーセルスライダー */}
@@ -543,66 +606,8 @@ export default function HomePageClient({
 
                                 {/* お知らせリスト */}
                                 <div className="divide-y divide-gray-200">
-                                    {filteredAnnouncements.length > 0 ? (
-                                        filteredAnnouncements.map((announcement) => (
-                                            <div key={announcement.id} className="p-6 hover:bg-gray-50 transition-colors duration-200">
-                                                {/* モバイル表示 */}
-                                                <div className="sm:hidden space-y-3">
-                                                    {/* タグと日付 */}
-                                                    <div className="flex items-center justify-between">
-                                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)}`}>
-                                                            {getTagName(announcement.type)}
-                                                        </span>
-                                                        <span className="text-sm text-gray-500">{announcement.date}</span>
-                                                    </div>
-
-                                                    {/* タイトル */}
-                                                    <div>
-                                                        <Link href={`/announcements/${announcement.id}`}>
-                                                            <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200">
-                                                                {announcement.title}
-                                                            </h3>
-                                                        </Link>
-                                                    </div>
-
-                                                    {/* 内容 */}
-                                                    <div>
-                                                        <p className="text-gray-600 text-sm leading-relaxed">
-                                                            {announcement.description}
-                                                        </p>
-                                                    </div>
-                                                </div>
-
-                                                {/* PC表示（従来通りの横並び形式） */}
-                                                <div className="hidden sm:block">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex items-start space-x-4 flex-1">
-                                                            {/* タグ */}
-                                                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getTagStyle(announcement.type)} flex-shrink-0`}>
-                                                                {getTagName(announcement.type)}
-                                                            </span>
-
-                                                            {/* タイトルと内容 */}
-                                                            <div className="flex-1 min-w-0">
-                                                                <Link href={`/announcements/${announcement.id}`}>
-                                                                    <h3 className="text-lg font-semibold text-gray-900 hover:text-[#5b8064] cursor-pointer transition-colors duration-200 mb-1">
-                                                                        {announcement.title}
-                                                                    </h3>
-                                                                </Link>
-                                                                <p className="text-gray-600 text-sm leading-relaxed">
-                                                                    {announcement.description}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-
-                                                        {/* 日付 */}
-                                                        <span className="text-sm text-gray-500 flex-shrink-0 ml-4">
-                                                            {announcement.date}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))
+                                    {filteredAnnouncements.slice(0, 5).length > 0 ? (
+                                        filteredAnnouncements.slice(0, 5).map(renderAnnouncement)
                                     ) : (
                                         // お知らせが見つからない場合
                                         <div className="p-6 text-center text-gray-500">
@@ -611,13 +616,35 @@ export default function HomePageClient({
                                     )}
                                 </div>
 
+                                {/* 折りたたみ部分（アニメーション） */}
+                                {filteredAnnouncements.length > 5 && (
+                                    <div className={`grid transition-all duration-500 ease-in-out ${isAnnouncementsExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                                        <div className="overflow-hidden">
+                                            <div className="divide-y divide-gray-200 border-t border-gray-200">
+                                                {filteredAnnouncements.slice(5, 10).map(renderAnnouncement)}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* もっと見るボタン */}
-                                <div className="p-6 border-t border-gray-200 text-center">
+                                <div className="p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-center items-center gap-4">
+                                    {filteredAnnouncements.length > 5 && (
+                                        <button 
+                                            onClick={() => setIsAnnouncementsExpanded(!isAnnouncementsExpanded)}
+                                            className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                                        >
+                                            {isAnnouncementsExpanded ? '折りたたむ' : `さらに表示する (${Math.min(filteredAnnouncements.length, 10) - 5}件)`}
+                                            <svg className={`ml-2 w-4 h-4 transition-transform duration-200 ${isAnnouncementsExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                            </svg>
+                                        </button>
+                                    )}
                                     <Link href={`/announcements?filter=${activeTab}`}>
-                                        <button className="inline-flex items-center px-6 py-3 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 cursor-pointer">
-                                            もっと見る
-                                            <svg className="ml-2 w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+                                        <button className="inline-flex items-center px-6 py-3 bg-[#5b8064] rounded-md text-sm font-medium text-white hover:bg-[#4a6b55] transition-colors duration-200 cursor-pointer">
+                                            お知らせ一覧へ
+                                            <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                             </svg>
                                         </button>
                                     </Link>

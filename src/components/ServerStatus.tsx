@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ServerStatus as ServerStatusType } from '@/types/server-status';
 import MaintenanceSchedule from './MaintenanceSchedule';
+import MarketIndex from './MarketIndex';
 
 interface ServerStatusProps {
   serverAddress?: string;
@@ -258,6 +259,9 @@ export default function ServerStatus({
 
       {/* メンテナンス予定 */}
       <MaintenanceSchedule />
+
+      {/* 全体相場指標 */}
+      <MarketIndex />
 
       {/* コミュニティ・サポート */}
       <div className="space-y-4">

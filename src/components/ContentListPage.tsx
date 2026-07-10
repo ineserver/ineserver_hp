@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Header from '@/components/Header';
 
-import Breadcrumb from '@/components/Breadcrumb';
 import { iconMap } from '@/components/Icons';
 import { ContentItem, ContentPageConfig } from '@/types/content';
 
@@ -55,11 +54,6 @@ function ContentLink({ item, basePath }: { item: ContentItem; basePath: string }
 export default function ContentListPage({ config, content = [], children }: ContentListPageProps) {
   const IconComponent = iconMap[config.icon];
 
-  const breadcrumbItems = [
-    { label: 'いねさば', href: '/' },
-    { label: config.title }
-  ];
-
   // グループラベルとアイコンのマッピング
   const groupIconMap: Record<string, keyof typeof iconMap> = {
     'ルール・規約': 'fileText',
@@ -90,18 +84,33 @@ export default function ContentListPage({ config, content = [], children }: Cont
   return (
     <div className="bg-white flex flex-col h-full">
       <Header />
-      <Breadcrumb items={breadcrumbItems} />
 
-      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
-        {/* ページヘッダー */}
-        <header className="mb-12">
-          <div className="flex items-center mb-6">
-            <IconComponent className={`${config.color} mr-6`} size={40} />
+      <div
+        className={`text-white relative ${config.backgroundImage ? 'bg-cover bg-center' : 'bg-[#5b8064]'}`}
+        style={config.backgroundImage ? { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${config.backgroundImage}')` } : undefined}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
+          <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
+            <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-white/90">{config.title}</span>
+          </nav>
+
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
             <div>
-              <div className="text-4xl font-bold text-gray-900 mb-2">{config.title}</div>
+              <div className="flex items-center gap-3 mb-1">
+                <IconComponent className="w-10 h-10 text-white/80" />
+                <h1 className="text-2xl sm:text-3xl font-bold">{config.title}</h1>
+              </div>
+
             </div>
           </div>
-        </header>
+        </div>
+      </div>
+
+      <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
 
         {children && (
           <div className="mb-12">

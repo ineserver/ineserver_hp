@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
 
-import Breadcrumb from '@/components/Breadcrumb';
 import { ContentData } from '../../lib/content';
 
 interface AnnouncementsClientPageProps {
@@ -66,11 +65,6 @@ export default function AnnouncementsClientPage({ announcements }: Announcements
             setFilter(paramFilter);
         }
     }, [searchParams]);
-
-    const breadcrumbItems = [
-        { label: 'いねさば', href: '/' },
-        { label: 'お知らせ' }
-    ];
 
     // イベントの状態を取得する関数
     const getEventStatus = (startDate?: string, endDate?: string) => {
@@ -146,23 +140,36 @@ export default function AnnouncementsClientPage({ announcements }: Announcements
     return (
         <div className="bg-white flex flex-col h-full">
             <Header />
-            <Breadcrumb items={breadcrumbItems} />
+
+            <div className="bg-[#5b8064] text-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+                    <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
+                        <Link href="/" className="hover:text-white transition-colors">ホーム</Link>
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                        <span className="text-white/90">お知らせ</span>
+                    </nav>
+
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+                        <div>
+                            <div className="flex items-center gap-3 mb-1">
+                                <div className="text-white/80">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 2c-1.7 0-3 1.2-3 2.6v6.8c0 1.4 1.3 2.6 3 2.6s3-1.2 3-2.6V4.6C15 3.2 13.7 2 12 2z"></path>
+                                        <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18.4v3.3M8 22h8"></path>
+                                    </svg>
+                                </div>
+                                <h1 className="text-2xl sm:text-3xl font-bold">お知らせ</h1>
+                            </div>
+                            <p className="text-white/70 text-sm">サーバーの最新情報やアップデート情報をお届けします</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
                 <header className="mb-8">
-                    <div className="flex items-center mb-6">
-                        <div className="text-red-600 mr-6">
-                            {/* Using SVG directly or iconMap if available, assuming bullhorn for announcements */}
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M12 2c-1.7 0-3 1.2-3 2.6v6.8c0 1.4 1.3 2.6 3 2.6s3-1.2 3-2.6V4.6C15 3.2 13.7 2 12 2z"></path>
-                                <path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18.4v3.3M8 22h8"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <div className="text-4xl font-bold text-gray-900 mb-2">お知らせ</div>
-                            <p className="text-gray-600">サーバーの最新情報やアップデート情報をお届けします</p>
-                        </div>
-                    </div>
 
                     {/* Controls */}
                     <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg">

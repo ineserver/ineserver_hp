@@ -21,6 +21,7 @@ export interface ContentPageConfig {
   bgColor: string;
   borderColor: string;
   loadingColor: string;
+  backgroundImage?: string;
   emptyMessage: string;
   pageTitle: string;
   backButtonText: string;

@@ -13,6 +13,7 @@ const config = {
     emptyMessage: 'サーバーガイドの記事がありません',
     pageTitle: 'サーバーガイド | Ineサーバー',
     backButtonText: 'サーバーガイド一覧に戻る',
+    backgroundImage: 'https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg',
     enableGrouping: true,
     groupLabels: {
         rule: 'ルール・規約',
