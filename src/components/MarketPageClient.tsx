@@ -163,6 +163,15 @@ function MarketChart({
 }) {
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: { date: string; index: number; isCurrent?: boolean; open: number; close: number; high: number; low: number } } | null>(null);
   const [chartType, setChartType] = useState<'line' | 'candlestick'>('line');
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1000);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // 折れ線グラフ用: chartDataの最後に現在のインデックスを「現在」として追加する
   // chartData30Days が空（データ蓄積前）の場合でも currentIndex のみで表示できるようにする
@@ -240,8 +249,23 @@ function MarketChart({
   // データが1点のみ（蓄積前）かどうか
   const isSinglePoint = displayData.length === 1;
 
+  const isMobile = windowWidth < 640;
+  
+  // スマホなど横スクロールが発生する場合、常に一番右（最新データ）を表示する
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      // 描画後にスクロール位置を調整するため少し遅らせる
+      const timer = setTimeout(() => {
+        if (scrollContainerRef.current) {
+          scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth;
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [displayData.length, isMobile, chartType]);
+
   const width = 1000;
-  const height = 240;
+  const height = isMobile ? 500 : 300;
   const padding = { top: 20, right: 90, bottom: 35, left: 20 }; // 右側の余白を広げて価格軸とバッジを収める
 
   // 横軸の目盛りを表示するインデックスを決定
@@ -351,11 +375,38 @@ function MarketChart({
 
   const candleWidth = Math.max(2, (chartWidth / Math.max(minPoints + 1, displayData.length)) * 0.6);
 
+  const handlePointerInteraction = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!svgRef.current) return;
+    const svg = svgRef.current;
+    const rect = svg.getBoundingClientRect();
+    
+    let clientX;
+    if ('touches' in e) {
+      clientX = e.touches[0].clientX;
+    } else {
+      clientX = (e as React.MouseEvent).clientX;
+    }
+    
+    const x = clientX - rect.left;
+    const scaleX = width / rect.width;
+    const svgX = x * scaleX;
+    
+    let index = Math.round(displayData.length - 1 - (padding.left + usableWidth - svgX) / pointSpacing);
+    index = Math.max(0, Math.min(displayData.length - 1, index));
+    
+    const d = displayData[index];
+    const pointX = toX(index);
+    const pointY = toY(chartType === 'candlestick' ? d.close : d.index);
+    setHoveredPoint({ x: pointX, y: pointY, point: d });
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
         <h2 className="text-base sm:text-lg font-bold text-gray-800">全体相場インデックス (過去30日間)</h2>
-        <div className="flex bg-gray-100 rounded-lg p-1">
+        
+        {/* PC用: セグメントコントロール */}
+        <div className="hidden sm:flex bg-gray-100 rounded-lg p-1">
           <button
             onClick={() => setChartType('line')}
             className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${chartType === 'line' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
@@ -369,14 +420,39 @@ function MarketChart({
             ローソク（1日足）
           </button>
         </div>
+
+        {/* スマホ用: 2段目・右揃えのプルダウン */}
+        <div className="w-full sm:hidden flex justify-end">
+          <select
+            value={chartType}
+            onChange={(e) => setChartType(e.target.value as 'line' | 'candlestick')}
+            className="text-xs font-medium border border-gray-200 rounded-lg bg-gray-50 px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-[#5b8064]/20 focus:border-[#5b8064] text-gray-700 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:10px_10px] bg-[right_10px_center] bg-no-repeat"
+          >
+            <option value="line">折れ線グラフ</option>
+            <option value="candlestick">ローソク足（1日足）</option>
+          </select>
+        </div>
       </div>
-      <div className="relative w-full" style={{ aspectRatio: `${width}/${height}` }}>
-        <svg
-          viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-full"
-          onMouseLeave={() => setHoveredPoint(null)}
-        >
-          <defs>
+      
+      {/* スマホ用には横スクロールを許可するラッパー */}
+      <div 
+        ref={scrollContainerRef}
+        className="w-full overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 hide-scrollbar" 
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        <div className="relative min-w-[700px] sm:min-w-full" style={{ aspectRatio: `${width}/${height}` }}>
+          <svg
+            ref={svgRef}
+            viewBox={`0 0 ${width} ${height}`}
+            className="w-full h-full"
+            onMouseLeave={() => setHoveredPoint(null)}
+            onMouseMove={handlePointerInteraction}
+            onTouchStart={handlePointerInteraction}
+            onTouchMove={handlePointerInteraction}
+            onTouchEnd={() => setHoveredPoint(null)}
+            onTouchCancel={() => setHoveredPoint(null)}
+          >
+            <defs>
             <linearGradient id={`bigChartGrad-${isOverallPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0.2" />
               <stop offset="100%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0" />
@@ -409,8 +485,9 @@ function MarketChart({
                 {/* 目盛りラベル */}
                 <text
                   x={width - padding.right + 8}
-                  y={cy + 3.5}
-                  className="text-[10px] fill-gray-400 font-medium select-none"
+                  y={cy + 4.5}
+                  className="fill-gray-400 font-medium select-none"
+                  fontSize="12"
                 >
                   {formatIndex(val)}
                 </text>
@@ -490,9 +567,10 @@ function MarketChart({
               <g key={`tick-${i}`}>
                 <text
                   x={cx}
-                  y={height - padding.bottom + 16}
+                  y={height - padding.bottom + 18}
                   textAnchor="middle"
-                  className="text-[10px] fill-gray-400 font-medium select-none"
+                  className="fill-gray-400 font-medium select-none"
+                  fontSize="12"
                 >
                   {formatDate(d.date, d.isCurrent)}
                 </text>
@@ -511,8 +589,9 @@ function MarketChart({
             />
             <text
               x={width - padding.right + 8}
-              y={lastY + 3.5}
-              className="text-[10px] fill-white font-bold select-none"
+              y={lastY + 4.5}
+              className="fill-white font-bold select-none"
+              fontSize="12"
             >
               {formatIndex(lastPoint.index)}
             </text>
@@ -527,10 +606,8 @@ function MarketChart({
                 <circle
                   cx={cx}
                   cy={cy}
-                  r={chartType === 'candlestick' ? Math.max(12, candleWidth) : 12}
+                  r={chartType === 'candlestick' ? Math.max(16, candleWidth) : 16}
                   fill="transparent"
-                  style={{ cursor: 'pointer' }}
-                  onMouseEnter={() => setHoveredPoint({ x: cx, y: cy, point: d })}
                 />
                 {hoveredPoint?.point.date === d.date && chartType === 'line' && (
                   <circle
@@ -581,6 +658,7 @@ function MarketChart({
             )}
           </div>
         )}
+      </div>
       </div>
 
       {/* 本日のOHLバー */}

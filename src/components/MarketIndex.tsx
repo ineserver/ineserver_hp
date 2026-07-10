@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, MouseEvent, TouchEvent } from 'react';
 
 interface ChartDataPoint {
   date: string;
@@ -39,6 +39,7 @@ export default function MarketIndex() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: ChartDataPoint } | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
     const fetchMarketIndex = async () => {
@@ -143,12 +144,41 @@ export default function MarketIndex() {
       chartData.slice(1).map((d, i) => `L ${toX(i + 1)},${toY(d.index)}`).join(' ') +
       ` L ${toX(chartData.length - 1)},${height - padding.bottom} L ${toX(0)},${height - padding.bottom} Z`;
 
+    const handlePointerInteraction = (e: MouseEvent | TouchEvent) => {
+      if (!svgRef.current) return;
+      const svg = svgRef.current;
+      const rect = svg.getBoundingClientRect();
+      
+      let clientX;
+      if ('touches' in e) {
+        clientX = e.touches[0].clientX;
+      } else {
+        clientX = (e as MouseEvent).clientX;
+      }
+      
+      const x = clientX - rect.left;
+      const scaleX = width / rect.width;
+      const svgX = x * scaleX;
+      
+      let index = Math.round(((svgX - padding.left) / chartWidth) * (chartData.length - 1));
+      index = Math.max(0, Math.min(chartData.length - 1, index));
+      
+      const d = chartData[index];
+      setHoveredPoint({ x: toX(index), y: toY(d.index), point: d });
+    };
+
     return (
       <div className="relative w-full" style={{ aspectRatio: `${width}/${height}` }}>
         <svg
+          ref={svgRef}
           viewBox={`0 0 ${width} ${height}`}
-          className="w-full h-full"
+          className="w-full h-full touch-none"
           onMouseLeave={() => setHoveredPoint(null)}
+          onMouseMove={handlePointerInteraction}
+          onTouchStart={handlePointerInteraction}
+          onTouchMove={handlePointerInteraction}
+          onTouchEnd={() => setHoveredPoint(null)}
+          onTouchCancel={() => setHoveredPoint(null)}
         >
           {/* グラデーション塗りつぶし */}
           <defs>
@@ -182,10 +212,8 @@ export default function MarketIndex() {
                 <circle
                   cx={cx}
                   cy={cy}
-                  r="8"
+                  r="12"
                   fill="transparent"
-                  style={{ cursor: 'pointer' }}
-                  onMouseEnter={() => setHoveredPoint({ x: cx, y: cy, point: d })}
                 />
                 {hoveredPoint?.point.date === d.date && (
                   <circle
@@ -205,11 +233,11 @@ export default function MarketIndex() {
         {/* ツールチップ */}
         {hoveredPoint && (
           <div
-            className="absolute z-10 bg-gray-900 text-white text-xs rounded-md px-2 py-1 pointer-events-none shadow-lg whitespace-nowrap"
+            className="absolute z-10 bg-gray-900/95 backdrop-blur-md text-white text-xs rounded-md px-2 py-1.5 pointer-events-none shadow-lg whitespace-nowrap transition-transform duration-75"
             style={{
               left: `${(hoveredPoint.x / width) * 100}%`,
               top: `${(hoveredPoint.y / height) * 100}%`,
-              transform: 'translate(-50%, -130%)',
+              transform: `translate(${hoveredPoint.x > width * 0.7 ? '-100%' : hoveredPoint.x < width * 0.3 ? '0%' : '-50%'}, -130%)`,
             }}
           >
             <div className="font-semibold">{formatDate(hoveredPoint.point.date)}</div>
