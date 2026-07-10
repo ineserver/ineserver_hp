@@ -156,22 +156,13 @@ export default function LPClientPage() {
                         <p className="text-gray-600 font-medium text-sm leading-relaxed">さらに、リアルタイムの市場レートはWeb上で常時公開されています。 ログインしていない外出先や移動中でも、スマホから現在の相場や値動きのグラフをチェック可能。 「日中に高騰した資源を見つけ、帰宅後に売り抜ける」——そんな、ゲームの枠を超えたリアリティのある経済活動がここにはあります。</p>
 
                         <div className="mt-6 space-y-3">
-                            <div className="relative w-full rounded-lg overflow-hidden shadow-lg border border-gray-200">
-                                <Image
-                                    src="https://img.1necat.net/fe70a2a98fbec6f8e811d356880a6d29.jpg"
-                                    alt="Ineserver Market Preview"
-                                    width={800}
-                                    height={450}
-                                    className="w-full h-auto"
-                                />
-                            </div>
 
                             <div className="flex justify-end">
                                 <a
-                                    href="https://market.1necat.net"
+                                    href="https://www.1necat.net/market"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    onClick={() => trackExternalLink('market', 'https://market.1necat.net')}
+                                    onClick={() => trackExternalLink('market', 'https://www.1necat.net/market')}
                                     className="inline-flex items-center gap-2 text-sm text-[#5b8064] hover:text-[#4a6b52] transition-colors font-bold group"
                                     style={{ fontFamily: 'var(--font-noto-sans)' }}
                                 >
