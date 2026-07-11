@@ -1,0 +1,238 @@
+{
+  "meta": {
+    "title": "いねさば 鉄道路線図",
+    "description": "いねさばの鉄道路線図です。駅をクリックすると詳細情報が表示されます。"
+  },
+  "lines": [
+    {
+      "id": "chuo-west",
+      "name": "中央線",
+      "shortName": "中央",
+      "color": "#f97316",
+      "textColor": "#ffffff",
+      "stations": [
+        "shiratsuba",
+        "nishi-shiratsuba",
+        "semi",
+        "moeki",
+        "kururu",
+        "meikyo"
+      ],
+      "services": [
+        {
+          "name": "急行",
+          "color": "#e11d48",
+          "borderColor": "#fecdd3",
+          "stations": [
+            "shiratsuba",
+            "semi",
+            "meikyo"
+          ]
+        },
+        {
+          "name": "各停",
+          "color": "#2563eb",
+          "borderColor": "#bfdbfe",
+          "stations": [
+            "shiratsuba",
+            "nishi-shiratsuba",
+            "semi",
+            "moeki",
+            "kururu",
+            "meikyo"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuo-east",
+      "name": "中央線",
+      "shortName": "中央",
+      "color": "#f97316",
+      "textColor": "#ffffff",
+      "stations": [
+        "shiratsuba",
+        "centralpark",
+        "surugaharahonmachi"
+      ],
+      "services": [
+        {
+          "name": "急行",
+          "color": "#e11d48",
+          "borderColor": "#fecdd3",
+          "stations": [
+            "shiratsuba"
+          ]
+        },
+        {
+          "name": "各停",
+          "color": "#2563eb",
+          "borderColor": "#bfdbfe",
+          "stations": [
+            "shiratsuba",
+            "centralpark",
+            "surugaharahonmachi"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chuo-kanjyo",
+      "name": "中央環状線",
+      "shortName": "環状",
+      "color": "#0284c7",
+      "textColor": "#ffffff",
+      "stations": [
+        "shiratsuba",
+        "nishi-shiratsuba",
+        "semi",
+        "wp:-25,0",
+        "inematsu",
+        "wp:-25,20",
+        "sakuragawa",
+        "wp:5,20",
+        "wp:5,0",
+        "shiratsuba"
+      ]
+    },
+    {
+      "id": "nanboku",
+      "name": "南北線",
+      "shortName": "南北",
+      "color": "#0891b2",
+      "textColor": "#ffffff",
+      "stations": [
+        "shiratsuba",
+        "wp:-5,0.2",
+        "karigane",
+        "sakuragawa"
+      ]
+    }
+  ],
+  "stations": [
+    {
+      "id": "shiratsuba",
+      "name": "白椿",
+      "nameEn": "Shiratsuba",
+      "code": "SRT",
+      "x": 0,
+      "y": 0,
+      "description": "スポーン地点最寄り駅です。掲示板も是非！",
+      "gameCoords": {
+        "x": -104,
+        "z": 194
+      },
+      "labelPosition": "top"
+    },
+    {
+      "id": "nishi-shiratsuba",
+      "name": "西白椿",
+      "nameEn": "Nishi-Shiratsuba",
+      "code": null,
+      "x": -10,
+      "y": 0,
+      "description": "西白椿駅は中央線西側と中央環状線が通る駅です。",
+      "gameCoords": null,
+      "labelPosition": "top"
+    },
+    {
+      "id": "semi",
+      "name": "瀬見",
+      "nameEn": "Semi",
+      "code": "SMI",
+      "x": -20,
+      "y": 0,
+      "description": "瀬見駅は中央線西側と中央環状線が通る駅です。",
+      "gameCoords": null,
+      "labelPosition": "top"
+    },
+    {
+      "id": "centralpark",
+      "name": "セントラル・パーク",
+      "nameEn": "Central・Park",
+      "code": null,
+      "x": 10,
+      "y": 0,
+      "description": "セントラル・パーク駅は中央線が通る駅です。",
+      "gameCoords": null,
+      "labelPosition": "bottom"
+    },
+    {
+      "id": "inematsu",
+      "name": "稲松",
+      "nameEn": "Inematsu",
+      "code": null,
+      "x": -25,
+      "y": 10,
+      "description": "稲松駅は中央環状線が通る駅です。",
+      "gameCoords": null,
+      "labelPosition": "left"
+    },
+    {
+      "id": "sakuragawa",
+      "name": "桜川",
+      "nameEn": "Sakuragawa",
+      "code": null,
+      "x": -5,
+      "y": 20,
+      "description": "桜川駅は中央環状線が通る駅です。",
+      "gameCoords": null,
+      "labelPosition": "bottom"
+    },
+    {
+      "id": "surugaharahonmachi",
+      "name": "駿原本町",
+      "nameEn": "Surugaharahonmachi",
+      "code": null,
+      "x": 20,
+      "y": 0,
+      "description": "白椿競馬場最寄り駅です",
+      "gameCoords": null,
+      "labelPosition": "top"
+    },
+    {
+      "id": "karigane",
+      "name": "雁ヶ音",
+      "nameEn": "Karigane",
+      "code": null,
+      "x": -5,
+      "y": 10,
+      "description": "白椿山登山列車に乗り換えができます",
+      "gameCoords": null,
+      "labelPosition": "right"
+    },
+    {
+      "id": "moeki",
+      "name": "萌木",
+      "nameEn": "Moeki",
+      "code": null,
+      "x": -30,
+      "y": 0,
+      "description": "萌木住宅街の最寄り駅です",
+      "gameCoords": null,
+      "labelPosition": "top"
+    },
+    {
+      "id": "kururu",
+      "name": "枢",
+      "nameEn": "Kururu",
+      "code": null,
+      "x": -40,
+      "y": 0,
+      "description": "",
+      "gameCoords": null,
+      "labelPosition": "top"
+    },
+    {
+      "id": "meikyo",
+      "name": "明教",
+      "nameEn": "Meikyo",
+      "code": null,
+      "x": -50,
+      "y": 0,
+      "description": "",
+      "gameCoords": null,
+      "labelPosition": "top"
+    }
+  ]
+}
