@@ -10,7 +10,7 @@ interface ServerConfig {
 
 // デフォルト設定
 const DEFAULT_CONFIG: ServerConfig = {
-  recommendedVersion: '1.21.4',
+  recommendedVersion: '26.1.2',
   serverAddress: '1necat.net',
   description: 'いねさばで最も安定して動作するバージョンです'
 };
