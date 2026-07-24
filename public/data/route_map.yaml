@@ -1,0 +1,323 @@
+# ============================================================
+# いねさば 鉄道路線図データ
+# ============================================================
+# 編集方法:
+#   - stations: に新しい駅を追加
+#   - lines: の stations: に駅IDを順番に並べると路線が引かれます
+#   - wp:<x>,<y> はウェイポイント（駅ではない経由点）です
+#   - gameCoords は Minecraft のゲーム内座標 (x, z) です
+# ============================================================
+
+meta:
+  title: いねさば 鉄道路線図
+  description: ""
+
+# ============================================================
+# 路線定義
+#   symbol     : ナンバリング用の路線略称記号（例: CW, CE, CK, N）
+#   symbolType : ナンバリング枠の形状（square: 四角 / circle: 丸。地下鉄線は circle 推奨）
+#   strokeWidth: 線幅px（デフォルト: 6。地下鉄・私鉄等は 4 や 3.5 の細線推奨）
+# ============================================================
+lines:
+
+  # --- 中央線（西側） ---
+  - id: chuo-west
+    name: 中央線
+    symbol: CW
+    color: "#f97316"
+    textColor: "#ffffff"
+    stations:
+      - shiratsuba
+      - nishi-shiratsuba
+      - semi
+      - moeki
+      - kururu
+      - meikyo
+    services:
+      - name: 急行
+        color: "#e11d48"
+        borderColor: "#fecdd3"
+        stations:
+          - shiratsuba
+          - semi
+          - meikyo
+      - name: 各停
+        color: "#2563eb"
+        borderColor: "#bfdbfe"
+        stations:
+          - shiratsuba
+          - nishi-shiratsuba
+          - semi
+          - moeki
+          - kururu
+          - meikyo
+
+  # --- 中央線（東側） ---
+  - id: chuo-east
+    name: 中央線
+    symbol: CE
+    color: "#f97316"
+    textColor: "#ffffff"
+    stations:
+      - shiratsuba
+      - centralpark
+      - surugaharahonmachi
+    services:
+      - name: 急行
+        color: "#e11d48"
+        borderColor: "#fecdd3"
+        stations:
+          - shiratsuba
+      - name: 各停
+        color: "#2563eb"
+        borderColor: "#bfdbfe"
+        stations:
+          - shiratsuba
+          - centralpark
+          - surugaharahonmachi
+
+  # --- 中央環状線 ---
+  - id: chuo-kanjyo
+    name: 中央環状線
+    symbol: CK
+    color: "#0284c7"
+    textColor: "#ffffff"
+    # wp:<x>,<y> はウェイポイント（折れ曲がり点）です
+    stations:
+      - shiratsuba
+      - nishi-shiratsuba
+      - semi
+      - "wp:-25,0"
+      - inematsu
+      - "wp:-25,20"
+      - sakuragawa
+      - "wp:5,20"
+      - "wp:5,0"
+      - shiratsuba   # 環状なので終点は始発と同じ
+
+  # --- 南北線 ---
+  - id: nanboku
+    name: 南北線
+    symbol: NB
+    color: "#0891b2"
+    textColor: "#ffffff"
+    stations:
+      - shiratsuba
+      - "wp:-5,0"
+      - karigane
+      - sakuragawa
+
+  # --- 地下鉄南北線 ---
+  - id: sb_nanboku
+    name: 地下鉄南北線
+    symbol: N
+    symbolType: circle
+    strokeWidth: 4
+    color: "#0021B5"
+    textColor: "#ffffff"
+    stations:
+      - shiratsuba_airport
+      - mitakegaoka
+      - shiratubasiyakusyo
+      - shiratsuba
+      - kousekitorihiki
+
+  # --- 白椿BRT ---
+  - id: shiratsuba_BRT
+    name: 白椿BRT
+    symbol: ""
+    symbolType: ""
+    strokeWidth: 4
+    color: "#4A0063"
+    textColor: "#000000"
+    stations:
+      - shiratsuba
+      - "wp:-7,0"
+      - kyuuginkou
+      - modelhouse_mae
+# ============================================================
+# 駅定義
+# ============================================================
+# 各項目の説明:
+#   id          : 路線から参照するID（半角英数字・ハイフン）
+#   name        : 日本語駅名
+#   nameEn      : 英語駅名
+#   code        : 駅コード（任意、なければ null）
+#   x / y       : 路線図上の座標（整数推奨）
+#   description : 駅の説明文
+#   gameCoords  : ゲーム内座標（x: , z: の形式）、なければ null
+#   labelPosition: ラベル位置（top / bottom / left / right）
+# ============================================================
+stations:
+
+  - id: shiratsuba
+    name: 白椿
+    nameEn: Shiratsuba
+    code: SRT
+    x: 0
+    y: 0
+    description: スポーン地点最寄り駅です
+    gameCoords:
+      x: -104
+      z: 194
+    labelPosition: top
+
+  - id: nishi-shiratsuba
+    name: 西白椿
+    nameEn: Nishi-Shiratsuba
+    code: null
+    x: -10
+    y: 0
+    description: ""
+    gameCoords: null
+    labelPosition: top
+
+  - id: semi
+    name: 瀬見
+    nameEn: Semi
+    code: SMI
+    x: -20
+    y: 0
+    description: ""
+    gameCoords: null
+    labelPosition: top
+
+  - id: centralpark
+    name: セントラル・パーク
+    nameEn: Central・Park
+    code: null
+    x: 10
+    y: 0
+    description: ""
+    gameCoords: null
+    labelPosition: bottom
+
+  - id: inematsu
+    name: 稲松
+    nameEn: Inematsu
+    code: null
+    x: -25
+    y: 10
+    description: ""
+    gameCoords: null
+    labelPosition: left
+
+  - id: sakuragawa
+    name: 桜川
+    nameEn: Sakuragawa
+    code: null
+    x: -5
+    y: 20
+    description: ""
+    gameCoords: null
+    labelPosition: bottom
+
+  - id: surugaharahonmachi
+    name: 駿原本町
+    nameEn: Surugaharahonmachi
+    code: null
+    x: 20
+    y: 0
+    description: 白椿競馬場最寄り駅です
+    gameCoords: null
+    labelPosition: top
+
+  - id: karigane
+    name: 雁ヶ音
+    nameEn: Karigane
+    code: null
+    x: -5
+    y: 10
+    description: 白椿山登山列車に乗り換えができます
+    gameCoords: null
+    labelPosition: right
+
+  - id: moeki
+    name: 萌木
+    nameEn: Moeki
+    code: null
+    x: -30
+    y: 0
+    description: 萌木住宅街の最寄り駅です
+    gameCoords: null
+    labelPosition: top
+
+  - id: kururu
+    name: 枢
+    nameEn: Kururu
+    code: null
+    x: -40
+    y: 0
+    description: ""
+    gameCoords: null
+    labelPosition: top
+
+  - id: meikyo
+    name: 明教
+    nameEn: Meikyo
+    code: null
+    x: -50
+    y: 0
+    description: ""
+    gameCoords: null
+    labelPosition: top
+
+  - id: mitakegaoka
+    name: 三岳ヶ丘
+    nameEn: Mitakegaoka
+    code: null
+    x: 0
+    y: -10
+    description: ""
+    gameCoords: null
+    labelPosition: right
+
+  - id: shiratubasiyakusyo
+    name: 白椿市役所前
+    nameEn: Shiratsuba City Hall
+    code: null
+    x: 0
+    y: -5
+    description: ""
+    gameCoords: null
+    labelPosition: right
+
+  - id: kousekitorihiki
+    name: 鉱石取引所
+    nameEn: Ore Exchange
+    code: null
+    x: 0
+    y: 5
+    description: ""
+    gameCoords: null
+    labelPosition: right
+
+  - id: shiratsuba_airport
+    name: 白椿空港
+    nameEn: Shiratsuba Airport
+    code: null
+    x: 0
+    y: -15
+    description: ""
+    gameCoords: null
+    labelPosition: right
+
+  - id: kyuuginkou
+    name: 旧銀行
+    nameEn: Old Bank
+    code: null
+    x: -7
+    y: 3.2
+    description: ""
+    gameCoords: null
+    labelPosition: left
+
+  - id: modelhouse_mae
+    name: モデルハウス前
+    nameEn: Model House
+    code: null
+    x: -7
+    y: 5
+    description: ""
+    gameCoords: null
+    labelPosition: left
