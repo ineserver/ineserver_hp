@@ -169,7 +169,9 @@ stations:
     x: -10
     y: 0
     description: ""
-    gameCoords: null
+    gameCoords:
+      x: -370
+      z: 204
     labelPosition: top
 
   - id: semi
@@ -179,7 +181,9 @@ stations:
     x: -20
     y: 0
     description: ""
-    gameCoords: null
+    gameCoords:
+      x: -630
+      z: 178
     labelPosition: top
 
   - id: centralpark
@@ -189,7 +193,9 @@ stations:
     x: 10
     y: 0
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: 203
+      z: 194
     labelPosition: bottom
 
   - id: inematsu
@@ -199,7 +205,9 @@ stations:
     x: -25
     y: 10
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -624
+      z: -115
     labelPosition: left
 
   - id: sakuragawa
@@ -209,7 +217,9 @@ stations:
     x: -5
     y: 20
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -200
+      z: -326
     labelPosition: bottom
 
   - id: surugaharahonmachi
@@ -219,7 +229,9 @@ stations:
     x: 20
     y: 0
     description: 白椿競馬場最寄り駅です
-    gameCoords: null
+    gameCoords: 
+      x: 533
+      z: 194
     labelPosition: top
 
   - id: karigane
@@ -229,7 +241,9 @@ stations:
     x: -5
     y: 10
     description: 白椿山登山列車に乗り換えができます
-    gameCoords: null
+    gameCoords: 
+      x: -193
+      z: -112
     labelPosition: right
 
   - id: moeki
@@ -239,7 +253,9 @@ stations:
     x: -30
     y: 0
     description: 萌木住宅街の最寄り駅です
-    gameCoords: null
+    gameCoords: 
+      x: -1024
+      z: 90
     labelPosition: top
 
   - id: kururu
@@ -249,7 +265,9 @@ stations:
     x: -40
     y: 0
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -2048
+      z: 90
     labelPosition: top
 
   - id: meikyo
@@ -259,7 +277,9 @@ stations:
     x: -50
     y: 0
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -3566
+      z: 90
     labelPosition: top
 
   - id: mitakegaoka
@@ -269,7 +289,9 @@ stations:
     x: 0
     y: -10
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -45
+      z: 424
     labelPosition: right
 
   - id: shiratubasiyakusyo
@@ -279,7 +301,9 @@ stations:
     x: 0
     y: -5
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -54
+      z: 327
     labelPosition: right
 
   - id: kousekitorihiki
@@ -289,7 +313,9 @@ stations:
     x: 0
     y: 5
     description: ""
-    gameCoords: null
+    gameCoords: 
+      x: -146
+      z: 27
     labelPosition: right
 
   - id: shiratsuba_airport

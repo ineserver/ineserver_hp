@@ -1,5 +1,6 @@
 import ContentListPage from '@/components/ContentListPage';
 import { getTransportFiles, ContentData } from '../../../lib/content';
+import Link from 'next/link';
 
 const config = {
     title: '交通',
@@ -37,5 +38,17 @@ export default async function TransportPage() {
         externalLink: typeof item.externalLink === 'string' ? item.externalLink : undefined,
     }));
 
-    return <ContentListPage config={config} content={content} />;
+    return (
+        <ContentListPage config={config} content={content}>
+            <div className="py-2 pl-0 mb-4">
+                <Link href="/transport/route_map" className="content-link">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span className="text-lg font-medium">鉄道路線図</span>
+                </Link>
+            </div>
+        </ContentListPage>
+    );
 }
+

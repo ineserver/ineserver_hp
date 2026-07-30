@@ -225,6 +225,15 @@ const Header = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
+                  <Link
+                    href="/transport/route_map"
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 font-medium flex items-center gap-1.5"
+                  >
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2c-4.42 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-6H6V6h5v5zm5.5 6c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6h-5V6h5v5z" />
+                    </svg>
+                    路線図
+                  </Link>
                 </div>
 
                 {/* セパレーター */}
@@ -598,6 +607,11 @@ const Header = () => {
 
                     {/* 下側: リンクリスト */}
                     <div className="mb-3">
+                      <ul className="space-y-1">
+                        <li><Link href="/transport/route_map" className="hover:text-[#5b8064] text-sm block py-1 flex items-center font-medium"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />路線図</Link></li>
+                      </ul>
+                    </div>
+                    <div className="mb-3">
                       <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                         <svg className="w-3.5 h-3.5 text-[#5b8064]" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
@@ -611,7 +625,6 @@ const Header = () => {
                     </div>
                     <div>
                       <ul className="space-y-1">
-                        <li><Link href="/transport/railway" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道・路線図（準備中）</Link></li>
                         <li><Link href="/transport/spots" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />観光スポット・主要施設案内（準備中）</Link></li>
                       </ul>
                     </div>
@@ -1039,6 +1052,13 @@ const Header = () => {
                       </Link>
 
                       <div className="mb-3">
+                        <div className="pl-4 space-y-1">
+                          <Link href="/transport/route_map" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors font-medium" onClick={closeMenu}>
+                            路線図
+                          </Link>
+                        </div>
+                      </div>
+                      <div className="mb-3">
                         <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 px-3 flex items-center gap-1.5">
                           <svg className="w-3.5 h-3.5 text-[#5b8064]" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
@@ -1056,9 +1076,6 @@ const Header = () => {
                       </div>
                       <div>
                         <div className="pl-4 space-y-1">
-                          <Link href="/transport/railway" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            鉄道・路線図（準備中）
-                          </Link>
                           <Link href="/transport/spots" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             観光スポット・主要施設案内（準備中）
                           </Link>
@@ -1150,6 +1167,16 @@ const Header = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </a>
+                  <Link
+                    href="/transport/route_map"
+                    className="flex items-center px-3 py-3 text-sm hover:text-[#5b8064] hover:bg-gray-50 rounded-md transition-colors"
+                    onClick={closeMenu}
+                  >
+                    <svg className="w-4 h-4 mr-3 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2c-4.42 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h12v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-6H6V6h5v5zm5.5 6c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6h-5V6h5v5z" />
+                    </svg>
+                    <span className="flex-1">路線図</span>
+                  </Link>
                 </div>
               </div>
 
