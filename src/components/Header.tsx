@@ -551,7 +551,10 @@ const Header = () => {
                         ゲーム
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナの遊び方</Link></li>
+                        <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
+                      </ul>
+                      <ul className="space-y-1">
+                        <li><Link href="/adventure/horse-racing" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />競馬</Link></li>
                       </ul>
                     </div>
                     <div className="mb-3">
@@ -973,7 +976,12 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/adventure/arena" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            アリーナの遊び方
+                            アリーナ
+                          </Link>
+                        </div>
+                        <div className="pl-4 space-y-1">
+                          <Link href="/adventure/horse-racing" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            競馬
                           </Link>
                         </div>
                       </div>

@@ -89,7 +89,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                     <div className="text-center mb-16">
                         <h1 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">ガイド</h1>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            いねさばでの生活をより楽しむためのガイドブックです。
+                            いねさばでの主な追加要素の一覧です
                         </p>
                     </div>
 
