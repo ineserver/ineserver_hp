@@ -1,5 +1,5 @@
 ---
-title: 画像地図の作成と使い方
+title: 画像地図
 published: true
 type: utility
 number: 8

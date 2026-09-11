@@ -1,5 +1,5 @@
 ---
-title: 職業システム
+title: 職業
 published: true
 type: utility
 image: https://img.1necat.net/2025-12-29_22.00.42.png
@@ -129,7 +129,7 @@ number: 2
 # 6. その他の便利コマンド
 
 * **辞める:** :command[/jobs leave <職業名>]
-    * 職業を辞めます。（※再就職には少しクールダウンが必要です）
+    * 職業を辞めます。（※同じ職業に再就職するには10日間のクールダウンが必要です）
 * **情報の確認:** :command[/jobs info <職業名>]
     * その職業がどのブロックでいくら稼げるか詳細を確認できます。
 * **ログの表示:** :command[/jobs log]

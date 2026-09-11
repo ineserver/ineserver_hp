@@ -1,5 +1,5 @@
 ---
-title: メールシステム
+title: メール
 published: true
 type: utility
 number: 6
