@@ -1,7 +1,13 @@
 import { NextResponse } from 'next/server';
 
-// 300秒(5分)ごとにキャッシュを再検証
-export const revalidate = 300;
+// ルート自体はリクエストごとに実行する。
+// `revalidate` を指定すると静的ルートとしてビルド時にプリレンダリングされ、
+// ビルド環境に GOOGLE_CALENDAR_API_KEY が無いと GCAL_001 のレスポンスが
+// キャッシュに焼き込まれてしまうため（ISRにより再検証まで古い応答が返る）。
+export const dynamic = 'force-dynamic';
+
+// Googleカレンダーへのリクエスト結果のキャッシュ秒数（成功レスポンスのみキャッシュされる）
+const UPSTREAM_CACHE_SECONDS = 300;
 
 // エラーコード定義
 const ErrorCodes = {
@@ -18,13 +24,16 @@ const ErrorCodes = {
   JSON_PARSE_FAILED: 'GCAL_011',
 } as const;
 
-// タイムアウト付きfetch
+// タイムアウト付きfetch（5分間データキャッシュ）
 const fetchWithTimeout = async (url: string, timeoutMs: number = 10000): Promise<Response> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const response = await fetch(url, {
+      signal: controller.signal,
+      next: { revalidate: UPSTREAM_CACHE_SECONDS },
+    });
     clearTimeout(timeoutId);
     return response;
   } catch (error) {
@@ -197,10 +206,13 @@ export async function GET() {
     // APIキーが設定されている場合のみGoogle Calendar APIを使用し、失敗時はICSフォールバック
     if (apiKey && apiKey !== 'your_google_calendar_api_key_here') {
       const now = new Date();
-      const timeMin = now.toISOString();
+      // fetchのキャッシュキーを一定にするため、クエリの基準時刻を5分単位に切り捨てる
+      const cacheWindowMs = UPSTREAM_CACHE_SECONDS * 1000;
+      const queryBase = new Date(Math.floor(now.getTime() / cacheWindowMs) * cacheWindowMs);
+      const timeMin = queryBase.toISOString();
 
       // 今から1ヶ月後までのイベントを取得
-      const timeMax = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+      const timeMax = new Date(queryBase.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
       const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events?key=${apiKey}&timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime&maxResults=10`;
 
@@ -287,8 +299,14 @@ export async function GET() {
             calendarSummary.includes('maintenance');
         }) : [];
 
+        // timeMinを5分単位で切り捨てているため、既に終了した予定を除外する
+        const upcomingEvents = maintenanceEvents.filter(event => {
+          const end = event.end?.dateTime || event.end?.date;
+          return !end || new Date(end).getTime() > now.getTime();
+        });
+
         // 最も近い予定を取得
-        const nextMaintenance = maintenanceEvents?.[0];
+        const nextMaintenance = upcomingEvents[0];
 
         if (nextMaintenance) {
           // デバッグ用ログ
