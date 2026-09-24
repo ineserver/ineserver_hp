@@ -241,7 +241,10 @@ function MarketChart({
       });
     }
 
-    return mapped;
+    // APIは全期間のキャンドルを返すため、折れ線グラフと揃えて過去30日分（＋当日）に絞り込む
+    const cutoff = new Date(today);
+    cutoff.setDate(cutoff.getDate() - 30);
+    return mapped.filter(d => new Date(d.date) >= cutoff);
   }, [candles, currentIndex]);
 
   const displayData = chartType === 'candlestick' ? candleDisplayData : lineDisplayData;
