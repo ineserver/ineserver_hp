@@ -597,6 +597,31 @@ function getLegServices(leg: RouteLeg, lines: Line[]): Service[] {
 }
 
 /**
+ * 乗車区間の途中駅と、その駅を通過する種別名
+ */
+function getLegIntermediateStops(
+  leg: RouteLeg,
+  services: Service[],
+  lines: Line[],
+  stations: Station[]
+): { station: Station; passedBy: string[] }[] {
+  return leg.edges.slice(0, -1).flatMap((edge) => {
+    const station = stations.find((s) => s.id === edge.to);
+    if (!station) return [];
+    const line = lines.find((l) => l.id === edge.lineId);
+    const passedBy = services
+      .filter(
+        (service) =>
+          !line?.services?.some(
+            (s) => s.name === service.name && s.stations.includes(edge.to)
+          )
+      )
+      .map((service) => service.name);
+    return [{ station, passedBy }];
+  });
+}
+
+/**
  * 乗車区間の行き先方面（環状線は null）
  */
 function getLegDirection(leg: RouteLeg, lines: Line[], stations: Station[]): Station | null {
@@ -707,6 +732,20 @@ export default function RouteMapClient() {
   const [isRouteMode, setIsRouteMode] = useState(false);
   const [routeFrom, setRouteFrom] = useState('');
   const [routeTo, setRouteTo] = useState('');
+  // 途中駅を展開表示している乗車区間
+  const [expandedLegs, setExpandedLegs] = useState<Set<string>>(new Set());
+
+  const toggleLeg = useCallback((legKey: string) => {
+    setExpandedLegs((prev) => {
+      const next = new Set(prev);
+      if (next.has(legKey)) {
+        next.delete(legKey);
+      } else {
+        next.add(legKey);
+      }
+      return next;
+    });
+  }, []);
 
   // データ取得
   useEffect(() => {
@@ -1447,6 +1486,9 @@ export default function RouteMapClient() {
                         const alternatives = getLegAlternatives(leg, routeGraph)
                           .map((groupId) => data.lines.find((l) => getGroupId(l.id) === groupId)?.name)
                           .filter(Boolean);
+                        const intermediates = getLegIntermediateStops(leg, services, data.lines, data.stations);
+                        const legKey = `${leg.from}>${leg.to}@${leg.groupId}`;
+                        const isExpanded = expandedLegs.has(legKey);
                         const color = line?.color ?? '#888';
 
                         return (
@@ -1487,10 +1529,49 @@ export default function RouteMapClient() {
                                     </span>
                                   ))}
                                 </div>
-                                <p className="text-slate-500 text-[10px] font-semibold mt-1">
-                                  {direction && `${direction.name}方面・`}
-                                  {leg.edges.length}駅
-                                </p>
+                                <div className="flex items-center text-slate-500 text-[10px] font-semibold mt-1">
+                                  {direction && <span>{direction.name}方面・</span>}
+                                  {intermediates.length > 0 ? (
+                                    <button
+                                      onClick={() => toggleLeg(legKey)}
+                                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 -my-0.5 rounded-full bg-slate-100 hover:bg-[#5b8064]/10 hover:text-[#5b8064] transition-colors cursor-pointer"
+                                      aria-expanded={isExpanded}
+                                      aria-label={`途中駅を${isExpanded ? '隠す' : '表示'}`}
+                                    >
+                                      {leg.edges.length}駅
+                                      <svg
+                                        className={`w-2.5 h-2.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="3"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6 6 6-6" />
+                                      </svg>
+                                    </button>
+                                  ) : (
+                                    <span>{leg.edges.length}駅</span>
+                                  )}
+                                </div>
+                                {isExpanded && (
+                                  <ul className="flex flex-col gap-1 mt-1.5">
+                                    {intermediates.map(({ station, passedBy }) => (
+                                      <li
+                                        key={station.id}
+                                        className="flex items-center gap-1.5 text-slate-500 text-[10px] font-semibold"
+                                      >
+                                        <span
+                                          className="w-1.5 h-1.5 rounded-full bg-white border flex-shrink-0"
+                                          style={{ borderColor: color }}
+                                        />
+                                        {station.name}
+                                        {passedBy.length > 0 && (
+                                          <span className="text-[9px] text-slate-400">{passedBy.join('・')}通過</span>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
                                 {alternatives.length > 0 && (
                                   <p className="text-slate-400 text-[10px] font-semibold mt-0.5">
                                     {alternatives.join('・')}でも行けます
