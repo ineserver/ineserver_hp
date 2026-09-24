@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Noto_Serif_JP, Noto_Sans_JP } from "next/font/google";
 import { useEffect, useRef, useState } from "react";
 import { trackLpModalOpen, trackLpCtaClick, trackExternalLink } from "@/lib/analytics";
+import { cfImageUrl } from "@/lib/cloudflare-image";
 
 const notoSerifJP = Noto_Serif_JP({
     subsets: ["latin"],
@@ -105,6 +106,13 @@ export default function LPClientPage() {
         }, 5000);
         return () => clearInterval(interval);
     }, []);
+
+    // 表示中と次のスライドの画像だけを読み込む（初回表示時に全スライドの画像をまとめて読み込まない）
+    const [loadedHeroIndexes, setLoadedHeroIndexes] = useState<number[]>([0]);
+    useEffect(() => {
+        const nearby = [currentHeroIndex, (currentHeroIndex + 1) % HERO_IMAGES.length];
+        setLoadedHeroIndexes((prev) => nearby.every((i) => prev.includes(i)) ? prev : Array.from(new Set([...prev, ...nearby])));
+    }, [currentHeroIndex]);
 
     const openModal = (id: string) => {
         setActiveModal(id);
@@ -273,6 +281,7 @@ export default function LPClientPage() {
                         width={32}
                         height={32}
                         className="rounded-md shadow-sm md:w-10 md:h-10"
+                        unoptimized
                     />
                     <div className="flex flex-col">
                         <span
@@ -299,13 +308,26 @@ export default function LPClientPage() {
                         {HERO_IMAGES.map((img, index) => (
                             <div
                                 key={img}
-                                className={`absolute inset-0 bg-cover bg-center transition-opacity duration-2000 ease-in-out ${index === currentHeroIndex ? "opacity-100" : "opacity-0"
+                                className={`absolute inset-0 transition-opacity duration-2000 ease-in-out ${index === currentHeroIndex ? "opacity-100" : "opacity-0"
                                     }`}
                                 style={{
-                                    backgroundImage: `url('${img}')`,
                                     filter: "brightness(0.4) contrast(1.1)"
                                 }}
-                            />
+                            >
+                                {/* 1枚目はLCP要素なので優先して読み込む */}
+                                {loadedHeroIndexes.includes(index) && (
+                                    <Image
+                                        src={img}
+                                        alt=""
+                                        fill
+                                        sizes="100vw"
+                                        priority={index === 0}
+                                        fetchPriority={index === 0 ? "high" : undefined}
+                                        loading="eager"
+                                        className="object-cover"
+                                    />
+                                )}
+                            </div>
                         ))}
                     </div>
 
@@ -388,7 +410,7 @@ export default function LPClientPage() {
                                         <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_02.41.46.png')" }}
+                                                style={{ backgroundImage: `url('${cfImageUrl("https://img.1necat.net/2025-11-28_02.41.46.png", 1200)}')` }}
                                             />
                                         </div>
                                     </FadeInSection>
@@ -424,7 +446,7 @@ export default function LPClientPage() {
                                         <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-l-2 border-white/10 rounded-sm">
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-28_16.26.18.png')" }}
+                                                style={{ backgroundImage: `url('${cfImageUrl("https://img.1necat.net/2025-11-28_16.26.18.png", 1200)}')` }}
                                             />
                                         </div>
                                     </FadeInSection>
@@ -438,7 +460,7 @@ export default function LPClientPage() {
                                         <div className="relative aspect-[4/3] overflow-hidden shadow-2xl border-b-2 border-r-2 border-white/10 rounded-sm">
                                             <div
                                                 className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105"
-                                                style={{ backgroundImage: "url('https://img.1necat.net/2025-11-27_18.50.25.png')" }}
+                                                style={{ backgroundImage: `url('${cfImageUrl("https://img.1necat.net/2025-11-27_18.50.25.png", 1200)}')` }}
                                             />
                                         </div>
                                     </FadeInSection>
@@ -578,6 +600,7 @@ export default function LPClientPage() {
                                                     src="https://img.1necat.net/2025-11-29_15.24.15.png"
                                                     alt="道路設計のイメージ"
                                                     fill
+                                                    sizes="(min-width: 768px) 50vw, 100vw"
                                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
                                                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -596,6 +619,7 @@ export default function LPClientPage() {
                                                     src="https://img.1necat.net/2025-11-29_15.23.53.png"
                                                     alt="鉄道敷設のイメージ"
                                                     fill
+                                                    sizes="(min-width: 768px) 50vw, 100vw"
                                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                                 />
                                                 <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500"></div>
@@ -622,7 +646,7 @@ export default function LPClientPage() {
                         <div
                             className="absolute inset-0 bg-cover bg-center"
                             style={{
-                                backgroundImage: "url('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg')", // Suburbs image as placeholder for "Journey"
+                                backgroundImage: `url('${cfImageUrl("https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg", 1920)}')`, // Suburbs image as placeholder for "Journey"
                                 filter: "brightness(1.1) grayscale(0.2)"
                             }}
                         />

@@ -29,7 +29,8 @@
     "remark-html": "^16.0.1",
     "remark-rehype": "^11.1.2",
     "remark-slug": "^7.0.1",
-    "unist-util-visit": "^5.0.0"
+    "unist-util-visit": "^5.0.0",
+    "yakuhanjp": "^4.1.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

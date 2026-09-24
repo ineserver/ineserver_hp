@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect, useRef, useCallback } from "react";
 import ServerStatus from "@/components/ServerStatus";
+import { cfImageUrl } from "@/lib/cloudflare-image";
 
 
 export interface Announcement {
@@ -169,6 +171,13 @@ export default function HomePageClient({
     const prevSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
     }, [slides.length]);
+
+    // 表示中と前後のスライドの画像だけを読み込む（初回表示時に全スライドの画像をまとめて読み込まない）
+    const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
+    useEffect(() => {
+        const nearby = [currentSlide, (currentSlide + 1) % slides.length, (currentSlide - 1 + slides.length) % slides.length];
+        setLoadedSlides((prev) => nearby.every((i) => prev.includes(i)) ? prev : Array.from(new Set([...prev, ...nearby])));
+    }, [currentSlide, slides.length]);
 
     useEffect(() => {
         if (slides.length <= 1) return;
@@ -354,15 +363,21 @@ export default function HomePageClient({
                             }`}
                     >
                         <Link href={slide.link} className="block w-full h-full cursor-pointer">
-                            <div
-                                className="h-full flex relative overflow-hidden"
-                                style={{
-                                    backgroundImage: `url('${slide.image}')`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundRepeat: 'no-repeat'
-                                }}
-                            >
+                            <div className="h-full flex relative overflow-hidden bg-gray-900">
+                                {/* 背景画像（1枚目はLCP要素なので優先して読み込む） */}
+                                {loadedSlides.includes(index) && (
+                                    <Image
+                                        src={slide.image}
+                                        alt=""
+                                        fill
+                                        sizes="100vw"
+                                        priority={index === 0}
+                                        fetchPriority={index === 0 ? "high" : undefined}
+                                        loading="eager"
+                                        className="object-cover"
+                                    />
+                                )}
+
                                 {/* 背景画像のオーバーレイ（グラデーション） */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30"></div>
 
@@ -481,7 +496,7 @@ export default function HomePageClient({
                                         <div className="relative flex-shrink-0">
                                             <div
                                                 className="w-8 h-8 lg:w-12 lg:h-8 rounded-md bg-cover bg-center shadow-sm"
-                                                style={{ backgroundImage: `url('${slide.image}')` }}
+                                                style={{ backgroundImage: `url('${cfImageUrl(slide.image, 128)}')` }}
                                             ></div>
                                         </div>
                                         <div className="flex flex-col items-start min-w-0 flex-1 overflow-hidden">

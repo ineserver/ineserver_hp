@@ -30,6 +30,7 @@ export default function NotFound() {
                                 width={128}
                                 height={128}
                                 className="rounded-full shadow-lg border-4 border-[#5b8064]/20"
+                                unoptimized
                             />
                         </div>
                     </div>

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+// 約物（括弧類）を半角幅にする YakuHanJPs を自サイトから配信する
+import "yakuhanjp/dist/css/yakuhanjp_s.css";
 import "./globals.css";
 
 const siteUrl = "https://www.1necat.net";

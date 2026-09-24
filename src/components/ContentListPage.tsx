@@ -5,6 +5,7 @@ import Header from '@/components/Header';
 
 import { iconMap } from '@/components/Icons';
 import { ContentItem, ContentPageConfig } from '@/types/content';
+import { cfImageUrl } from '@/lib/cloudflare-image';
 
 interface ContentListPageProps {
   config: ContentPageConfig;
@@ -87,7 +88,7 @@ export default function ContentListPage({ config, content = [], children }: Cont
 
       <div
         className={`text-white relative ${config.backgroundImage ? 'bg-cover bg-center' : 'bg-[#5b8064]'}`}
-        style={config.backgroundImage ? { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${config.backgroundImage}')` } : undefined}
+        style={config.backgroundImage ? { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('${cfImageUrl(config.backgroundImage, 1920)}')` } : undefined}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 relative z-10">
           <nav className="flex items-center gap-2 text-xs text-white/60 mb-4">
