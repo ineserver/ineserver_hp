@@ -425,6 +425,220 @@ function computeLinePoints(
     .join(' ');
 }
 
+/** 路線の線幅 (px) */
+function getLineStrokeWidth(line: Line): number {
+  return line.strokeWidth ?? (line.id.startsWith('sb_') || line.id.startsWith('p_') ? 4 : 5.5);
+}
+
+// ============================================================
+// 経路探索
+// ============================================================
+
+/** 乗り換え1回あたりのコスト（駅数換算） */
+const TRANSFER_PENALTY = 3;
+
+interface RouteEdge {
+  from: string;
+  to: string;
+  lineId: string;
+  groupId: string;
+  /** computeLinePoints の点列におけるインデックス（経路描画用） */
+  fromIdx: number;
+  toIdx: number;
+}
+
+type RouteGraph = Record<string, RouteEdge[]>;
+
+interface RouteLeg {
+  groupId: string;
+  from: string;
+  to: string;
+  edges: RouteEdge[];
+}
+
+interface RouteResult {
+  legs: RouteLeg[];
+  stationIds: string[];
+  totalStops: number;
+  transfers: number;
+}
+
+/**
+ * 路線定義から駅間の隣接リストを構築（ウェイポイントは読み飛ばす）
+ */
+function buildRouteGraph(lines: Line[], stations: Station[]): RouteGraph {
+  const graph: RouteGraph = {};
+  const addEdge = (edge: RouteEdge) => {
+    if (!graph[edge.from]) {
+      graph[edge.from] = [];
+    }
+    graph[edge.from].push(edge);
+  };
+
+  for (const line of lines) {
+    const groupId = getGroupId(line.id);
+    // computeLinePoints と同じ解決済み点列でのインデックスを保持する
+    const stops = (
+      line.stations
+        .map((id) => resolveStationObj(id, stations, line.id))
+        .filter(Boolean) as Station[]
+    )
+      .map((s, idx) => ({ id: s.id, idx }))
+      .filter((s) => !s.id.startsWith('wp:'));
+
+    for (let i = 0; i < stops.length - 1; i++) {
+      const a = stops[i];
+      const b = stops[i + 1];
+      if (a.id === b.id) continue;
+      addEdge({ from: a.id, to: b.id, lineId: line.id, groupId, fromIdx: a.idx, toIdx: b.idx });
+      addEdge({ from: b.id, to: a.id, lineId: line.id, groupId, fromIdx: b.idx, toIdx: a.idx });
+    }
+  }
+
+  return graph;
+}
+
+/**
+ * 駅数 + 乗り換えペナルティが最小となる経路を探索 (ダイクストラ法)
+ * 同じ路線グループ（中央線の東西など）を乗り継ぐ場合は乗り換えとして扱わない
+ */
+function findRoute(graph: RouteGraph, fromId: string, toId: string): RouteResult | null {
+  if (!fromId || !toId || fromId === toId) return null;
+
+  // 状態 = 駅 + 乗車中の路線グループ
+  const startKey = `${fromId}|`;
+  const dist: Record<string, number> = { [startKey]: 0 };
+  const prev: Record<string, { key: string; edge: RouteEdge }> = {};
+  const done = new Set<string>();
+  const queue: { key: string; station: string; groupId: string | null; cost: number }[] = [
+    { key: startKey, station: fromId, groupId: null, cost: 0 },
+  ];
+
+  while (queue.length > 0) {
+    // 小規模なグラフなので線形探索で最小コストを取り出す（同コストなら先に積んだ方を優先）
+    let minIdx = 0;
+    for (let i = 1; i < queue.length; i++) {
+      if (queue[i].cost < queue[minIdx].cost) minIdx = i;
+    }
+    const cur = queue.splice(minIdx, 1)[0];
+    if (done.has(cur.key)) continue;
+    done.add(cur.key);
+
+    if (cur.station === toId) {
+      const edges: RouteEdge[] = [];
+      let key = cur.key;
+      while (prev[key]) {
+        edges.unshift(prev[key].edge);
+        key = prev[key].key;
+      }
+
+      const legs: RouteLeg[] = [];
+      for (const edge of edges) {
+        const last = legs[legs.length - 1];
+        if (last && last.groupId === edge.groupId) {
+          last.edges.push(edge);
+          last.to = edge.to;
+        } else {
+          legs.push({ groupId: edge.groupId, from: edge.from, to: edge.to, edges: [edge] });
+        }
+      }
+
+      return {
+        legs,
+        stationIds: [fromId, ...edges.map((e) => e.to)],
+        totalStops: edges.length,
+        transfers: legs.length - 1,
+      };
+    }
+
+    for (const edge of graph[cur.station] ?? []) {
+      const isTransfer = cur.groupId !== null && cur.groupId !== edge.groupId;
+      const cost = cur.cost + 1 + (isTransfer ? TRANSFER_PENALTY : 0);
+      const key = `${edge.to}|${edge.groupId}`;
+      if (done.has(key)) continue;
+      if (dist[key] === undefined || cost < dist[key]) {
+        dist[key] = cost;
+        prev[key] = { key: cur.key, edge };
+        queue.push({ key, station: edge.to, groupId: edge.groupId, cost });
+      }
+    }
+  }
+
+  return null;
+}
+
+/**
+ * 乗車区間の全体で利用できる種別（急行・各停など）
+ */
+function getLegServices(leg: RouteLeg, lines: Line[]): Service[] {
+  // 路線ごとの乗車区間に分割（中央線の東西直通など）
+  const runs: { line: Line; from: string; to: string }[] = [];
+  for (const edge of leg.edges) {
+    const last = runs[runs.length - 1];
+    if (last && last.line.id === edge.lineId) {
+      last.to = edge.to;
+      continue;
+    }
+    const line = lines.find((l) => l.id === edge.lineId);
+    if (!line) return [];
+    runs.push({ line, from: edge.from, to: edge.to });
+  }
+
+  return (runs[0]?.line.services ?? []).filter((service) =>
+    runs.every((run) =>
+      run.line.services?.some(
+        (s) =>
+          s.name === service.name &&
+          s.stations.includes(run.from) &&
+          s.stations.includes(run.to)
+      )
+    )
+  );
+}
+
+/**
+ * 乗車区間の行き先方面（環状線は null）
+ */
+function getLegDirection(leg: RouteLeg, lines: Line[], stations: Station[]): Station | null {
+  const lastEdge = leg.edges[leg.edges.length - 1];
+  const line = lines.find((l) => l.id === lastEdge.lineId);
+  if (!line) return null;
+
+  const actualStations = line.stations.filter((id) => !id.startsWith('wp:'));
+  const first = actualStations[0];
+  const last = actualStations[actualStations.length - 1];
+  if (first === last) return null;
+
+  const terminalId = lastEdge.toIdx > lastEdge.fromIdx ? last : first;
+  return stations.find((s) => s.id === terminalId) ?? null;
+}
+
+/**
+ * 同じ区間を同じ駅数・乗り換えなしで移動できる別の路線グループ
+ */
+function getLegAlternatives(leg: RouteLeg, graph: RouteGraph): string[] {
+  const candidates = new Set((graph[leg.from] ?? []).map((e) => e.groupId));
+  candidates.delete(leg.groupId);
+
+  return Array.from(candidates).filter((groupId) => {
+    let frontier = [leg.from];
+    const visited = new Set(frontier);
+    for (let d = 1; d <= leg.edges.length; d++) {
+      const next: string[] = [];
+      for (const id of frontier) {
+        for (const edge of graph[id] ?? []) {
+          if (edge.groupId !== groupId || visited.has(edge.to)) continue;
+          if (edge.to === leg.to) return true;
+          visited.add(edge.to);
+          next.push(edge.to);
+        }
+      }
+      frontier = next;
+    }
+    return false;
+  });
+}
+
 // ============================================================
 // メインコンポーネント
 // ============================================================
@@ -488,6 +702,11 @@ export default function RouteMapClient() {
 
   // 凡例開閉（スマホ用）
   const [isLegendOpen, setIsLegendOpen] = useState(false);
+
+  // 経路検索
+  const [isRouteMode, setIsRouteMode] = useState(false);
+  const [routeFrom, setRouteFrom] = useState('');
+  const [routeTo, setRouteTo] = useState('');
 
   // データ取得
   useEffect(() => {
@@ -565,6 +784,105 @@ export default function RouteMapClient() {
     if (!data) return {};
     return buildSubsegmentMap(data.lines, data.stations);
   }, [data]);
+
+  // 路線ごとのオフセット付きポリラインポイント
+  const linePoints = useMemo(() => {
+    const map: Record<string, string> = {};
+    if (!data) return map;
+    for (const line of data.lines) {
+      map[line.id] = computeLinePoints(line, data.stations, subsegmentMap, mt);
+    }
+    return map;
+  }, [data, subsegmentMap, mt]);
+
+  // 経路探索
+  const routeGraph = useMemo(() => {
+    if (!data) return {};
+    return buildRouteGraph(data.lines, data.stations);
+  }, [data]);
+
+  const route = useMemo(
+    () => findRoute(routeGraph, routeFrom, routeTo),
+    [routeGraph, routeFrom, routeTo]
+  );
+
+  // 地図上でハイライトする経路（経路検索を開いている間のみ）
+  const activeRoute = isRouteMode ? route : null;
+  const routeStationIds = useMemo(
+    () => new Set(activeRoute?.stationIds ?? []),
+    [activeRoute]
+  );
+
+  // 経路が決まったら、経路パネルに隠れない範囲に経路全体が収まるよう表示を移動
+  const routePanelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const svgRect = svgRef.current?.getBoundingClientRect();
+    if (!data || !activeRoute || !svgRect?.width || !svgRect.height) return;
+
+    const pts = activeRoute.stationIds
+      .map((id) => data.stations.find((s) => s.id === id))
+      .filter(Boolean)
+      .map((s) => toSVG((s as Station).x, (s as Station).y, mt));
+    if (pts.length === 0) return;
+
+    // 駅名プレートが切れないよう余白を持たせる
+    const xs = pts.map((p) => p.x);
+    const ys = pts.map((p) => p.y);
+    const minX = Math.min(...xs) - 120;
+    const maxX = Math.max(...xs) + 120;
+    const minY = Math.min(...ys) - 50;
+    const maxY = Math.max(...ys) + 50;
+
+    // パネルを除いた表示領域（スマホ: パネルの下 / PC: パネルの右）
+    const area = {
+      left: svgRect.left,
+      top: svgRect.top,
+      right: svgRect.right,
+      bottom: svgRect.bottom,
+    };
+    const panelRect = routePanelRef.current?.getBoundingClientRect();
+    if (panelRect) {
+      if (panelRect.width > svgRect.width * 0.6) {
+        if (panelRect.bottom < svgRect.bottom - 150) area.top = panelRect.bottom;
+      } else {
+        area.left = panelRect.right;
+      }
+    }
+
+    const factor = getSVGUniformScaleFactor(svgRect);
+    const fitScale = Math.min(
+      ((area.right - area.left) * factor * 0.9) / (maxX - minX),
+      ((area.bottom - area.top) * factor * 0.9) / (maxY - minY)
+    );
+    const scale = Math.min(Math.max(fitScale, getMinScale()), isMobile() ? 2.8 : 2.2);
+
+    // 表示領域の中心 (画面座標) → SVG座標
+    const targetX =
+      SVG_W / 2 + ((area.left + area.right) / 2 - (svgRect.left + svgRect.width / 2)) * factor;
+    const targetY =
+      SVG_H / 2 + ((area.top + area.bottom) / 2 - (svgRect.top + svgRect.height / 2)) * factor;
+
+    setVt({
+      x: targetX - ((minX + maxX) / 2) * scale,
+      y: targetY - ((minY + maxY) / 2) * scale,
+      scale,
+    });
+  }, [activeRoute, data, mt, isMobile, getMinScale]);
+
+  const openRouteWith = useCallback((kind: 'from' | 'to', stationId: string) => {
+    if (kind === 'from') {
+      setRouteFrom(stationId);
+    } else {
+      setRouteTo(stationId);
+    }
+    setIsRouteMode(true);
+    setSelectedStation(null);
+  }, []);
+
+  const swapRoute = useCallback(() => {
+    setRouteFrom(routeTo);
+    setRouteTo(routeFrom);
+  }, [routeFrom, routeTo]);
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
@@ -693,6 +1011,11 @@ export default function RouteMapClient() {
     if (!container) return;
 
     const handleWheelNative = (e: WheelEvent) => {
+      // 経路検索結果などパネル内のスクロールは妨げない
+      const target = e.target as HTMLElement;
+      if (target && target.closest('.overflow-y-auto')) {
+        return;
+      }
       e.preventDefault();
       e.stopPropagation();
 
@@ -914,8 +1237,12 @@ export default function RouteMapClient() {
         className="relative w-full h-full overflow-hidden bg-white"
         style={{ overscrollBehavior: 'none' }}
       >
-        {/* ─── 検索窓 ─── */}
-        <div className="absolute top-3 left-3 right-3 sm:right-auto sm:top-4 sm:left-4 z-20 sm:w-80">
+        {/* ─── 検索窓 / 経路検索 ─── */}
+        <div
+          ref={routePanelRef}
+          className="absolute top-3 left-3 right-3 sm:right-auto sm:top-4 sm:left-4 z-20 sm:w-80"
+        >
+          {!isRouteMode ? (
           <div className="relative">
             <div className="flex items-center bg-white/95 backdrop-blur-md border border-slate-200/90 focus-within:border-[#5b8064] focus-within:ring-2 focus-within:ring-[#5b8064]/20 shadow-lg rounded-2xl px-3.5 py-2.5 transition-all">
               <svg
@@ -945,6 +1272,23 @@ export default function RouteMapClient() {
                   ✕
                 </button>
               )}
+              <button
+                id="route-map-open-route"
+                onClick={() => setIsRouteMode(true)}
+                className="flex items-center gap-1 ml-2 pl-2.5 border-l border-slate-200 text-[#5b8064] hover:text-[#4a6b54] text-xs font-bold whitespace-nowrap flex-shrink-0 cursor-pointer select-none transition-colors"
+                aria-label="経路検索を開く"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v16m0 0l-3-3m3 3l3-3M17 20V4m0 0l-3 3m3-3l3 3" />
+                </svg>
+                経路
+              </button>
             </div>
 
             {/* サジェストリスト */}
@@ -1011,6 +1355,169 @@ export default function RouteMapClient() {
               </div>
             )}
           </div>
+          ) : (
+          <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 shadow-lg rounded-2xl overflow-hidden">
+            {/* ヘッダー */}
+            <div className="flex items-center justify-between px-3.5 pt-2.5 pb-2">
+              <p className="text-[#5b8064] text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 select-none">
+                <span className="w-1.5 h-3 bg-[#5b8064] rounded-full inline-block" />
+                経路検索
+              </p>
+              <button
+                id="route-map-close-route"
+                onClick={() => setIsRouteMode(false)}
+                className="w-6 h-6 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs transition-colors cursor-pointer"
+                aria-label="経路検索を閉じる"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* 出発駅・到着駅の選択 */}
+            <div className="flex items-center gap-2 px-3.5 pb-3">
+              <div className="flex-1 min-w-0 flex flex-col gap-1.5">
+                {[
+                  { key: 'from', label: '発', color: '#5b8064', value: routeFrom, onChange: setRouteFrom, placeholder: '出発駅を選択' },
+                  { key: 'to', label: '着', color: '#3f3f46', value: routeTo, onChange: setRouteTo, placeholder: '到着駅を選択' },
+                ].map((field) => (
+                  <label key={field.key} className="flex items-center gap-2">
+                    <span
+                      className="w-5 h-5 rounded-full text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0 select-none"
+                      style={{ backgroundColor: field.color }}
+                    >
+                      {field.label}
+                    </span>
+                    <select
+                      value={field.value}
+                      onChange={(e) => field.onChange(e.target.value)}
+                      className="flex-1 min-w-0 bg-slate-50 border border-slate-200 focus:border-[#5b8064] focus:ring-2 focus:ring-[#5b8064]/20 rounded-lg px-2 py-1 text-base sm:text-xs font-semibold text-slate-800 focus:outline-none cursor-pointer"
+                    >
+                      <option value="">{field.placeholder}</option>
+                      {data.stations.map((station) => (
+                        <option key={station.id} value={station.id}>
+                          {station.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                ))}
+              </div>
+              <button
+                id="route-map-swap-route"
+                onClick={swapRoute}
+                className="w-8 h-8 flex-shrink-0 flex items-center justify-center rounded-xl bg-white hover:bg-[#5b8064]/10 border border-slate-200/90 hover:border-[#5b8064]/50 text-slate-500 hover:text-[#5b8064] transition-colors cursor-pointer"
+                aria-label="出発駅と到着駅を入れ替え"
+                title="入れ替え"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 4v16m0 0l-3-3m3 3l3-3M17 20V4m0 0l-3 3m3-3l3 3" />
+                </svg>
+              </button>
+            </div>
+
+            {/* 検索結果 */}
+            {routeFrom && routeTo && (
+              <div className="border-t border-slate-100 px-3.5 py-3 max-h-[35vh] sm:max-h-[55vh] overflow-y-auto overscroll-contain">
+                {routeFrom === routeTo ? (
+                  <p className="text-slate-400 text-xs text-center py-1 font-semibold select-none">出発駅と到着駅が同じです</p>
+                ) : !route ? (
+                  <p className="text-slate-400 text-xs text-center py-1 font-semibold select-none">経路が見つかりませんでした</p>
+                ) : (
+                  <>
+                    <div className="flex items-baseline gap-2.5 mb-2.5 select-none">
+                      <span className="text-slate-800 text-base font-extrabold">
+                        {route.totalStops}
+                        <span className="text-xs ml-0.5">駅</span>
+                      </span>
+                      <span className="text-slate-500 text-xs font-semibold">乗換 {route.transfers}回</span>
+                    </div>
+
+                    <ol className="flex flex-col select-none">
+                      {route.legs.map((leg, i) => {
+                        const line = data.lines.find((l) => getGroupId(l.id) === leg.groupId);
+                        const fromStation = data.stations.find((s) => s.id === leg.from);
+                        const services = getLegServices(leg, data.lines);
+                        const direction = getLegDirection(leg, data.lines, data.stations);
+                        const alternatives = getLegAlternatives(leg, routeGraph)
+                          .map((groupId) => data.lines.find((l) => getGroupId(l.id) === groupId)?.name)
+                          .filter(Boolean);
+                        const color = line?.color ?? '#888';
+
+                        return (
+                          <li key={i}>
+                            {/* 乗車駅 */}
+                            <div className="flex items-center gap-2">
+                              <span className="w-5 flex justify-center flex-shrink-0">
+                                <span className="w-3 h-3 rounded-full bg-white border-[3px] border-[#3f3f46]" />
+                              </span>
+                              <span className="text-slate-800 text-xs font-bold">{fromStation?.name}</span>
+                              {i > 0 && (
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                                  乗換
+                                </span>
+                              )}
+                            </div>
+
+                            {/* 乗車区間 */}
+                            <div className="flex gap-2">
+                              <span className="w-5 flex justify-center flex-shrink-0">
+                                <span className="w-1.5 rounded-full" style={{ backgroundColor: color }} />
+                              </span>
+                              <div className="py-2 min-w-0">
+                                <div className="flex flex-wrap items-center gap-1">
+                                  <span
+                                    className="inline-flex items-center px-2 py-0.5 rounded-full text-white text-[10px] font-bold"
+                                    style={{ backgroundColor: color + 'dd' }}
+                                  >
+                                    {line?.name}
+                                  </span>
+                                  {services.map((service) => (
+                                    <span
+                                      key={service.name}
+                                      className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-extrabold bg-white border"
+                                      style={{ color: service.color, borderColor: service.borderColor }}
+                                    >
+                                      {service.name}
+                                    </span>
+                                  ))}
+                                </div>
+                                <p className="text-slate-500 text-[10px] font-semibold mt-1">
+                                  {direction && `${direction.name}方面・`}
+                                  {leg.edges.length}駅
+                                </p>
+                                {alternatives.length > 0 && (
+                                  <p className="text-slate-400 text-[10px] font-semibold mt-0.5">
+                                    {alternatives.join('・')}でも行けます
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+
+                      {/* 到着駅 */}
+                      <li className="flex items-center gap-2">
+                        <span className="w-5 flex justify-center flex-shrink-0">
+                          <span className="w-3 h-3 rounded-full bg-[#3f3f46] border-[3px] border-[#3f3f46]" />
+                        </span>
+                        <span className="text-slate-800 text-xs font-bold">
+                          {data.stations.find((s) => s.id === routeTo)?.name}
+                        </span>
+                      </li>
+                    </ol>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+          )}
         </div>
 
         {/* SVG路線図 */}
@@ -1040,24 +1547,38 @@ export default function RouteMapClient() {
             {/* ─── Layer 1: 路線 (線路) ─── */}
             <g className="layer-lines">
               {data.lines.map((line) => {
-                const points = computeLinePoints(
-                  line,
-                  data.stations,
-                  subsegmentMap,
-                  mt
-                );
-                const roundedPath = pointsToRoundedPath(points, 16);
-                const strokeW = line.strokeWidth ?? (line.id.startsWith('sb_') || line.id.startsWith('p_') ? 4 : 5.5);
+                const roundedPath = pointsToRoundedPath(linePoints[line.id] ?? '', 16);
                 return (
                   <path
                     key={line.id}
                     d={roundedPath}
                     fill="none"
                     stroke={line.color}
-                    strokeWidth={strokeW}
+                    strokeWidth={getLineStrokeWidth(line)}
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    opacity={0.88}
+                    opacity={activeRoute ? 0.2 : 0.88}
+                  />
+                );
+              })}
+
+              {/* 経路検索結果のハイライト */}
+              {activeRoute?.legs.flatMap((leg) => leg.edges).map((edge, i) => {
+                const line = data.lines.find((l) => l.id === edge.lineId);
+                if (!line) return null;
+                const segmentPoints = (linePoints[line.id] ?? '')
+                  .split(' ')
+                  .slice(Math.min(edge.fromIdx, edge.toIdx), Math.max(edge.fromIdx, edge.toIdx) + 1)
+                  .join(' ');
+                return (
+                  <path
+                    key={`route-${i}`}
+                    d={pointsToRoundedPath(segmentPoints, 16)}
+                    fill="none"
+                    stroke={line.color}
+                    strokeWidth={getLineStrokeWidth(line) + 2.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 );
               })}
@@ -1100,6 +1621,7 @@ export default function RouteMapClient() {
                       fill={line.color}
                       stroke="#ffffff"
                       strokeWidth={1.5}
+                      opacity={activeRoute && !routeStationIds.has(station.id) ? 0.25 : 1}
                     />
                   );
                 });
@@ -1110,7 +1632,10 @@ export default function RouteMapClient() {
             <g className="layer-plates">
               {data.stations.map((station) => {
                 const pos = toSVG(station.x, station.y, mt);
-                const isSelected = selectedStation?.id === station.id;
+                const isRouteEndpoint =
+                  activeRoute !== null && (station.id === routeFrom || station.id === routeTo);
+                const isSelected = selectedStation?.id === station.id || isRouteEndpoint;
+                const isDimmed = activeRoute !== null && !routeStationIds.has(station.id);
 
                 // symbolが存在する路線のみナンバリングに含める
                 const numberings = station.lines.flatMap((lineId) => {
@@ -1225,6 +1750,7 @@ export default function RouteMapClient() {
                   <g
                     key={station.id}
                     style={{ cursor: 'pointer' }}
+                    opacity={isDimmed ? 0.35 : 1}
                     onClick={(e) => handleStationClick(station, e)}
                   >
                     {hasNoSymbol ? (
@@ -1649,6 +2175,24 @@ export default function RouteMapClient() {
                       </a>
                     </div>
                   )}
+
+                  {/* 経路検索 */}
+                  <div className="grid grid-cols-2 gap-2 mt-3">
+                    <button
+                      id="route-map-route-from"
+                      onClick={() => openRouteWith('from', selectedStation.id)}
+                      className="text-xs font-bold text-white bg-[#5b8064] hover:bg-[#4a6b54] rounded-xl px-3 py-2 transition-colors cursor-pointer select-none"
+                    >
+                      ここから出発
+                    </button>
+                    <button
+                      id="route-map-route-to"
+                      onClick={() => openRouteWith('to', selectedStation.id)}
+                      className="text-xs font-bold text-[#5b8064] bg-white hover:bg-[#5b8064]/10 border border-[#5b8064] rounded-xl px-3 py-2 transition-colors cursor-pointer select-none"
+                    >
+                      ここへ到着
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
