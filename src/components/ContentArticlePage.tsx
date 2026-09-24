@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 
 import Breadcrumb from '@/components/Breadcrumb';
 import { ContentItem, ContentPageConfig } from '@/types/content';
+import { cfImageUrl } from '@/lib/cloudflare-image';
 import { useEffect, useState } from 'react';
 import parse, { DOMNode, Element, domToReact, HTMLReactParserOptions } from 'html-react-parser';
 import CommandCode from '@/components/CommandCode';
@@ -146,8 +147,10 @@ export default function ContentArticlePage({ config, content, showDate = false, 
           return (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={src}
+              src={cfImageUrl(src, 1200)}
               alt={alt}
+              loading="lazy"
+              decoding="async"
               className="cursor-pointer hover:opacity-80 transition-opacity duration-200"
               onClick={() => setModalImage({ src, alt })}
               style={{ maxWidth: '100%', height: 'auto' }}

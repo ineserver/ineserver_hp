@@ -6,6 +6,18 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronRightIcon, ChevronDownIcon } from './Icons';
 import { trackExternalLink, trackMobileMenuToggle } from '@/lib/analytics';
+import { cfImageUrl } from '@/lib/cloudflare-image';
+
+// メニューの背景画像（Cloudflare Images で縮小・AVIF/WebP化して配信）
+const MENU_IMAGES = {
+  serverGuide: cfImageUrl('https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg', 800),
+  life: cfImageUrl('https://img.1necat.net/2025-11-29_15.48.01.png', 800),
+  economy: cfImageUrl('https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg', 800),
+  adventure: cfImageUrl('https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg', 800),
+  transport: cfImageUrl('https://img.1necat.net/2025-11-28_02.41.46.png', 800),
+};
+
+const menuBackground = (imageUrl: string) => ({ backgroundImage: `url("${imageUrl}")` });
 
 const Header = () => {
   const pathname = usePathname();
@@ -13,6 +25,10 @@ const Header = () => {
   const [showGoTop, setShowGoTop] = useState(false);
   const [openSubMenu, setOpenSubMenu] = useState<string | null>(null);
   const [isVoteDropdownOpen, setIsVoteDropdownOpen] = useState(false);
+  // PC版メニューは非表示（invisible）の間も背景画像が読み込まれてしまうため、
+  // ヘッダーにカーソルかフォーカスが来るまで背景画像を設定しない
+  const [isDesktopMenuImagesEnabled, setIsDesktopMenuImagesEnabled] = useState(false);
+  const enableDesktopMenuImages = () => setIsDesktopMenuImagesEnabled(true);
 
   // 現在のパスがどのカテゴリに属しているかを判定
   const isActive = (path: string) => {
@@ -105,7 +121,11 @@ const Header = () => {
 
   return (
     <>
-      <header className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}>
+      <header
+        className={`bg-white shadow-lg sticky top-0 z-50 lg:overflow-visible lg:rounded-none ${isMenuOpen ? '' : 'overflow-hidden rounded-b-xl'}`}
+        onMouseEnter={enableDesktopMenuImages}
+        onFocus={enableDesktopMenuImages}
+      >
         {/* メインヘッダー */}
         <div className="bg-white">
           {/* モバイル用ヘッダー下部の余白追加 */}
@@ -122,6 +142,7 @@ const Header = () => {
                         width={32}
                         height={32}
                         className="rounded-sm"
+                        unoptimized
                       />
                     </Link>
                   </div>
@@ -374,7 +395,7 @@ const Header = () => {
                     <Link
                       href="/server-guide"
                       className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg")' }}
+                      style={isDesktopMenuImagesEnabled ? menuBackground(MENU_IMAGES.serverGuide) : undefined}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex items-end p-3">
@@ -420,7 +441,7 @@ const Header = () => {
                     <Link
                       href="/life"
                       className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-29_15.48.01.png")' }}
+                      style={isDesktopMenuImagesEnabled ? menuBackground(MENU_IMAGES.life) : undefined}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex items-end p-3">
@@ -490,7 +511,7 @@ const Header = () => {
                     <Link
                       href="/economy"
                       className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg")' }}
+                      style={isDesktopMenuImagesEnabled ? menuBackground(MENU_IMAGES.economy) : undefined}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex items-end p-3">
@@ -550,7 +571,7 @@ const Header = () => {
                     <Link
                       href="/adventure"
                       className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg")' }}
+                      style={isDesktopMenuImagesEnabled ? menuBackground(MENU_IMAGES.adventure) : undefined}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex items-end p-3">
@@ -616,7 +637,7 @@ const Header = () => {
                     <Link
                       href="/transport"
                       className="w-full h-32 rounded-lg overflow-hidden relative group/card flex-shrink-0 bg-cover bg-center block mb-4"
-                      style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-28_02.41.46.png")' }}
+                      style={isDesktopMenuImagesEnabled ? menuBackground(MENU_IMAGES.transport) : undefined}
                     >
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                       <div className="absolute inset-0 flex items-end p-3">
@@ -702,7 +723,7 @@ const Header = () => {
                       <Link
                         href="/server-guide"
                         className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/d23b15bc802aef4b645617eed52c2b51.jpg")' }}
+                        style={menuBackground(MENU_IMAGES.serverGuide)}
                         onClick={closeMenu}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -782,7 +803,7 @@ const Header = () => {
                       <Link
                         href="/life"
                         className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-29_15.48.01.png")' }}
+                        style={menuBackground(MENU_IMAGES.life)}
                         onClick={closeMenu}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -887,7 +908,7 @@ const Header = () => {
                       <Link
                         href="/economy"
                         className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/9f879fc11c65db9e9cfe536244c72546.jpg")' }}
+                        style={menuBackground(MENU_IMAGES.economy)}
                         onClick={closeMenu}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -972,7 +993,7 @@ const Header = () => {
                       <Link
                         href="/adventure"
                         className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg")' }}
+                        style={menuBackground(MENU_IMAGES.adventure)}
                         onClick={closeMenu}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
@@ -1064,7 +1085,7 @@ const Header = () => {
                       <Link
                         href="/transport"
                         className="w-full h-28 rounded-lg overflow-hidden relative bg-cover bg-center block mb-3"
-                        style={{ backgroundImage: 'url("https://img.1necat.net/2025-11-28_02.41.46.png")' }}
+                        style={menuBackground(MENU_IMAGES.transport)}
                         onClick={closeMenu}
                       >
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>

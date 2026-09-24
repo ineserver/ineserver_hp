@@ -8,6 +8,9 @@ const nextConfig: NextConfig = {
     workerThreads: false,
   },
   images: {
+    // img.1necat.net（Cloudflare R2）の画像は Cloudflare Images で変換して配信する
+    loader: 'custom',
+    loaderFile: './src/lib/image-loader.ts',
     remotePatterns: [
       {
         protocol: 'https',

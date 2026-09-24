@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { cfImageUrl } from '@/lib/cloudflare-image';
 
 interface ImageModalProps {
   src: string;
@@ -87,7 +88,7 @@ export default function ImageModal({ src, alt, onClose }: ImageModalProps) {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={src}
+          src={cfImageUrl(src, 1920)}
           alt={alt}
           className={`object-contain rounded-lg shadow-2xl transition-all duration-300 ${isZoomed ? 'max-w-none cursor-zoom-out m-auto' : 'max-w-full max-h-[90vh] w-auto h-auto cursor-zoom-in'
             }`}
