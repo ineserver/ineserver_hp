@@ -134,9 +134,10 @@ export default function MarketIndex() {
 
     const points = chartData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
     const lastPoint = chartData[chartData.length - 1];
-    // 配色は「当日の始値」との比較で決定する
-    const isPositive = lastPoint.index >= todayOpen;
-    const lineColor = isPositive ? '#22c55e' : '#ef4444';
+    // 配色は前日比バッジと同じく「現在値」と「当日の始値」の比較で決定する
+    // （chartData30Days には現在値が含まれないため、最終点ではなく currentIndex を使う）
+    const isPositive = (data?.currentIndex ?? lastPoint.index) >= todayOpen;
+    const lineColor = isPositive ? '#ef4444' : '#22c55e';
 
 
     // 塗りつぶし用パス
@@ -183,8 +184,8 @@ export default function MarketIndex() {
           {/* グラデーション塗りつぶし */}
           <defs>
             <linearGradient id={`chartGrad-${isPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isPositive ? '#22c55e' : '#ef4444'} stopOpacity="0.25" />
-              <stop offset="100%" stopColor={isPositive ? '#22c55e' : '#ef4444'} stopOpacity="0" />
+              <stop offset="0%" stopColor={isPositive ? '#ef4444' : '#22c55e'} stopOpacity="0.25" />
+              <stop offset="100%" stopColor={isPositive ? '#ef4444' : '#22c55e'} stopOpacity="0" />
             </linearGradient>
           </defs>
 
@@ -300,9 +301,10 @@ export default function MarketIndex() {
   const changePercentage = todayOpen > 0 ? (changeValue / todayOpen) * 100 : 0;
 
   const isPositiveChange = changeValue >= 0;
-  const changeColor = isPositiveChange ? 'text-green-600' : 'text-red-600';
-  const changeBg = isPositiveChange ? 'bg-green-50' : 'bg-red-50';
-  const changeBorder = isPositiveChange ? 'border-green-200' : 'border-red-200';
+  // 上昇は赤、下落は緑で表示する
+  const changeColor = isPositiveChange ? 'text-red-600' : 'text-green-600';
+  const changeBg = isPositiveChange ? 'bg-red-50' : 'bg-green-50';
+  const changeBorder = isPositiveChange ? 'border-red-200' : 'border-green-200';
   const changeSign = isPositiveChange ? '+' : '';
   const changeArrow = isPositiveChange ? '▲' : '▼';
 

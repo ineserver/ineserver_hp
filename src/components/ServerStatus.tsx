@@ -418,37 +418,37 @@ export default function ServerStatus({
             </div>
           </a>
 
-          {/* 寄付ページ */}
+          {/* 運営ブログ(note) */}
           <a
-            href="https://inecat.fanbox.cc"
+            href="https://note.com/inecat"
             target="_blank"
             rel="noopener noreferrer"
-            className="group block bg-white rounded-lg border border-gray-200 p-4 bg-pink-50 border-pink-200 hover:bg-pink-100 md:active:bg-pink-100 transition-all duration-300 cursor-pointer overflow-visible relative"
+            className="group block bg-white rounded-lg border border-gray-200 p-4 bg-gray-50 border-gray-300 hover:bg-gray-100 md:active:bg-gray-100 transition-all duration-300 cursor-pointer overflow-visible relative"
           >
             <div className="flex items-center">
               <div className="mr-4">
-                <svg className="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="-4 -4 32 32">
+                  <path d="M0 .279c4.623 0 10.953-.235 15.498-.117 6.099.156 8.39 2.813 8.468 9.374.077 3.71 0 14.335 0 14.335h-6.598c0-9.296.04-10.83 0-13.759-.078-2.578-.814-3.807-2.795-4.041-2.097-.235-7.975-.04-7.975-.04v17.84H0Z" />
                 </svg>
               </div>
               <div className="flex-grow flex items-center justify-between">
                 <div>
-                  <h4 className="font-semibold text-gray-900">サーバー支援(FANBOX)</h4>
+                  <h4 className="font-semibold text-gray-900">運営ブログ</h4>
                 </div>
-                <svg className="w-5 h-5 text-pink-600 hover:text-pink-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-black hover:text-gray-700 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </div>
             </div>
             {/* ホバー時の詳細テキスト（ブロックの真上にオーバーレイ） */}
-            <div className="absolute inset-0 bg-pink-50 border border-pink-300 rounded-lg p-4 opacity-0 group-hover:opacity-100 md:group-active:opacity-100 transition-all duration-300 pointer-events-none flex items-center">
+            <div className="absolute inset-0 bg-gray-100 border border-black rounded-lg p-4 opacity-0 group-hover:opacity-100 md:group-active:opacity-100 transition-all duration-300 pointer-events-none flex items-center">
               <div className="mr-4">
-                <svg className="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                <svg className="w-6 h-6 text-black" fill="currentColor" viewBox="-4 -4 32 32">
+                  <path d="M0 .279c4.623 0 10.953-.235 15.498-.117 6.099.156 8.39 2.813 8.468 9.374.077 3.71 0 14.335 0 14.335h-6.598c0-9.296.04-10.83 0-13.759-.078-2.578-.814-3.807-2.795-4.041-2.097-.235-7.975-.04-7.975-.04v17.84H0Z" />
                 </svg>
               </div>
               <div className="flex-grow">
-                <p className="text-sm text-gray-700 font-medium">サーバーが気に入っていただけましたら継続運営のため、寄付をお願い致します</p>
+                <p className="text-sm text-gray-700 font-medium">技術的な話やイベントの裏話などを発信しています</p>
               </div>
             </div>
           </a>

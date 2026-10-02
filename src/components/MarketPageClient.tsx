@@ -75,6 +75,9 @@ const ITEM_META: Record<string, ItemMeta> = {
   DIRT: { label: '土', category: '土・石材' },
   SAND: { label: '砂', category: '土・石材' },
   GRAVEL: { label: '砂利', category: '土・石材' },
+  RED_SANDSTONE: { label: '赤い砂岩', category: '土・石材' },
+  WHITE_CONCRETE: { label: '白色のコンクリート', category: '土・石材' },
+  CYAN_TERRACOTTA: { label: '青緑色のテラコッタ', category: '土・石材' },
 };
 
 const CATEGORY_ORDER = ['鉱石・宝石', '木材', '土・石材'];
@@ -120,7 +123,8 @@ function ChangeBadge({
     );
   }
 
-  const colorClass = isPositive ? 'text-green-600' : 'text-red-600';
+  // 上昇は赤、下落は緑で表示する
+  const colorClass = isPositive ? 'text-red-600' : 'text-green-600';
   const arrow = isPositive ? '▲' : '▼';
 
   return (
@@ -356,7 +360,7 @@ function MarketChart({
   // 配色は「当日の始値」との比較で決定する
   const todayOpen = todayCandle?.open ?? lastPoint.index;
   const isOverallPositive = lastPoint.index >= todayOpen;
-  const lineColor = isOverallPositive ? '#22c55e' : '#ef4444';
+  const lineColor = isOverallPositive ? '#ef4444' : '#22c55e';
 
   const fillPath = isSinglePoint ? '' :
     `M ${toX(0)},${toY(displayData[0].index)} ` +
@@ -457,8 +461,8 @@ function MarketChart({
           >
             <defs>
             <linearGradient id={`bigChartGrad-${isOverallPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0.2" />
-              <stop offset="100%" stopColor={isOverallPositive ? '#22c55e' : '#ef4444'} stopOpacity="0" />
+              <stop offset="0%" stopColor={isOverallPositive ? '#ef4444' : '#22c55e'} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={isOverallPositive ? '#ef4444' : '#22c55e'} stopOpacity="0" />
             </linearGradient>
             <clipPath id="chart-area-clip">
               <rect
@@ -540,7 +544,7 @@ function MarketChart({
               {displayData.map((d, i) => {
                 const cx = toX(i);
                 const isUp = d.close >= d.open;
-                const color = isUp ? '#22c55e' : '#ef4444';
+                const color = isUp ? '#ef4444' : '#22c55e';
 
                 return (
                   <g key={`candle-${i}`}>
@@ -588,7 +592,7 @@ function MarketChart({
               y={lastY - 10}
               width={76}
               height={20}
-              fill={isOverallPositive ? '#149884' : '#ef4444'}
+              fill={isOverallPositive ? '#ef4444' : '#22c55e'}
             />
             <text
               x={width - padding.right + 8}
@@ -1063,7 +1067,7 @@ function PageHeader({
   const changePercentage = todayOpen > 0 ? (changeValue / todayOpen) * 100 : 0;
 
   const isPositive = changeValue >= 0;
-  const changeColor = isPositive ? 'text-emerald-300' : 'text-red-300';
+  const changeColor = isPositive ? 'text-red-300' : 'text-emerald-300';
   const changeSign = isPositive ? '+' : '';
   const changeArrow = isPositive ? '▲' : '▼';
 

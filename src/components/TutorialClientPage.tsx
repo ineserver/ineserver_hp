@@ -6,7 +6,6 @@ import Header from '@/components/Header';
 import RecommendedVersion from '@/components/RecommendedVersion';
 import Link from 'next/link';
 import CommandCode from '@/components/CommandCode';
-import CollapsibleDetail from '@/components/CollapsibleDetail';
 import ImageModal from '@/components/ImageModal';
 import { trackTutorialStepChange } from '@/lib/analytics';
 
@@ -292,110 +291,18 @@ export default function TutorialClientPage() {
           </div>
           <div className="markdown-content">
             <h1>チュートリアルクリアおめでとうございます！</h1>
-            <p> 無事にいねさばに到着しました！ここからは、自由に行動をすることが出来ます！</p>
-            <p> ...と、「いきなり言われても、、、」だと思いますので、「知っておくと便利なこと」と「やっておいた方が良いこと」をご紹介します！</p>
+            <p>無事にいねさばに到着しました！ここからは、自由に行動をすることが出来ます！</p>
 
-            <h1>まずは観光から</h1>
-            <p>いねさばには（まだ少ないですが）観光スポットが幾つかあります！目の前の「白椿駅」から電車の旅に出るのも良し、スポーン地点周辺を散策するも良し、気になる場所を訪れてみましょう！</p>
-            <p>いねさばではサイト上で確認できるマップを用意しています。→
+            <h1>分からないことはスポーン地点のNPCに聞こう</h1>
+            <p>いねさばの基本的な遊び方は、ゲーム内で案内しています。</p>
+            <p><b>分からないことがあったら、スポーン地点にいるNPCに話しかけてみましょう！</b></p>
+            <p>また、<CommandCode>/spawn</CommandCode>コマンドで、いつでもスポーン地点に戻ることができます。道に迷ったら、/spawnを使いましょう！</p>
+            <p>いねさばではサイト上で確認できるマップも用意しています。→
               <Link className="inline-flex items-center" href="https://map.1necat.net" target="_blank" rel="noopener noreferrer">マップはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg></Link></p>
-            <p>また、<CommandCode>/spawn</CommandCode>コマンドで、スポーン地点に戻ることができます。道に迷ったら、/spawnを使いましょう！</p>
-
-            <h1>拠点を決めよう</h1>
-            <p>次に、生活の拠点となる自宅を決めましょう！</p>
-            <p>いねさばでは、<b className='text-red'>賃貸に住む・土地代を払って中心地に家を建てる・土地代無料の郊外に家を建てる</b>など、さまざまな選択肢があります。</p>
-            <p>以下では、それぞれの特徴や実際の自宅の建て方をご案内します。自分の好きなやり方をお選びください</p>
-
-            <h2>おすすめ！　選択肢① 郊外に自宅をつくる</h2>
-            <p>最も一般的な、Minecraftらしい選択肢です。</p>
-            <p>いねさばの <Link className="inline-flex items-center" href="server-guide/building_restrictions" target="_blank" rel="noopener noreferrer">中心地エリア<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link> 以外では基本的に無料で建築ができます。</p>
-            <p>いねさばには幾つかの住宅街が整備されています！詳しくはマップからご確認ください！</p>
-            <p>なお、郊外エリアは保護がされていません。<b className="text-red">保護はご自身で忘れずにおかけください！</b>→ <Link className="inline-flex items-center" href="life/land-protection" target="_blank" rel="noopener noreferrer">保護のやり方はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link></p>
-
-            <h2>選択肢② マンション・アパートに住む</h2>
-            <p>中心地エリアに住みたいけど、高い土地代を払いたくない方向けの選択肢です。</p>
-            <p>いねさばにはマンション・アパートがいくつかあります。マンション・アパートには土地代がかからず、費用を抑えて中心地に住むことができます。</p>
-            <p><Link className="inline-flex items-center" href="economy/land-purchase" target="_blank" rel="noopener noreferrer">マンション・アパートについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link></p>
-
-            <h2>選択肢③ 中心地に自宅をつくる</h2>
-            <p>夢のある選択肢です！色々な商業拠点のある中心地に土地代を払って自宅を立てることが出来ます。</p>
-            <p>中心地では土地代を払うことで、その区画を入手することができます。</p>
-            <p><Link className="inline-flex items-center" href="economy/land-purchase" target="_blank" rel="noopener noreferrer">土地の購入について詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link></p>
-            <h1>資材を集めよう</h1>
-            <p>拠点を建てるには資材が必要だと思います！</p>
-            <p>いねさばでは、資材を集める方法として大きく2つの選択肢があります！</p>
-
-            <h2>選択肢① 市場取引機能</h2>
-            <p>上記の食料で使った市場取引機能を使うことで、建材や鉱石を入手することが出来ます！</p>
-            <p><CommandCode>/market</CommandCode>コマンドで、取引画面を開くことができます。</p>
-            <p>詳しくはこちら→</p><Link className="inline-flex items-center" href="https://www.1necat.net/economy/market" target="_blank" rel="noopener noreferrer">市場取引の詳細はこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link>
-
-            <h2>選択肢② 資源ワールドを使う</h2>
-            <p>いねさばには、「資源ワールド」という資源を集めるためのワールドがあります。</p>
-            <CollapsibleDetail title="そもそも、ワールド・サーバーとは？">
-              <p>サーバーとはいねさばで言うところの、「経済サーバー（今いるところ）」、「ロビーサーバー」といったものです。TABキーで出てくる大きな枠組のものがそれです。</p>
-              <p>ワールドとは、サーバーの中で個別のワールドを指します。経済サーバーには「経済ワールド」「資源ワールド」などの複数のワールドがあります。</p>
-              <p>チャットはサーバー毎に分かれています。経済サーバーではロビーサーバーのチャットが見れません。逆も同様です。</p>
-            </CollapsibleDetail>
-            <p>資源ワールドへは各地にある市役所の中から移動することが可能です。</p>
-            <p>今回は白椿市役所から資源ワールドに行ってみましょう！</p>
-            <p><CommandCode>/spawn</CommandCode>コマンドでスポーンに移動し、地面の案内に従って白椿市役所に向かってください。白椿市役所1階右奥にワールドを移動できるワープゲートがあります。</p>
-            <p>このように、市役所から資源ワールドへ移動することができます。拠点を市役所の近くにするのも良いかもですね・・・！</p>
-            <p>ちなみに、各市役所の位置はマップから検索できます。マップの左上の「ここで検索」から検索してみましょう！ → <Link className="inline-flex items-center" href="https://map.1necat.net" target="_blank" rel="noopener noreferrer">マップはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg></Link></p>
-            <CollapsibleDetail title="資源ワールドの注意点">
-              <p>資源ワールドはあくまでも「資源採集のためのワールド」です。</p>
-              <p><b className="text-red">定期的にワールド自体が更新されてしまいます</b>ので、大事な持ち物を保管したり、建築はしないことをおすすめします。</p>
-              <p>また、経済ワールドでの<b className="text-red">資源採集のための探索は固く禁じられております</b>のでご注意ください。</p>
-            </CollapsibleDetail>
-
-            <h1>職業に就こう</h1>
-            <p>いねさばでは「職業（Jobs）」に就くことで、採掘や建築など普段の作業から経験値やポイントを獲得できるようになります！</p>
-            <p><CommandCode>/jobs browse</CommandCode>コマンドで職業メニューを開けます。8種類の職業から最大2つまで就くことができます。</p>
-            <CollapsibleDetail title="職業の種類">
-              <p>⛏️ <b>鉱夫</b> - 石や鉱石の採掘</p>
-              <p>🪓 <b>木こり</b> - 原木の伐採</p>
-              <p>🌾 <b>農家</b> - 作物の収穫、畜産、料理</p>
-              <p>🧱 <b>建築家</b> - 建材の設置</p>
-              <p>🏗️ <b>整地師</b> - 土・砂・砂利の破壊</p>
-              <p>⚔️ <b>冒険家</b> - モンスター討伐、釣り</p>
-              <p>🔨 <b>鍛冶屋</b> - 精錬、装備の作成</p>
-              <p>⚗️ <b>錬金術師</b> - ポーション醸造、エンチャント</p>
-            </CollapsibleDetail>
-            <p>貯めた「職業ポイント」は、エンチャント本の購入やどこでも作業台を開ける機能など、便利機能と交換できます！</p>
-            <p>また、職業ごとに用意された<b className="text-red">「デイリークエスト」</b>（<CommandCode>/jobs quests</CommandCode>）を達成すると、まとまったお金（ine）を稼げます。</p>
-            <p><Link className="inline-flex items-center" href="/life/jobs" target="_blank" rel="noopener noreferrer">職業システムについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link></p>
-
-            <h1>実績・称号を集めよう</h1>
-            <div className="rounded-2xl overflow-hidden mb-6 cursor-pointer" onClick={() => setModalImage({ src: 'https://img.1necat.net/2025-12-10_02.54.34.png', alt: '実績メニュー' })}>
-              <Image
-                src="https://img.1necat.net/2025-12-10_02.54.34.png"
-                alt="実績メニュー"
-                className="w-full h-auto object-cover hover:opacity-80 transition-opacity duration-200"
-                width={1200}
-                height={675}
-              />
-            </div>
-            <p>いねさばには「実績・称号システム」があります！特定の条件を達成すると実績が解除され、その証として<b>称号</b>を獲得できます。</p>
-            <p><CommandCode>/ach</CommandCode>コマンドで実績メニューを開けます。</p>
-            <p>称号は自分の名前の上に表示できるので、レアな称号を手に入れて他のプレイヤーに自慢しましょう！</p>
-            <CollapsibleDetail title="実績の種類">
-              <p><b>プレイ時間</b> - 10時間、100時間プレイなど</p>
-              <p><b>チュートリアル</b> - 初めての採掘、作製など</p>
-              <p><b>McMMO / Jobs</b> - スキルや職業レベルに応じた実績</p>
-              <p><b>投票</b> - サーバーへの投票回数に応じた実績</p>
-              <p><b>シークレット</b> - 条件が隠されている特別な実績</p>
-            </CollapsibleDetail>
-            <p><Link className="inline-flex items-center" href="/adventure/achivements" target="_blank" rel="noopener noreferrer">実績・称号システムについて詳しくはこちら<svg className="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></Link></p>
 
             <h1>さいごに</h1>
-            <p>お疲れ様でした！いねさばの基本的な遊び方は以上で終了です！</p>
-            <p>最後に、いねさばで役に立つ情報を幾つかご案内します！</p>
+            <p>お疲れ様でした！最後に、いねさばで役に立つ情報を幾つかご案内します！</p>
 
             <h2>わからないことがあれば「いねさばの歩き方」を見よう</h2>
             <p>いねさばの歩き方は公式HPの右上から見ることが出来ます。こんな感じのアイコンです↓</p>
@@ -444,7 +351,7 @@ export default function TutorialClientPage() {
           </Link>
           <div className="markdown-content">
             <h2>以上でいねさばのチュートリアルは終了です！</h2>
-            <p>もし、遊んでいて分からないことがあったらスタッフなどに気軽に聞いて下さい！</p>
+            <p>もし、遊んでいて分からないことがあったらスポーン地点のNPCやスタッフに気軽に聞いて下さい！</p>
             <p>いねさばでは様々な遊び方があります。あなたらしい遊び方でいねさばを楽しんでいただけたら幸いです！</p>
             <p>それでは、良いいねさばライフを👋</p>
           </div>
