@@ -3,12 +3,12 @@ import Link from "next/link";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "運営サポーター募集",
+  title: "運営ヘルパー募集",
   description:
-    "いねさばの運営サポーター募集要項です。募集する部署、応募の条件、応募の流れ、サポーターのルールを掲載しています。",
+    "いねさばの運営ヘルパー募集要項です。募集する部署、応募の条件、応募の流れ、ヘルパーのルールを掲載しています。",
   openGraph: {
-    title: "運営サポーター募集 | いねさば",
-    description: "いねさばの運営を一緒に支えてくれる「運営サポーター」を募集しています。",
+    title: "運営ヘルパー募集 | いねさば",
+    description: "いねさばの運営を一緒に支えてくれる「運営ヘルパー」を募集しています。",
     images: ["/server-icon.png"],
   },
 };
@@ -62,7 +62,7 @@ const requirements = [
   "いねさばでのプレイ時間が50時間以上",
   "週に3時間ほど、運営の時間を取れる（競馬部は週末の開催時間に入れること）",
   "Discordを使える",
-  "「サポーターのルール」を読み、同意できる",
+  "「ヘルパーのルール」を読み、同意できる",
 ];
 
 const steps = [
@@ -70,7 +70,7 @@ const steps = [
   "公式Discordのチケットでやり取りを始める",
   "チケットでチャット面接を行う（時間を合わせる必要はありません。ゆっくり答えてください）",
   "1か月のお試し期間",
-  "正式にサポーターとして任命",
+  "正式にヘルパーとして任命",
 ];
 
 const dutyRules = [
@@ -96,10 +96,10 @@ const departmentRules = [
 ];
 
 const activityRules = [
-  "サポーターの活動は無償のボランティアです",
+  "ヘルパーの活動は無償のボランティアです",
   "週に1回、部のチャンネルで近況を一言報告してください",
   "辞めるときは2週間前までに鯖主に伝えてください",
-  "権限の私的利用や未発表の情報の漏えいがあった場合は、その時点でサポーターを外れていただきます",
+  "権限の私的利用や未発表の情報の漏えいがあった場合は、その時点でヘルパーを外れていただきます",
 ];
 
 // 他コンテンツの .markdown-content h1 と同じ見た目
@@ -146,7 +146,7 @@ export default function RecruitPage() {
                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
-                <span className="text-white/90">運営サポーター募集</span>
+                <span className="text-white/90">運営ヘルパー募集</span>
               </nav>
 
               <div className="flex items-center gap-3">
@@ -155,7 +155,7 @@ export default function RecruitPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 </div>
-                <h1 className="text-2xl sm:text-3xl font-bold">運営サポーター募集要項</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold">運営ヘルパー募集要項</h1>
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@ export default function RecruitPage() {
           <article className="flex-grow w-full max-w-4xl mx-auto px-5 py-8">
             <header className="mb-10">
               <p className="text-gray-700 leading-relaxed">
-                いねさばでは、サーバーの運営を一緒に支えてくれる「運営サポーター」を募集しています。いねさばをもっと良くしていくために、それぞれの分野を一緒に担ってくれる仲間を探しています。締切はなく、いつでも受け付けています。
+                いねさばでは、サーバーの運営を一緒に支えてくれる「運営ヘルパー」を募集しています。いねさばをもっと良くしていくために、それぞれの分野を一緒に担ってくれる仲間を探しています。締切はなく、いつでも受け付けています。
               </p>
             </header>
 
@@ -185,9 +185,9 @@ export default function RecruitPage() {
                 ))}
               </section>
 
-              {/* サポーターにお願いしたいこと */}
+              {/* ヘルパーにお願いしたいこと */}
               <section>
-                <SectionHeading>サポーターにお願いしたいこと</SectionHeading>
+                <SectionHeading>ヘルパーにお願いしたいこと</SectionHeading>
                 <BulletList items={requests} />
               </section>
 
@@ -196,7 +196,7 @@ export default function RecruitPage() {
                 <SectionHeading>応募の条件</SectionHeading>
                 <BulletList items={requirements} />
                 <p className="mt-4 text-gray-700 leading-relaxed">
-                  サポーターの活動は無償のボランティアです。経験は問いません。普段から自分で何か始めるのが好きな人に向いています。サポーターになっても、サバイバルでの普段のプレイはこれまで通り楽しめます。
+                  ヘルパーの活動は無償のボランティアです。経験は問いません。普段から自分で何か始めるのが好きな人に向いています。ヘルパーになっても、サバイバルでの普段のプレイはこれまで通り楽しめます。
                 </p>
               </section>
 
@@ -234,11 +234,11 @@ export default function RecruitPage() {
                 </div>
               </section>
 
-              {/* サポーターのルール */}
+              {/* ヘルパーのルール */}
               <section>
-                <SectionHeading>サポーターのルール</SectionHeading>
+                <SectionHeading>ヘルパーのルール</SectionHeading>
                 <p className="text-gray-700 leading-relaxed">
-                  サポーターは、鯖主寄りでも住民寄りでもない中間の立場です。運営の仕事をしているときは運営側に立ち、それ以外はふつうの住民として遊びます。
+                  ヘルパーは、鯖主寄りでも住民寄りでもない中間の立場です。運営の仕事をしているときは運営側に立ち、それ以外はふつうの住民として遊びます。
                 </p>
 
                 <SubHeading>自分で決めていいこと・鯖主に相談すること</SubHeading>
