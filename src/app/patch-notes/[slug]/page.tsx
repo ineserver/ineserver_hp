@@ -20,16 +20,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!patchNote) {
     return {
-      title: 'ページが見つかりません | いねさば',
+      title: 'ページが見つかりません',
       description: 'お探しのページは見つかりませんでした。',
     };
   }
 
-  const title = `${patchNote.date} パッチノート | いねさば`;
+  const pageTitle = `${patchNote.date} パッチノート`;
+  const title = `${pageTitle} | いねさば`;
   const description = patchNote.description || `${patchNote.date}のパッチノートです。`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     openGraph: {
       title,

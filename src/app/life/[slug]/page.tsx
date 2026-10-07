@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     if (!contentData) {
         return {
-            title: 'ページが見つかりません | いねさば',
+            title: 'ページが見つかりません',
             description: 'お探しのページは見つかりませんでした。',
         };
     }
@@ -54,12 +54,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         return excerpt + (excerpt.length >= 150 ? '...' : '');
     };
 
-    const title = `${contentData.title || 'くらし'} | いねさば`;
+    const pageTitle = contentData.title || 'くらし';
+    const title = `${pageTitle} | いねさば`;
     const description = contentData.description || getTextExcerpt(contentData.contentHtml || contentData.content || '');
     const image = contentData.image as string | undefined;
 
     return {
-        title,
+        title: pageTitle,
         description,
         openGraph: {
             title,

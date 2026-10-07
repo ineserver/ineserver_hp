@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!contentData) {
     return {
-      title: 'ページが見つかりません | いねさば',
+      title: 'ページが見つかりません',
       description: 'お探しのページは見つかりませんでした。',
     };
   }
@@ -57,13 +57,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return excerpt + (excerpt.length >= 150 ? '...' : '');
   };
 
-  const title = `${contentData.title || 'お知らせ'} | いねさば`;
+  const pageTitle = contentData.title || 'お知らせ';
+  const title = `${pageTitle} | いねさば`;
   const description = contentData.description || getTextExcerpt(contentData.contentHtml || contentData.content || '');
   const image = contentData.image as string | undefined;
   const url = `https://www.1necat.net/announcements/${slug}`;
 
   return {
-    title,
+    title: pageTitle,
     description,
     alternates: {
       canonical: url,

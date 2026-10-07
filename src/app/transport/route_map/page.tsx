@@ -3,7 +3,7 @@ import Header from '@/components/Header';
 import RouteMapClient from '@/components/RouteMapClient';
 
 export const metadata: Metadata = {
-  title: '鉄道路線図 | いねさば',
+  title: '鉄道路線図',
   description: 'いねさばの鉄道路線図。各駅の情報や乗り換え路線の確認、駅間の経路検索ができます。',
   openGraph: {
     title: '鉄道路線図 | いねさば',

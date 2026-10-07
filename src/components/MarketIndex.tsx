@@ -104,6 +104,19 @@ export default function MarketIndex() {
         };
   }, [candles, data]);
 
+  // chartData30Days は前日分までしか含まないため、末尾に当日分（現在値）を追加する
+  const chartPoints = useMemo(() => {
+    if (!data) return [];
+    const points = data.chartData30Days ?? [];
+    // API の日付は日本時間基準の YYYY-MM-DD
+    const todayStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(new Date());
+    const todayPoint = { date: todayStr, index: data.currentIndex };
+    if (points.length > 0 && points[points.length - 1].date === todayStr) {
+      return [...points.slice(0, -1), todayPoint];
+    }
+    return [...points, todayPoint].slice(-30);
+  }, [data]);
+
   const formatIndex = (value: number) => {
     return value.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
@@ -135,7 +148,6 @@ export default function MarketIndex() {
     const points = chartData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
     const lastPoint = chartData[chartData.length - 1];
     // 配色は前日比バッジと同じく「現在値」と「当日の始値」の比較で決定する
-    // （chartData30Days には現在値が含まれないため、最終点ではなく currentIndex を使う）
     const isPositive = (data?.currentIndex ?? lastPoint.index) >= todayOpen;
     const lineColor = isPositive ? '#ef4444' : '#22c55e';
 
@@ -347,17 +359,17 @@ export default function MarketIndex() {
 
         {/* チャート */}
         <div className="mt-2">
-          {renderChart(data.chartData30Days)}
+          {renderChart(chartPoints)}
         </div>
 
         {/* 期間ラベル */}
-        {data.chartData30Days.length >= 2 && (
+        {chartPoints.length >= 2 && (
           <div className="flex justify-between mt-1">
             <span className="text-[10px] text-gray-400">
-              {formatDate(data.chartData30Days[0].date)}
+              {formatDate(chartPoints[0].date)}
             </span>
             <span className="text-[10px] text-gray-400">
-              {formatDate(data.chartData30Days[data.chartData30Days.length - 1].date)}
+              {formatDate(chartPoints[chartPoints.length - 1].date)}
             </span>
           </div>
         )}
