@@ -1,7 +1,7 @@
 {
   "name": "いねさば",
   "short_name": "いねさば",
-  "description": "あなたらしい距離感で街に溶け込める。そんな「都市計画サーバー」です。Minecraftサーバー「いねさば」の公式ホームページ。",
+  "description": "住民と一緒に街を作っている、マインクラフトの都市計画サーバー「いねさば」の紹介ページです。街の様子や、市場・追加アイテムなどの仕組みを紹介しています。",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

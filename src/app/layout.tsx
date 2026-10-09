@@ -6,7 +6,7 @@ import "./globals.css";
 
 const siteUrl = "https://www.1necat.net";
 const siteName = "いねさば";
-const siteDescription = "あなたらしい距離感で街に溶け込める。そんな「都市計画サーバー」です。Minecraftサーバー「いねさば」の公式ホームページ。";
+const siteDescription = "住民と一緒に街を作っている、マインクラフトの都市計画サーバー「いねさば」の紹介ページです。街の様子や、市場・追加アイテムなどの仕組みを紹介しています。";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -117,7 +117,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           data={{
             name: "いねさば",
             url: "https://www.1necat.net",
-            description: "あなたらしい距離感で街に溶け込める。そんな「都市計画サーバー」です。Minecraftサーバー「いねさば」の公式ホームページ。",
+            description: siteDescription,
           }}
         />
 
@@ -128,7 +128,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             name: "いねさば",
             url: "https://www.1necat.net",
             logo: "https://www.1necat.net/server-icon.png",
-            description: "あなたらしい距離感で街に溶け込める。そんな「都市計画サーバー」です。Minecraftサーバー「いねさば」の公式ホームページ。",
+            description: siteDescription,
             sameAs: [],
           }}
         />
