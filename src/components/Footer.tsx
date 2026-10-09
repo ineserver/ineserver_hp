@@ -4,7 +4,13 @@ export default function Footer() {
   return (
     <footer className="bg-[#f0f4f1]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-4">
-        <div className="text-xs sm:text-sm text-center mb-2">
+        <div className="text-xs sm:text-sm text-center mb-2 flex justify-center gap-4">
+          <Link
+            href="/history"
+            className="text-[#5b8064] hover:text-[#4a6b55] underline transition-colors duration-200"
+          >
+            いねさばの歴史
+          </Link>
           <Link
             href="/recruit"
             className="text-[#5b8064] hover:text-[#4a6b55] underline transition-colors duration-200"

@@ -55,7 +55,7 @@ const RecommendedVersion: React.FC = () => {
           <span className="font-semibold text-green-900 text-sm">推奨バージョン</span>
         </div>
         <p className="text-green-800 text-sm font-semibold ml-6">{configuredRecommendedVersion}</p>
-        <p className="text-xs mt-1 ml-6">いねさばのサーバーバージョンです。宗教上の理由がない限りこのバージョンで接続するのがおすすめです！</p>
+        <p className="text-xs mt-1 ml-6">いねさばのサーバーバージョンです。このバージョンがおすすめです！</p>
       </div>
 
       {/* サポート範囲（APIから取得） */}

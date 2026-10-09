@@ -1,5 +1,5 @@
 ---
-title: 意思疎通ステータス機能
+title: 意思ステータス
 published: true
 type: utility
 number: 3

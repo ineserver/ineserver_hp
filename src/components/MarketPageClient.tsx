@@ -410,7 +410,7 @@ function MarketChart({
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
-        <h2 className="text-base sm:text-lg font-bold text-gray-800">全体相場インデックス (過去30日間)</h2>
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">いねさば物価平均 (過去30日間)</h2>
         
         {/* PC用: セグメントコントロール */}
         <div className="hidden sm:flex bg-gray-100 rounded-lg p-1">
@@ -677,17 +677,17 @@ function MarketChart({
       {todayCandle && (
         <div className="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-1 text-gray-700">
           <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">始値</span>
+            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の始値</span>
             <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.open)}</span>
             <span className="text-xs text-gray-400 ml-0.5">ine</span>
           </div>
           <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">高値</span>
+            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の高値</span>
             <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.high)}</span>
             <span className="text-xs text-gray-400 ml-0.5">ine</span>
           </div>
           <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">安値</span>
+            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の安値</span>
             <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.low)}</span>
             <span className="text-xs text-gray-400 ml-0.5">ine</span>
           </div>
@@ -1080,7 +1080,7 @@ function PageHeader({
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
-          <span className="text-white/90">アイテム市場相場</span>
+          <span className="text-white/90">いねさばアイテム市場</span>
         </nav>
 
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
@@ -1089,9 +1089,9 @@ function PageHeader({
               <svg className="w-8 h-8 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
               </svg>
-              <h1 className="text-2xl sm:text-3xl font-bold">アイテム市場相場</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold">いねさばアイテム市場</h1>
             </div>
-            <p className="text-white/70 text-sm mb-3">いねさば経済圏の全アイテム価格と変動データ</p>
+            <p className="text-white/70 text-sm mb-3">いねさばアイテム市場で取引可能なアイテムの価格と値動き</p>
             <Link
               href="/economy/market"
               className="inline-flex items-center text-sm font-medium text-white hover:text-white/80 underline decoration-white/40 hover:decoration-white transition-all underline-offset-4"
@@ -1107,7 +1107,7 @@ function PageHeader({
             <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 border border-white/20 self-start sm:self-auto">
               <div className="flex items-center gap-4">
                 <div>
-                  <div className="text-xs text-white/60 mb-0.5">全体相場インデックス</div>
+                  <div className="text-xs text-white/60 mb-0.5">現在値</div>
                   <div className="flex items-baseline">
                     <span className="text-3xl font-bold tabular-nums">
                       {indexData.currentIndex.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}

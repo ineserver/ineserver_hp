@@ -462,8 +462,8 @@ const Header = () => {
                         保護
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護のやり方</Link></li>
-                        <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護のやり方</Link></li>
+                        <li><Link href="/life/land-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の保護</Link></li>
+                        <li><Link href="/life/block-protection" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />ブロック保護</Link></li>
                       </ul>
                     </div>
                     <div className="mb-3">
@@ -475,12 +475,13 @@ const Header = () => {
                       </h3>
                       <ul className="space-y-1">
                         <li><Link href="/life/mcmmo" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />スキルシステム (mcMMO)</Link></li>
-                        <li><Link href="/life/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業システム</Link></li>
-                        <li><Link href="/life/imageflame" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />画像地図の作成と使い方</Link></li>
-                        <li><Link href="/life/status" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />意思疎通ステータス機能</Link></li>
-                        <li><Link href="/life/sort" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />自動整理機能の使い方</Link></li>
+                        <li><Link href="/life/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業</Link></li>
+                        <li><Link href="/life/imageflame" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />画像地図</Link></li>
+                        <li><Link href="/life/status" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />意思ステータス</Link></li>
+                        <li><Link href="/life/sort" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />自動整理機能</Link></li>
                         <li><Link href="/life/exp" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />経験値ボトルのアイテム化</Link></li>
-                        <li><Link href="/life/mail" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />メールシステムの使い方</Link></li>
+                        <li><Link href="/life/mail" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />メール</Link></li>
+                        <li><Link href="/life/chat" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />チャット（チャンネル・ローマ字・翻訳・ローカル等）</Link></li>
                       </ul>
                     </div>
                     <div>
@@ -532,7 +533,7 @@ const Header = () => {
                         アイテム取引
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引のやり方</Link></li>
+                        <li><Link href="/economy/market" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アイテム市場取引</Link></li>
                         <li><Link href="/economy/shop" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お店を作る・お店で買う</Link></li>
                       </ul>
                     </div>
@@ -552,6 +553,7 @@ const Header = () => {
                       <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">その他</h3>
                       <ul className="space-y-1">
                         <li><Link href="/economy/marker" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />マーカー登録・広告機能</Link></li>
+                        <li><Link href="/economy/money" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />お金の基本操作</Link></li>
                       </ul>
                     </div>
                   </div>
@@ -606,8 +608,9 @@ const Header = () => {
                         アイテム
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/adventure/additems" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />レシピのないアイテムの入手方法</Link></li>
+                        <li><Link href="/adventure/additems" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />いねさば独自の追加アイテム</Link></li>
                         <li><Link href="/adventure/hide-item" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム・隠し部屋の一覧とヒント</Link></li>
+                        <li><Link href="/adventure/tessera" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />テセラ（身体強化アイテム）</Link></li>
                       </ul>
                     </div>
                     <div>
@@ -618,7 +621,7 @@ const Header = () => {
                         システム
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/adventure/achivements" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />実績・称号システム</Link></li>
+                        <li><Link href="/adventure/achivements" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />実績・称号</Link></li>
                       </ul>
                     </div>
                   </div>
@@ -827,10 +830,10 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/life/land-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            土地の保護のやり方
+                            土地の保護
                           </Link>
                           <Link href="/life/block-protection" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            ブロック保護のやり方
+                            ブロック保護
                           </Link>
                         </div>
                       </div>
@@ -846,22 +849,25 @@ const Header = () => {
                             スキルシステム (mcMMO)
                           </Link>
                           <Link href="/life/jobs" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            職業システム
+                            職業
                           </Link>
                           <Link href="/life/imageflame" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            画像地図の作成と使い方
+                            画像地図
                           </Link>
                           <Link href="/life/status" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            意思疎通ステータス機能
+                            意思ステータス
                           </Link>
                           <Link href="/life/sort" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            自動整理機能の使い方
+                            自動整理機能
                           </Link>
                           <Link href="/life/exp" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             経験値ボトルのアイテム化
                           </Link>
                           <Link href="/life/mail" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            メールシステムの使い方
+                            メール
+                          </Link>
+                          <Link href="/life/chat" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            チャット（チャンネル・ローマ字・翻訳・ローカル等）
                           </Link>
                         </div>
                       </div>
@@ -932,7 +938,7 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/economy/market" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            アイテム市場取引のやり方
+                            アイテム市場取引
                           </Link>
                           <Link href="/economy/shop" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             お店を作る・お店で買う
@@ -960,6 +966,9 @@ const Header = () => {
                         <div className="pl-4 space-y-1">
                           <Link href="/economy/marker" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             マーカー登録・広告機能
+                          </Link>
+                          <Link href="/economy/money" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            お金の基本操作
                           </Link>
                         </div>
                       </div>
@@ -1035,10 +1044,13 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/adventure/additems" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            レシピのないアイテムの入手方法
+                            いねさば独自の追加アイテム
                           </Link>
                           <Link href="/adventure/hide-item" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             隠しアイテム・隠し部屋の一覧とヒント
+                          </Link>
+                          <Link href="/adventure/tessera" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            テセラ（身体強化アイテム）
                           </Link>
                         </div>
                       </div>
@@ -1051,7 +1063,7 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/adventure/achivements" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            実績・称号システム
+                            実績・称号
                           </Link>
                         </div>
                       </div>

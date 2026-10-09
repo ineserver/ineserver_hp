@@ -142,15 +142,12 @@ export default function ServerStatus({
       <div className="bg-white rounded-lg border border-gray-200">
         {/* ヘッダー */}
         <div className="bg-[#5b8064] p-6 rounded-t-lg">
-          <div className="flex items-center mb-3">
+          <div className="flex items-center">
             <svg className="w-6 h-6 mr-3 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path fillRule="evenodd" d="M4.5 3A1.5 1.5 0 003 4.5v2A1.5 1.5 0 004.5 8h15A1.5 1.5 0 0021 6.5v-2A1.5 1.5 0 0019.5 3h-15zM3 10.5v7A1.5 1.5 0 004.5 19H9a1.5 1.5 0 001.5-1.5V12A1.5 1.5 0 009 10.5H4.5A1.5 1.5 0 003 12v-1.5zm10.5 0v7A1.5 1.5 0 0015 19h4.5a1.5 1.5 0 001.5-1.5v-5A1.5 1.5 0 0019.5 11H15a1.5 1.5 0 00-1.5 1.5z" clipRule="evenodd"></path>
             </svg>
             <h2 className="text-xl font-bold text-white">サーバーステータス</h2>
           </div>
-          <p className="text-white/80 text-sm leading-relaxed">
-            現在のサーバー状況です
-          </p>
         </div>
 
         {/* ステータス内容 */}
@@ -260,7 +257,7 @@ export default function ServerStatus({
       {/* メンテナンス予定 */}
       <MaintenanceSchedule />
 
-      {/* 全体相場指標 */}
+      {/* いねさば物価平均 */}
       <MarketIndex />
 
       {/* コミュニティ・サポート */}

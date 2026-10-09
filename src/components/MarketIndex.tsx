@@ -273,7 +273,7 @@ export default function MarketIndex() {
             <svg className="w-5 h-5 mr-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <h2 className="text-lg font-bold text-white">全体相場指標</h2>
+            <h2 className="text-lg font-bold text-white">いねさば物価平均</h2>
           </div>
         </div>
         <div className="p-4 flex items-center justify-center py-8">
@@ -292,7 +292,7 @@ export default function MarketIndex() {
             <svg className="w-5 h-5 mr-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <h2 className="text-lg font-bold text-white">全体相場指標</h2>
+            <h2 className="text-lg font-bold text-white">いねさば物価平均</h2>
           </div>
         </div>
         <div className="p-4">
@@ -329,7 +329,7 @@ export default function MarketIndex() {
             <svg className="w-8 h-5 mr-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <h2 className="text-lg font-bold text-white">全体相場指標</h2>
+            <h2 className="text-lg font-bold text-white">いねさば物価平均</h2>
           </div>
           <span className="text-white/70 text-xs">過去30日</span>
         </div>
@@ -339,7 +339,7 @@ export default function MarketIndex() {
         {/* 現在値と前日比 */}
         <div className="flex items-center justify-between mb-3">
           <div>
-            <div className="text-[10px] text-gray-500 mb-0.5">現在の市場インデックス</div>
+            <div className="text-[10px] text-gray-500 mb-0.5">現在値</div>
             <div className="text-2xl font-bold text-gray-900 flex items-baseline">
               <span className="tabular-nums">{formatIndex(data.currentIndex)}</span>
               <span className="text-sm font-medium text-gray-500 ml-1">ine</span>
@@ -383,7 +383,7 @@ export default function MarketIndex() {
             <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            アイテム相場の詳細を見る
+            いねさばアイテム市場を見る
             <svg className="w-3.5 h-3.5 ml-1.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
