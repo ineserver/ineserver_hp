@@ -598,6 +598,7 @@ const Header = () => {
                       </ul>
                       <ul className="space-y-1">
                         <li><Link href="/adventure/horse-racing" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />競馬</Link></li>
+                        <li><Link href="/keiba" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />競馬情報（出馬表・オッズ・結果）</Link></li>
                       </ul>
                     </div>
                     <div className="mb-3">
@@ -1032,6 +1033,9 @@ const Header = () => {
                         <div className="pl-4 space-y-1">
                           <Link href="/adventure/horse-racing" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             競馬
+                          </Link>
+                          <Link href="/keiba" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            競馬情報（出馬表・オッズ・結果）
                           </Link>
                         </div>
                       </div>
