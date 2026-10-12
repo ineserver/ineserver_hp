@@ -18,6 +18,8 @@ image: https://img.1necat.net/2026-08-02_20.20.51.png
 
 競馬の遊び方はこちら → https://www.1necat.net/adventure/horse-racing
 
+各レースの出馬表・オッズ・馬柱・結果はこちら → https://www.1necat.net/keiba
+
 # 2026年秋競馬の日程
 
 | 月日 | クラス | レース名 | コース | 優勝馬 | レース動画 |

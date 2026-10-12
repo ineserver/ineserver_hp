@@ -12,6 +12,8 @@ image: https://img.1necat.net/2026-07-31_20.33.47.png
 
 今後の競馬開催日と過去のレースはこちらをご確認下さい！→https://www.1necat.net/announcements/keiba
 
+各レースの出馬表・オッズ・馬柱・結果は[競馬情報ページ](/keiba)で確認できます！
+
 # アクセス
 
 ![白椿競馬場](https://img.1necat.net/2026-07-31_20.35.56.png)
