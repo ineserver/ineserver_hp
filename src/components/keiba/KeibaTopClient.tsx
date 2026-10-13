@@ -67,7 +67,7 @@ function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direc
           </Link>
         </div>
         {race.status === 'ENTRY' && (
-          <p className="text-xs text-gray-500 mt-3">出馬表とオッズは、出走馬の募集が締め切られて馬券の発売が始まると公開されます。</p>
+          <p className="text-xs text-gray-500 mt-3">出馬表とオッズは馬券の発売が始まると公開されます。</p>
         )}
       </div>
     </div>
@@ -157,7 +157,7 @@ export default function KeibaTopClient({
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">i-keiba</h1>
-            <p className="text-sm text-white/75">レースの出馬表・オッズ・馬柱・結果を確認できます。</p>
+            <p className="text-sm text-white/75">レースの出馬表・オッズ・馬柱・結果を確認できます</p>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Link

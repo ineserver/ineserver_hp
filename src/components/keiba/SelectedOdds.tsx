@@ -126,10 +126,10 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
         </label>
         <p className="text-[11px] text-gray-500 mt-1">
           {budgetText === ''
-            ? '買い目ごとに直した金額で計算しています。予算を入れると、全部の買い目を配分し直します。'
+            ? '買い目ごとに入れた金額で計算しています。予算を入れると配分し直します。'
             : budgetShort
-              ? `予算は1点${UNIT} ineとして、${ine(priced.length * UNIT)}以上にしてください。`
-              : 'どれが当たっても払戻ができるだけ同じになるように配分します。配分したあと、買い目ごとに直せます。'}
+              ? `予算は${ine(priced.length * UNIT)}以上にしてください。`
+              : 'どれが当たっても払戻がほぼ同じになるよう配分します。買い目ごとにも直せます。'}
         </p>
       </div>
 
@@ -213,16 +213,16 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
         )}
         <div className="text-xs pt-1">
           {bought.length === 0 ? (
-            <p className="text-gray-500">買い目ごとに購入額を入れるか、予算で配分してください。</p>
+            <p className="text-gray-500">購入額を入れるか予算で配分してください。</p>
           ) : composite != null && composite < 1 ? (
-            <p className="text-[#e0262d] font-bold">合成オッズが1倍を下回るため、どう買ってもトリガミになります。</p>
+            <p className="text-[#e0262d] font-bold">合成オッズが1倍を下回るのでどう買ってもトリガミになります。</p>
           ) : minPayout < total ? (
-            <p className="text-[#e0262d] font-bold">損益が赤字の買い目は、当たっても購入額の合計に届きません（トリガミ）。</p>
+            <p className="text-[#e0262d] font-bold">損益が赤字の買い目は当たっても購入額の合計に届きません。</p>
           ) : (
-            <p className="text-gray-600">どれが当たっても、払戻が購入額の合計を上回ります。</p>
+            <p className="text-gray-600">どれが当たっても払戻が購入額を上回ります。</p>
           )}
           {priced.length < rows.length && (
-            <p className="text-gray-500 mt-1">まだ売れていない買い目（{rows.length - priced.length}点）は計算に入れていません。</p>
+            <p className="text-gray-500 mt-1">まだ売れていない{rows.length - priced.length}点は計算に入れていません。</p>
           )}
         </div>
       </div>
@@ -295,26 +295,26 @@ export default function SelectedOdds({
       <SectionTitle>印を付けた馬のオッズ</SectionTitle>
       {selected.length === 0 ? (
         <EmptyState title="印を付けた馬はいません">
-          上の出馬表で ◎○▲△☆ を付けると、その馬の単勝と、馬どうしの馬連（ボックス）のオッズを表示します。
+          出馬表で◎○▲△☆を付けた馬のオッズをここに表示します。
         </EmptyState>
       ) : (
         <>
           <p className="text-xs text-gray-500 mb-3">
-            消し以外の印を付けた馬の単勝と、その馬どうしの馬連（ボックス）です。予算を入れると買う額を {UNIT} ine 単位で配分し、買い目ごとにも直せます。損益は、その買い目が当たったときの払戻から購入額の合計を引いた額です。
+            消し以外の印を付けた馬の単勝と馬連ボックスです。予算を入れると{UNIT} ine単位で購入額を配分します。損益は当たったときの払戻から購入額の合計を引いた額です。
           </p>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <BetBlock title="単勝" color="#565eb0" rows={winRows} />
             {quinellaRows.length > 0 ? (
-              <BetBlock title="馬連（ボックス）" color="#87599a" rows={quinellaRows} />
+              <BetBlock title="馬連ボックス" color="#87599a" rows={quinellaRows} />
             ) : (
               <div className="bg-white border border-gray-200 rounded-lg overflow-hidden self-start">
-                <div className="px-3 py-2 text-sm font-bold text-white bg-[#87599a]">馬連（ボックス）</div>
-                <p className="px-3 py-4 text-sm text-gray-500">2頭以上に印を付けると、馬どうしの組み合わせを表示します。</p>
+                <div className="px-3 py-2 text-sm font-bold text-white bg-[#87599a]">馬連ボックス</div>
+                <p className="px-3 py-4 text-sm text-gray-500">2頭以上に印を付けると組み合わせを表示します。</p>
               </div>
             )}
           </div>
           <p className="text-xs text-gray-500 mt-2">
-            合成オッズは、買い目のどれが当たっても払戻が同じになるように買い分けたときの倍率です。オッズは締め切りまで変わるので、計算は目安としてお使いください。
+            合成オッズはどれが当たっても払戻が同じになるよう買い分けたときの倍率です。オッズは締め切りまで変わるので計算は目安です。
           </p>
         </>
       )}

@@ -171,7 +171,7 @@ export default function FormPanel({
       {/* コースの時計 */}
       <section>
         <SectionTitle aside={`${courseName(condition)} ${formatCourse(condition)}`}>コースの時計</SectionTitle>
-        <p className="text-xs text-gray-500 mb-3">このレースより前に、同じ条件で行われたレース：{form.course.races}回</p>
+        <p className="text-xs text-gray-500 mb-3">このレースより前の同条件のレース：{form.course.races}回</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
           <RecordCard label="コースレコード" run={form.course.record} value={formatTime(form.course.record?.time)} />
           <RecordCard label="上り最速（300m）" run={form.course.fastestLast300} value={formatSeconds(form.course.fastestLast300?.last300)} />
@@ -209,7 +209,7 @@ export default function FormPanel({
         <SectionTitle aside={`近${RECENT_COUNT}走（左が新しい）`}>馬柱</SectionTitle>
         {form.horses.length === 0 ? (
           finished ? (
-            <EmptyState title="このレースの出馬表は記録されていません">出走馬が記録されていないため、馬柱は表示できません。</EmptyState>
+            <EmptyState title="このレースの出馬表は記録されていません">出走馬の記録がないので馬柱は表示できません。</EmptyState>
           ) : (
             <EmptyState title="出走馬はまだ決まっていません">出馬表が公開されると表示されます。</EmptyState>
           )
@@ -237,9 +237,9 @@ export default function FormPanel({
           </div>
         )}
         <ul className="text-xs text-gray-500 mt-2 space-y-0.5 list-disc pl-4">
-          <li>同条件：同じコースで、距離の差が{form.conditions.sameCourseToleranceM}m以内のレース</li>
-          <li>換算：同じ馬場で距離の差が{form.conditions.similarDistanceM}m以内のレースのタイムを、このレースの距離に直したもの</li>
-          <li>タイムの後ろの（ ）は勝ち馬とのタイム差（秒）。勝ったレースは2着との差をマイナスで表示</li>
+          <li>同条件：同じコースで距離の差が{form.conditions.sameCourseToleranceM}m以内のレース</li>
+          <li>換算：同じ馬場で距離の差が{form.conditions.similarDistanceM}m以内のレースのタイムをこのレースの距離に直したもの</li>
+          <li>タイムの後ろの数字は勝ち馬との秒差。勝ったレースは2着との差をマイナスで表示</li>
           <li>このレースより前の成績だけを使っています</li>
         </ul>
       </section>

@@ -25,7 +25,7 @@ function PayoutTable({ payouts, gateCount }: { payouts: Payout[]; gateCount: num
     .filter(g => g.rows.length > 0);
 
   if (groups.length === 0) {
-    return <p className="text-sm text-gray-500">払戻しはありません（的中した馬券がありませんでした）。</p>;
+    return <p className="text-sm text-gray-500">的中した馬券はありませんでした。</p>;
   }
 
   return (
@@ -229,9 +229,14 @@ export default function ResultPanel({
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-          着差は1つ前の馬とのタイム差を、ゴールでの速さと1馬身＝2.4mで換算した目安です。上りはゴールまでの300mのタイム、通過は1/4・1/2・3/4地点の順位です。黒地のタイムはその時点のコースレコードです。着順・上り・人気は1位を黄、2位を青の背景で示しています。賞金は通常の賞金と追加賞金の合計で、（ ）は「通常＋追加」の内訳です。
-        </p>
+        <ul className="text-xs text-gray-500 mt-2 space-y-0.5 list-disc pl-4">
+          <li>着差：1つ前の馬とのタイム差を馬身に直した目安。1馬身は2.4mで計算</li>
+          <li>上り：ゴールまでの300mのタイム</li>
+          <li>通過：1/4・1/2・3/4地点の順位</li>
+          <li>黒地のタイム：その時点のコースレコード</li>
+          <li>黄と青の背景：着順・上り・人気の1位と2位</li>
+          <li>賞金：通常の賞金と追加賞金の合計。下の数字は「通常＋追加」の内訳</li>
+        </ul>
       </section>
 
       <section>

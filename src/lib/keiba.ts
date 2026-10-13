@@ -316,7 +316,7 @@ export const horsePath = (uuid: string) => `/keiba/horse/${uuid}`;
 // ------------------------------------------------------------
 
 export const CLASS_LABEL: Record<RaceClass, string> = {
-  SHINBA: '新馬',
+  SHINBA: '未勝利',
   ONE_WIN: '1勝クラス',
   OP: 'オープン',
   G2: 'G2',

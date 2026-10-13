@@ -76,7 +76,7 @@ export default function OddsPanel({
   if (race.status === 'ENTRY') {
     return (
       <EmptyState title="オッズはまだありません">
-        出走馬の募集が締め切られ、馬券の発売が始まると表示されます。
+        馬券の発売が始まると表示されます。
       </EmptyState>
     );
   }
@@ -115,7 +115,7 @@ export default function OddsPanel({
           {selling ? (
             <span className="inline-flex items-center gap-1.5 font-bold text-[#e0262d]">
               発売中のオッズ
-              <span className="font-normal text-gray-500 text-xs">（10秒ごとに更新）</span>
+              <span className="font-normal text-gray-500 text-xs">10秒ごとに更新</span>
             </span>
           ) : (
             <span className="font-bold text-gray-800">最終オッズ</span>
@@ -276,7 +276,7 @@ export default function OddsPanel({
           </div>
         )}
         <p className="text-xs text-gray-500 mt-2">
-          オッズは「売上 × 0.9 ÷ その組み合わせの票」で計算しています（1.0倍未満は1.0倍）。最終オッズは発走時点の値です。
+          オッズは「売上 × 0.9 ÷ その組み合わせの票」で計算しています。1.0倍を下回るときは1.0倍です。最終オッズは発走時点の値です。
         </p>
       </section>
     </div>

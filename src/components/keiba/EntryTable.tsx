@@ -50,7 +50,7 @@ export default function EntryTable({
     }
     return (
       <EmptyState title="出馬表はまだ公開されていません">
-        出走馬の募集が締め切られ、馬券の発売が始まると公開されます。
+        馬券の発売が始まると公開されます。
       </EmptyState>
     );
   }

@@ -31,7 +31,7 @@ export function GateBox({ gate, frame, size = 'md' }: { gate: number; frame: num
   );
 }
 
-// 新馬はバッジを出さない
+// 未勝利（SHINBA）はバッジを出さない
 const CLASS_BADGE: Partial<Record<RaceClass, { text: string; className: string }>> = {
   G1: { text: 'GⅠ', className: 'bg-[#1a4fa0] text-white' },
   G2: { text: 'GⅡ', className: 'bg-[#d6262f] text-white' },
