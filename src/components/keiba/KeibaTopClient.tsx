@@ -236,7 +236,6 @@ export default function KeibaTopClient({
                   const { md, weekday } = formatDateShort(date);
                   const weekend = isWeekend(date);
                   const selected = date === selectedDate;
-                  const hasLive = upcoming.some(r => r.date === date);
                   return (
                     <button
                       key={date}
@@ -245,7 +244,7 @@ export default function KeibaTopClient({
                       aria-selected={selected}
                       title={formatDateLong(date)}
                       onClick={() => setSelectedDate(date)}
-                      className={`relative shrink-0 min-w-[4.5rem] px-3 py-2 rounded-md border text-center cursor-pointer transition-colors ${selected
+                      className={`shrink-0 min-w-[4.5rem] px-3 py-2 rounded-md border text-center cursor-pointer transition-colors ${selected
                         ? 'bg-[#2f5a3c] border-[#2f5a3c] text-white'
                         : 'bg-white border-gray-200 text-gray-800 hover:border-[#5b8064]'
                         }`}
@@ -259,9 +258,6 @@ export default function KeibaTopClient({
                       >
                         （{weekday}）
                       </span>
-                      {hasLive && (
-                        <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#e0262d]" />
-                      )}
                     </button>
                   );
                 })}

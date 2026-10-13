@@ -72,12 +72,14 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
     return stakes ? Object.fromEntries(priced.map((r, i) => [r.key, stakes[i] / UNIT])) : null;
   };
 
-  // 印を付け替えて買い目が変わったときは、予算で配り直す（オッズの更新では配り直さない）
+  // 印を付け替えて買い目が変わったときは、予算で配り直す（オッズの更新では配り直さない）。
+  // 予算が空欄（買い目ごとに直している）なら、それまでの金額はそのままにする
   const pricedKeys = priced.map(r => r.key).join(',');
   const [allocatedFor, setAllocatedFor] = useState<string | null>(null);
   if (allocatedFor !== pricedKeys) {
     setAllocatedFor(pricedKeys);
-    setUnits(allocateUnits(Number(budgetText)) ?? {});
+    const next = budgetText === '' ? null : allocateUnits(Number(budgetText));
+    setUnits(prev => next ?? prev);
   }
 
   const changeBudget = (text: string) => {
@@ -85,9 +87,11 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
     const next = allocateUnits(Number(text));
     if (next) setUnits(next);
   };
+  // 買い目ごとに直したら、予算の配分とは合わなくなるので予算を空欄にする
   const changeUnits = (key: string, text: string) => {
     const n = Math.floor(Number(text));
     setUnits(prev => ({ ...prev, [key]: Number.isFinite(n) && n > 0 ? n : 0 }));
+    setBudgetText('');
   };
 
   const stakeOf = (key: string) => (units[key] ?? 0) * UNIT;
@@ -97,7 +101,7 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
   const minPayout = payouts.length ? Math.min(...payouts) : 0;
   const maxPayout = payouts.length ? Math.max(...payouts) : 0;
   const composite = compositeOdds((bought.length ? bought : priced).map(r => r.odds));
-  const budgetShort = priced.length > 0 && !(Number(budgetText) >= priced.length * UNIT);
+  const budgetShort = budgetText !== '' && priced.length > 0 && !(Number(budgetText) >= priced.length * UNIT);
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-hidden self-start">
@@ -121,9 +125,11 @@ function BetBlock({ title, color, rows }: { title: string; color: string; rows: 
           </span>
         </label>
         <p className="text-[11px] text-gray-500 mt-1">
-          {budgetShort
-            ? `予算は1点${UNIT} ineとして、${ine(priced.length * UNIT)}以上にしてください。`
-            : 'どれが当たっても払戻ができるだけ同じになるように配分します。配分したあと、買い目ごとに直せます。'}
+          {budgetText === ''
+            ? '買い目ごとに直した金額で計算しています。予算を入れると、全部の買い目を配分し直します。'
+            : budgetShort
+              ? `予算は1点${UNIT} ineとして、${ine(priced.length * UNIT)}以上にしてください。`
+              : 'どれが当たっても払戻ができるだけ同じになるように配分します。配分したあと、買い目ごとに直せます。'}
         </p>
       </div>
 

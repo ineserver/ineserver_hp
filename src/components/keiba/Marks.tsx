@@ -141,7 +141,7 @@ export function MarkPicker({
           ref={menuRef}
           role="menu"
           style={{ position: 'fixed', top: position.top, left: position.left, width: MENU_WIDTH }}
-          className="z-[60] bg-white border border-gray-300 shadow-lg p-1.5 grid grid-cols-7 gap-1"
+          className="z-[60] bg-white border border-gray-300 rounded-lg shadow-lg p-1.5 grid grid-cols-7 gap-1"
         >
           {MARKS.map(m => (
             <button
@@ -150,7 +150,7 @@ export function MarkPicker({
               role="menuitem"
               title={MARK_LABEL[m]}
               onClick={() => choose(m)}
-              className={`h-8 flex flex-col items-center justify-center border text-base font-bold leading-none cursor-pointer hover:bg-[#f0f5f1] ${m === mark ? 'border-[#2f5a3c] bg-[#e6eee8]' : 'border-gray-200'} ${m === '消' ? 'text-gray-500 text-sm' : 'text-gray-900'}`}
+              className={`h-8 flex flex-col items-center justify-center rounded border text-base font-bold leading-none cursor-pointer hover:bg-[#f0f5f1] ${m === mark ? 'border-[#2f5a3c] bg-[#e6eee8]' : 'border-gray-200'} ${m === '消' ? 'text-gray-500 text-sm' : 'text-gray-900'}`}
             >
               {m}
             </button>
@@ -159,7 +159,7 @@ export function MarkPicker({
             type="button"
             role="menuitem"
             onClick={() => choose(null)}
-            className="h-8 border border-gray-200 text-[11px] text-gray-500 cursor-pointer hover:bg-gray-50"
+            className="h-8 rounded border border-gray-200 text-[11px] text-gray-500 cursor-pointer hover:bg-gray-50"
           >
             なし
           </button>
