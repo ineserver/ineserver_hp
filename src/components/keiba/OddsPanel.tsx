@@ -12,8 +12,8 @@ import {
 } from '@/lib/keiba';
 import { EmptyState, FrameBox, GateBox, HorseLink, SectionTitle, rankClass } from './KeibaParts';
 import { oddsClass } from './EntryTable';
-
-const pairKey = (a: number, b: number) => (a < b ? `${a}-${b}` : `${b}-${a}`);
+import { ExcludedMark, MarkPicker, type Mark, type MarkMap } from './Marks';
+import { pairKey, type OddsHorse } from './SelectedOdds';
 
 function Toggle<T extends string>({
   value,
@@ -43,16 +43,20 @@ export default function OddsPanel({
   race,
   odds,
   gateCount,
+  marks,
+  onMark,
 }: {
   race: RaceDetail;
   odds: Odds | null;
   gateCount: number;
+  marks: MarkMap;
+  onMark: (gate: number, mark: Mark | null) => void;
 }) {
   const [winSort, setWinSort] = useState<'gate' | 'popularity'>('gate');
   const [quinellaView, setQuinellaView] = useState<'popularity' | 'matrix'>('popularity');
 
   // 出馬表があればその馬番、無ければオッズに出てくる馬番
-  const horses = useMemo(() => {
+  const horses = useMemo<OddsHorse[]>(() => {
     if (race.entries.length > 0) {
       return race.entries.map(e => ({ gate: e.gate, name: e.horseName, uuid: e.horseUuid, excluded: e.excluded }));
     }
@@ -144,6 +148,7 @@ export default function OddsPanel({
               <tr className="bg-[#e6eee8] text-gray-700 text-xs">
                 <th className="py-2 px-1 w-9 font-bold">枠</th>
                 <th className="py-2 px-1 w-10 font-bold">馬番</th>
+                <th className="py-2 px-1 w-9 font-bold">印</th>
                 <th className="py-2 px-3 text-left font-bold">馬名</th>
                 <th className="py-2 px-2 w-20 font-bold">オッズ</th>
                 <th className="py-2 px-2 w-12 font-bold">人気</th>
@@ -157,14 +162,22 @@ export default function OddsPanel({
                   <tr key={h.gate} className={`border-t border-gray-200 ${h.excluded ? 'bg-gray-100 text-gray-400' : ''}`}>
                     <td className="py-2 px-1 text-center"><FrameBox frame={frameOf(h.gate, gateCount)} /></td>
                     <td className="py-2 px-1 text-center font-bold tabular-nums">{h.gate}</td>
+                    <td className="py-2 px-1 text-center">
+                      {h.excluded ? (
+                        <ExcludedMark />
+                      ) : (
+                        <MarkPicker mark={marks[h.gate]} onChange={mark => onMark(h.gate, mark)} horseName={h.name || `${h.gate}番`} />
+                      )}
+                    </td>
                     <td className="py-2 px-2 sm:px-3 font-bold whitespace-nowrap"><HorseLink uuid={h.uuid} name={h.name} /></td>
                     <td className={`py-2 px-2 text-right text-base tabular-nums ${h.excluded ? '' : oddsClass(win?.odds)}`}>
-                      {h.excluded ? <span className="text-xs">除外</span> : win ? formatOdds(win.odds) : '---.-'}
+                      {h.excluded ? '--' : win ? formatOdds(win.odds) : '---.-'}
                     </td>
                     <td className={`py-2 px-2 text-center tabular-nums ${!h.excluded && win ? rankClass(win.popularity) : ''}`}>
-                      {!h.excluded && win ? win.popularity : ''}
+                      {h.excluded ? '--' : win ? win.popularity : ''}
                     </td>
                     <td className="py-2 px-3">
+                      {h.excluded && <span className="text-xs">--</span>}
                       {!h.excluded && win?.share != null && (
                         <div className="flex items-center gap-2">
                           <div className="hidden sm:block flex-1 h-2.5 bg-gray-100 rounded-sm overflow-hidden">

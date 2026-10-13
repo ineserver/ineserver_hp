@@ -23,6 +23,7 @@ import OddsPanel from './OddsPanel';
 import FormPanel from './FormPanel';
 import ResultPanel from './ResultPanel';
 import CourseMap from './CourseMap';
+import { useMarks } from './Marks';
 
 type Tab = 'entries' | 'odds' | 'form' | 'result' | 'course';
 
@@ -44,11 +45,13 @@ export default function RaceDetailClient({
   initialOdds,
   initialForm,
   course,
+  venue,
 }: {
   initialRace: RaceDetail;
   initialOdds: Odds | null;
   initialForm: RaceForm | null;
   course: CourseDetail | null;
+  venue: CourseDetail[];
 }) {
   const [race, setRace] = useState(initialRace);
   const [odds, setOdds] = useState(initialOdds);
@@ -59,6 +62,7 @@ export default function RaceDetailClient({
   const raceId = race.raceId;
   const status = race.status;
   const gateCount = gateCountOf(race);
+  const { marks, setMark } = useMarks(raceId);
 
   // ?tab= で開くタブを選べるようにする
   useEffect(() => {
@@ -180,11 +184,20 @@ export default function RaceDetailClient({
         </div>
 
         <div role="tabpanel">
-          {tab === 'entries' && <EntryTable race={race} odds={odds} gateCount={gateCount} />}
-          {tab === 'odds' && <OddsPanel race={race} odds={odds} gateCount={gateCount} />}
-          {tab === 'form' && <FormPanel form={form} gateCount={gateCount} finished={status === 'FINISHED'} />}
-          {tab === 'result' && <ResultPanel race={race} gateCount={gateCount} />}
-          {tab === 'course' && <CourseMap course={course} />}
+          {tab === 'entries' && <EntryTable race={race} odds={odds} gateCount={gateCount} marks={marks} onMark={setMark} />}
+          {tab === 'odds' && <OddsPanel race={race} odds={odds} gateCount={gateCount} marks={marks} onMark={setMark} />}
+          {tab === 'form' && (
+            <FormPanel form={form} gateCount={gateCount} finished={status === 'FINISHED'} marks={marks} onMark={setMark} />
+          )}
+          {tab === 'result' && (
+            <ResultPanel
+              race={race}
+              gateCount={gateCount}
+              recordBefore={form ? (form.course.record?.time ?? null) : undefined}
+              marks={marks}
+            />
+          )}
+          {tab === 'course' && <CourseMap course={course} venue={venue} />}
         </div>
       </div>
     </div>

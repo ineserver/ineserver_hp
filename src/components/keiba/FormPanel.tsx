@@ -16,6 +16,7 @@ import {
   type RunRef,
 } from '@/lib/keiba';
 import { ClassBadge, EmptyState, FrameBox, HorseLink, PositionMark, SectionTitle, rankClass } from './KeibaParts';
+import { ExcludedMark, MarkPicker, type Mark, type MarkMap } from './Marks';
 
 const RECENT_COUNT = 5;
 const RECENT_LABELS = ['前走', '2走前', '3走前', '4走前', '5走前'];
@@ -76,7 +77,17 @@ function TimeLine({ label, time, sub }: { label: string; time: string; sub?: str
   );
 }
 
-function HorseRow({ horse, gateCount }: { horse: FormHorse; gateCount: number }) {
+function HorseRow({
+  horse,
+  gateCount,
+  mark,
+  onMark,
+}: {
+  horse: FormHorse;
+  gateCount: number;
+  mark: Mark | undefined;
+  onMark: (mark: Mark | null) => void;
+}) {
   const same = horse.sameCondition.best;
   const similar = horse.similarCondition;
   const fastest = horse.bestLast300;
@@ -85,12 +96,12 @@ function HorseRow({ horse, gateCount }: { horse: FormHorse; gateCount: number })
       <div className="sticky left-0 z-10 bg-white flex flex-col items-center justify-center gap-1 py-2">
         <FrameBox frame={frameOf(horse.gate, gateCount)} />
         <span className="font-bold tabular-nums">{horse.gate}</span>
+        {horse.excluded ? <ExcludedMark /> : <MarkPicker mark={mark} onChange={onMark} horseName={horse.horseName} />}
       </div>
       <div className="sticky left-12 z-10 bg-white border-l border-r border-gray-200 px-3 py-2">
         <div className={`font-bold text-base text-gray-900 ${horse.excluded ? 'line-through' : ''}`}>
           <HorseLink uuid={horse.horseUuid} name={horse.horseName} />
         </div>
-        {horse.excluded && <div className="text-xs font-bold text-gray-500">除外</div>}
         <div className="text-xs text-gray-600 mt-1">
           通算 {horse.record.starts}戦
           <span className="ml-1 tabular-nums">[{formatRecord(horse.record)}]</span>
@@ -141,10 +152,14 @@ export default function FormPanel({
   form,
   gateCount,
   finished,
+  marks,
+  onMark,
 }: {
   form: RaceForm | null;
   gateCount: number;
   finished: boolean;
+  marks: MarkMap;
+  onMark: (gate: number, mark: Mark | null) => void;
 }) {
   if (!form) {
     return <EmptyState title="馬柱を読み込めませんでした">時間をおいて再度お試しください。</EmptyState>;
@@ -176,12 +191,7 @@ export default function FormPanel({
               <tbody>
                 {form.course.byClass.map(c => (
                   <tr key={c.class} className="border-t border-gray-200 text-center tabular-nums">
-                    <td className="py-2 px-3 text-left">
-                      <span className="inline-flex items-center gap-2">
-                        <ClassBadge raceClass={c.class} size="sm" />
-                        {CLASS_LABEL[c.class]}
-                      </span>
-                    </td>
+                    <td className="py-2 px-3 text-left">{CLASS_LABEL[c.class]}</td>
                     <td className="py-2 px-3">{c.races}</td>
                     <td className="py-2 px-3">{formatTime(c.winTimeAverage)}</td>
                     <td className="py-2 px-3 font-bold">{formatTime(c.winTimeBest)}</td>
@@ -215,7 +225,13 @@ export default function FormPanel({
                 ))}
               </div>
               {form.horses.map(horse => (
-                <HorseRow key={horse.gate} horse={horse} gateCount={gateCount} />
+                <HorseRow
+                  key={horse.gate}
+                  horse={horse}
+                  gateCount={gateCount}
+                  mark={marks[horse.gate]}
+                  onMark={mark => onMark(horse.gate, mark)}
+                />
               ))}
             </div>
           </div>

@@ -286,8 +286,6 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
             </div>
           </section>
         )}
-
-        <p className="text-xs text-gray-400">調子・能力値・適性などは公開されていません。</p>
       </div>
     </div>
   );
