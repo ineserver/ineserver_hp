@@ -14,6 +14,7 @@ import {
 } from '@/lib/keiba';
 import { EmptyState, FrameBox, GateBox, HorseLink, OwnerLabel, PrizeTotal, SectionTitle, rankClass } from './KeibaParts';
 import { WeightCell } from './EntryTable';
+import { MarkText, type MarkMap } from './Marks';
 
 const BET_TYPE_LABEL: Record<Payout['betType'], string> = { WIN: '単勝', QUINELLA: '馬連' };
 const BET_TYPE_COLOR: Record<Payout['betType'], string> = { WIN: 'bg-[#565eb0]', QUINELLA: 'bg-[#87599a]' };
@@ -24,7 +25,7 @@ function PayoutTable({ payouts, gateCount }: { payouts: Payout[]; gateCount: num
     .filter(g => g.rows.length > 0);
 
   if (groups.length === 0) {
-    return <p className="text-sm text-gray-500">払戻しはありません（的中した馬券がありませんでした）。</p>;
+    return <p className="text-sm text-gray-500">的中した馬券はありませんでした。</p>;
   }
 
   return (
@@ -115,7 +116,18 @@ function LapTable({ laps, distance }: { laps: number[]; distance: number | null 
   );
 }
 
-export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gateCount: number }) {
+export default function ResultPanel({
+  race,
+  gateCount,
+  recordBefore,
+  marks,
+}: {
+  race: RaceDetail;
+  gateCount: number;
+  // このレースより前の同じ条件のコースレコード（null は初めての条件、undefined は分からない）
+  recordBefore: number | null | undefined;
+  marks: MarkMap;
+}) {
   if (race.status === 'CANCELLED') {
     return (
       <EmptyState title="このレースは中止になりました">
@@ -128,6 +140,13 @@ export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gat
   }
 
   const results = sortResults(race.results);
+  // 印を付けていれば、予想と見比べられるように印の列を出す
+  const showMarks = Object.keys(marks).length > 0;
+  // このレースでいちばん速く、それまでのレコード以上のタイムなら、その時点のコースレコード
+  const times = results.filter(r => r.finished && r.time != null).map(r => r.time!);
+  const bestTime = times.length ? Math.min(...times) : null;
+  const isCourseRecord = (time: number | null) =>
+    recordBefore !== undefined && time != null && time === bestTime && (recordBefore === null || time <= recordBefore);
   const margins = marginsOf(results, race.course.distance);
   const genderOf = new Map(race.entries.map(e => [e.gate, e.gender]));
   // 上りの順位（同じタイムは同じ順位）
@@ -145,6 +164,7 @@ export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gat
                 <th className="py-2 px-2 w-12 font-bold">着順</th>
                 <th className="py-2 px-1 w-9 font-bold">枠</th>
                 <th className="py-2 px-1 w-10 font-bold">馬番</th>
+                {showMarks && <th className="py-2 px-1 w-8 font-bold">印</th>}
                 <th className="py-2 px-3 text-left font-bold">馬名</th>
                 <th className="py-2 px-1 w-8 font-bold">性</th>
                 <th className="py-2 px-3 text-left font-bold">馬主</th>
@@ -170,6 +190,7 @@ export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gat
                     </td>
                     <td className="py-2 px-1 text-center"><FrameBox frame={frameOf(r.gate, gateCount)} /></td>
                     <td className="py-2 px-1 text-center font-bold tabular-nums">{r.gate}</td>
+                    {showMarks && <td className="py-2 px-1 text-center"><MarkText mark={marks[r.gate]} /></td>}
                     <td className="py-2 px-3">
                       <HorseLink uuid={r.horseUuid} name={r.horseName} className="font-bold text-gray-900" />
                       {r.lateStart && (
@@ -181,7 +202,11 @@ export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gat
                     </td>
                     <td className="py-2 px-3 max-w-[9rem]"><OwnerLabel owner={r.owner} /></td>
                     <td className="py-2 px-2 text-center tabular-nums font-medium" title={r.time != null ? `${r.time}秒` : undefined}>
-                      {formatTime(r.time)}
+                      {r.finished && isCourseRecord(r.time) ? (
+                        <span className="bg-black text-white px-1.5 rounded" title="コースレコード">{formatTime(r.time)}</span>
+                      ) : (
+                        formatTime(r.time)
+                      )}
                     </td>
                     <td className="py-2 px-2 text-center text-xs whitespace-nowrap">{margins.get(r.gate) ?? ''}</td>
                     <td className="py-2 px-2 text-center text-xs tabular-nums">{formatPassing(r.passing)}</td>
@@ -204,9 +229,14 @@ export default function ResultPanel({ race, gateCount }: { race: RaceDetail; gat
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-gray-500 mt-2 leading-relaxed">
-          着差は1つ前の馬とのタイム差を、ゴールでの速さと1馬身＝2.4mで換算した目安です。上りはゴールまでの300mのタイム、通過は1/4・1/2・3/4地点の順位です。着順・上り・人気は1位を黄、2位を青の背景で示しています。賞金は通常の賞金と追加賞金の合計で、（ ）は「通常＋追加」の内訳です。
-        </p>
+        <ul className="text-xs text-gray-500 mt-2 space-y-0.5 list-disc pl-4">
+          <li>着差：1つ前の馬とのタイム差を馬身に直した目安。1馬身は2.4mで計算</li>
+          <li>上り：ゴールまでの300mのタイム</li>
+          <li>通過：1/4・1/2・3/4地点の順位</li>
+          <li>黒地のタイム：その時点のコースレコード</li>
+          <li>黄と青の背景：着順・上り・人気の1位と2位</li>
+          <li>賞金：通常の賞金と追加賞金の合計。下の数字は「通常＋追加」の内訳</li>
+        </ul>
       </section>
 
       <section>

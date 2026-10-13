@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { ServerStatus as ServerStatusType } from '@/types/server-status';
 import MaintenanceSchedule from './MaintenanceSchedule';
 import MarketIndex from './MarketIndex';
+import KeibaWidget from './keiba/KeibaWidget';
 
 interface ServerStatusProps {
   serverAddress?: string;
@@ -259,6 +260,9 @@ export default function ServerStatus({
 
       {/* いねさば物価平均 */}
       <MarketIndex />
+
+      {/* 競馬（発売中は最新オッズ、それ以外は前回の結果） */}
+      <KeibaWidget />
 
       {/* コミュニティ・サポート */}
       <div className="space-y-4">

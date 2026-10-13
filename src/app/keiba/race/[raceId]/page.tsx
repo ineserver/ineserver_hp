@@ -11,6 +11,7 @@ import {
   formatDateLong,
   raceApiPath,
   type CourseDetail,
+  type CourseSummary,
   type Odds,
   type RaceDetail,
   type RaceForm,
@@ -61,11 +62,21 @@ export default async function RacePage({ params }: PageProps) {
 
   const race = raceRes.data;
   const hasOdds = race.status !== 'ENTRY' && race.status !== 'CANCELLED';
-  const [oddsRes, formRes, courseRes] = await Promise.all([
+  const [oddsRes, formRes, coursesRes] = await Promise.all([
     hasOdds ? fetchKeiba<Odds>(`${raceApiPath(raceId)}/odds`, { next: { revalidate: 10 } }) : null,
     fetchKeiba<RaceForm>(`${raceApiPath(raceId)}/form`, { next: { revalidate: 60 } }),
-    fetchKeiba<CourseDetail>(courseApiPath(race.course.name), { next: { revalidate: 3600 } }),
+    fetchKeiba<{ courses: CourseSummary[] }>('/api/keiba/courses', { next: { revalidate: 3600 } }),
   ]);
+
+  // コース図は、このレースで使わないコースも含めた競馬場の全景の上に描く
+  const courseNames = new Set(coursesRes.ok ? coursesRes.data.courses.map(c => c.name) : []);
+  courseNames.add(race.course.name);
+  const venue = (
+    await Promise.all(
+      [...courseNames].map(name => fetchKeiba<CourseDetail>(courseApiPath(name), { next: { revalidate: 3600 } })),
+    )
+  ).flatMap(res => (res.ok ? [res.data] : []));
+  const course = venue.find(c => c.name === race.course.name) ?? null;
 
   return (
     <>
@@ -75,7 +86,8 @@ export default async function RacePage({ params }: PageProps) {
           initialRace={race}
           initialOdds={oddsRes?.ok ? oddsRes.data : null}
           initialForm={formRes.ok ? formRes.data : null}
-          course={courseRes.ok ? courseRes.data : null}
+          course={course}
+          venue={venue}
         />
       </div>
     </>

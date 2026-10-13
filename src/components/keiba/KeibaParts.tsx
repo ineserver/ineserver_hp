@@ -31,17 +31,17 @@ export function GateBox({ gate, frame, size = 'md' }: { gate: number; frame: num
   );
 }
 
-const CLASS_BADGE: Record<RaceClass, { text: string; className: string }> = {
+// 未勝利（SHINBA）はバッジを出さない
+const CLASS_BADGE: Partial<Record<RaceClass, { text: string; className: string }>> = {
   G1: { text: 'GⅠ', className: 'bg-[#1a4fa0] text-white' },
   G2: { text: 'GⅡ', className: 'bg-[#d6262f] text-white' },
   OP: { text: 'OP', className: 'bg-[#d97706] text-white' },
   ONE_WIN: { text: '1勝', className: 'bg-[#56636f] text-white' },
-  SHINBA: { text: '新馬', className: 'bg-[#2e8b57] text-white' },
 };
 
 export function ClassBadge({ raceClass, size = 'md' }: { raceClass: RaceClass | null; size?: 'sm' | 'md' | 'lg' }) {
-  if (!raceClass) return null;
-  const badge = CLASS_BADGE[raceClass];
+  const badge = raceClass ? CLASS_BADGE[raceClass] : undefined;
+  if (!badge) return null;
   const sizeClass = {
     sm: 'text-[10px] px-1.5 py-px',
     md: 'text-xs px-2 py-0.5',

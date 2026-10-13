@@ -149,7 +149,7 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
               <PedigreeTable sire={horse.pedigree.sire} dam={horse.pedigree.dam} />
             </div>
             {noPedigree && (
-              <p className="text-xs text-gray-500 mt-2">交配で生まれた馬ではないため、父母の記録はありません。</p>
+              <p className="text-xs text-gray-500 mt-2">交配で生まれた馬ではないので父母の記録はありません。</p>
             )}
           </section>
         </div>
@@ -260,7 +260,7 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
                 </table>
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                着差は勝ち馬とのタイム差（秒）で、勝ったレースは2着との差をマイナスで表示しています。
+                着差は勝ち馬との秒差です。勝ったレースは2着との差をマイナスで表示しています。
               </p>
             </>
           )}
@@ -286,8 +286,6 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
             </div>
           </section>
         )}
-
-        <p className="text-xs text-gray-400">調子・能力値・適性などは公開されていません。</p>
       </div>
     </div>
   );

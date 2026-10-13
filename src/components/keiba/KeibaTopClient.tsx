@@ -67,7 +67,7 @@ function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direc
           </Link>
         </div>
         {race.status === 'ENTRY' && (
-          <p className="text-xs text-gray-500 mt-3">出馬表とオッズは、出走馬の募集が締め切られて馬券の発売が始まると公開されます。</p>
+          <p className="text-xs text-gray-500 mt-3">出馬表とオッズは馬券の発売が始まると公開されます。</p>
         )}
       </div>
     </div>
@@ -157,7 +157,7 @@ export default function KeibaTopClient({
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">i-keiba</h1>
-            <p className="text-sm text-white/75">レースの出馬表・オッズ・馬柱・結果を確認できます。</p>
+            <p className="text-sm text-white/75">レースの出馬表・オッズ・馬柱・結果を確認できます</p>
           </div>
           <div className="flex gap-2 flex-wrap">
             <Link
@@ -236,7 +236,6 @@ export default function KeibaTopClient({
                   const { md, weekday } = formatDateShort(date);
                   const weekend = isWeekend(date);
                   const selected = date === selectedDate;
-                  const hasLive = upcoming.some(r => r.date === date);
                   return (
                     <button
                       key={date}
@@ -245,7 +244,7 @@ export default function KeibaTopClient({
                       aria-selected={selected}
                       title={formatDateLong(date)}
                       onClick={() => setSelectedDate(date)}
-                      className={`relative shrink-0 min-w-[4.5rem] px-3 py-2 rounded-md border text-center cursor-pointer transition-colors ${selected
+                      className={`shrink-0 min-w-[4.5rem] px-3 py-2 rounded-md border text-center cursor-pointer transition-colors ${selected
                         ? 'bg-[#2f5a3c] border-[#2f5a3c] text-white'
                         : 'bg-white border-gray-200 text-gray-800 hover:border-[#5b8064]'
                         }`}
@@ -259,9 +258,6 @@ export default function KeibaTopClient({
                       >
                         （{weekday}）
                       </span>
-                      {hasLive && (
-                        <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-[#e0262d]" />
-                      )}
                     </button>
                   );
                 })}
