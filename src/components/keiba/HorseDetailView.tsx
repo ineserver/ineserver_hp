@@ -85,8 +85,9 @@ function PedigreeTable({ sire, dam }: { sire: PedigreeParent | null; dam: Pedigr
   );
 }
 
-export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
+export default function HorseDetailView({ horse, recordRaceIds }: { horse: HorseDetail; recordRaceIds: string[] }) {
   const rate = rates(horse.record);
+  const records = new Set(recordRaceIds);
   const noPedigree = !horse.pedigree.sire && !horse.pedigree.dam;
 
   return (
@@ -240,7 +241,13 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
                           <td className={`py-2 px-2 text-center font-bold tabular-nums ${run.finished ? rankClass(run.position) : ''}`}>
                             {run.finished && run.position != null ? run.position : <span className="text-xs text-gray-500">中止</span>}
                           </td>
-                          <td className="py-2 px-2 text-center tabular-nums font-medium">{formatTime(run.time)}</td>
+                          <td className="py-2 px-2 text-center tabular-nums font-medium">
+                            {run.finished && run.position === 1 && records.has(run.raceId) ? (
+                              <span className="bg-black text-white px-1.5 rounded" title="コースレコード">{formatTime(run.time)}</span>
+                            ) : (
+                              formatTime(run.time)
+                            )}
+                          </td>
                           <td className="py-2 px-2 text-center tabular-nums text-xs">{formatTimeBehind(run.timeBehind)}</td>
                           <td className="py-2 px-2 text-center tabular-nums text-xs">
                             {formatPassing(run.passing)}
@@ -260,7 +267,7 @@ export default function HorseDetailView({ horse }: { horse: HorseDetail }) {
                 </table>
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                着差は勝ち馬との秒差です。勝ったレースは2着との差をマイナスで表示しています。
+                着差は勝ち馬との秒差です。勝ったレースは2着との差をマイナスで表示しています。黒地のタイムはその時点のコースレコードです。
               </p>
             </>
           )}
