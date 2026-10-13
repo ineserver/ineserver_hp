@@ -541,6 +541,28 @@ export function marginsOf(results: Result[], distance: number | null): Map<numbe
   return margins;
 }
 
+// その時点でコースレコードになったレース。
+//   同じコースで距離の差が10m以内（API の「同条件」と同じ）のレースのうち、それまでの最速以下で勝ったもの
+const SAME_COURSE_TOLERANCE_M = 10;
+
+export function courseRecordRaceIds(races: RaceSummary[]): Set<string> {
+  const finished = races
+    .filter(r => r.status === 'FINISHED' && r.course.distance != null && r.winners.some(w => w.time != null))
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.number ?? 0) - (b.number ?? 0));
+  const past: { name: string; distance: number; time: number }[] = [];
+  const records = new Set<string>();
+  for (const race of finished) {
+    const distance = race.course.distance!;
+    const time = Math.min(...race.winners.flatMap(w => (w.time != null ? [w.time] : [])));
+    const before = past
+      .filter(p => p.name === race.course.name && Math.abs(p.distance - distance) <= SAME_COURSE_TOLERANCE_M)
+      .map(p => p.time);
+    if (before.length === 0 || time <= Math.min(...before)) records.add(race.raceId);
+    past.push({ name: race.course.name, distance, time });
+  }
+  return records;
+}
+
 // 着順の並び（確定した馬が先、競走中止は馬番順で後ろ）
 export function sortResults(results: Result[]): Result[] {
   return [...results].sort((a, b) => {

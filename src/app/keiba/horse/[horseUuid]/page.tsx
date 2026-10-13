@@ -7,11 +7,13 @@ import { KeibaPageHeader } from '@/components/keiba/KeibaParts';
 import {
   CLASS_LABEL,
   GENDER_LABEL,
+  courseRecordRaceIds,
   fetchKeiba,
   formatRecord,
   formatStarts,
   horseApiPath,
   type HorseDetail,
+  type RaceSummary,
 } from '@/lib/keiba';
 
 export const revalidate = 60;
@@ -59,11 +61,18 @@ export default async function HorsePage({ params }: PageProps) {
     );
   }
 
+  // 競走成績で、その時点のコースレコードだったタイムを黒地にするため
+  const racesRes = await fetchKeiba<{ races: RaceSummary[] }>(
+    '/api/keiba/races?status=FINISHED&order=asc&limit=500',
+    { next: { revalidate: 300 } },
+  );
+  const recordRaceIds = racesRes.ok ? [...courseRecordRaceIds(racesRes.data.races)] : [];
+
   return (
     <>
       <Header />
       <div className="flex-grow">
-        <HorseDetailView horse={res.data} />
+        <HorseDetailView horse={res.data} recordRaceIds={recordRaceIds} />
       </div>
     </>
   );
