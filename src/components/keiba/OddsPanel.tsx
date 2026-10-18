@@ -6,6 +6,7 @@ import {
   formatIne,
   formatOdds,
   frameOf,
+  isSelling,
   type Odds,
   type RaceDetail,
   type WinOdds,
@@ -91,7 +92,7 @@ export default function OddsPanel({
     return <EmptyState title="オッズを読み込めませんでした">時間をおいて再度お試しください。</EmptyState>;
   }
 
-  const selling = race.status === 'BETTING';
+  const selling = isSelling(race.status);
   if (!selling && odds.sales.total === 0) {
     return (
       <EmptyState title="オッズの記録はありません">

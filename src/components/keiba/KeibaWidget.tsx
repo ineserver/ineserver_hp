@@ -26,7 +26,7 @@ import PostCountdown from './PostCountdown';
 import { oddsClass } from './EntryTable';
 
 // トップページの右側に置く競馬の案内。
-//   発売中（締切後・競走中も）のレースがあれば最新オッズ、無ければ前回の開催の結果を出す
+//   発売中（ゲートイン・競走中も）のレースがあれば最新オッズ、無ければ前回の開催の結果を出す
 const CLASS_RANK: Record<RaceClass, number> = { G1: 5, G2: 4, OP: 3, ONE_WIN: 2, SHINBA: 1 };
 const rankOf = (race: RaceSummary) => (race.class ? CLASS_RANK[race.class] : 0);
 const REFRESH_MS = 30_000;
@@ -46,7 +46,7 @@ async function loadWidget(): Promise<WidgetState> {
     { cache: 'no-store' },
   );
   if (!live.ok) return { kind: 'error' };
-  // 発売中・締切後・競走中のうち、いちばん早いレース
+  // 発売中・ゲートイン・競走中のうち、いちばん早いレース
   const next = live.data.races.filter(r => r.status && LIVE.includes(r.status)).sort(byDate)[0];
   if (next) {
     const [detail, odds] = await Promise.all([

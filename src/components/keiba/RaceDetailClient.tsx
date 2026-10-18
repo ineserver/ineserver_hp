@@ -9,6 +9,7 @@ import {
   formatIne,
   gateCountOf,
   isLive,
+  isSelling,
   raceApiPath,
   type CourseDetail,
   type Odds,
@@ -95,14 +96,14 @@ export default function RaceDetailClient({
 
   // 発売中はオッズを取り直す
   useEffect(() => {
-    if (status !== 'BETTING') return;
+    if (!isSelling(status)) return;
     const timer = setInterval(() => {
       if (!document.hidden) refreshOdds();
     }, ODDS_REFRESH_MS);
     return () => clearInterval(timer);
   }, [status, refreshOdds]);
 
-  // 状態が変わったら、オッズ（締切後は最終の値）と馬柱を取り直す
+  // 状態が変わったら、オッズ（発走後は最終の値）と馬柱を取り直す
   const prevStatus = useRef(status);
   useEffect(() => {
     if (prevStatus.current === status) return;

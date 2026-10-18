@@ -326,7 +326,7 @@ export const CLASS_LABEL: Record<RaceClass, string> = {
 export const STATUS_LABEL: Record<RaceStatus, string> = {
   ENTRY: '出走馬募集中',
   BETTING: '発売中',
-  GATE: '締切',
+  GATE: 'ゲートイン',
   RUNNING: '競走中',
   FINISHED: '確定',
   CANCELLED: '中止',
@@ -336,6 +336,11 @@ export const STATUS_LABEL: Record<RaceStatus, string> = {
 export const LIVE_STATUSES: RaceStatus[] = ['ENTRY', 'BETTING', 'GATE', 'RUNNING'];
 
 export const isLive = (status: RaceStatus | null) => status != null && LIVE_STATUSES.includes(status);
+
+// 馬券を発売中のレース（ゲートに入っても発走までは買える）
+export const SELLING_STATUSES: RaceStatus[] = ['BETTING', 'GATE'];
+
+export const isSelling = (status: RaceStatus | null) => status != null && SELLING_STATUSES.includes(status);
 
 export const GENDER_LABEL: Record<Gender, string> = { STALLION: '牡', MARE: '牝' };
 
