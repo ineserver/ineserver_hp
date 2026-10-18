@@ -150,15 +150,31 @@ export function OwnerLabel({ owner, className = '' }: { owner: Owner; className?
 export const rankClass = (rank: number | null | undefined) =>
   rank === 1 ? 'bg-[#ffef7f]' : rank === 2 ? 'bg-[#cbdeff]' : '';
 
+// 競走中止（ゴールしなかった）の印。着順は進んだ距離の順で付いている
+export function DnfTag({ className = '' }: { className?: string }) {
+  return (
+    <span className={`inline-block text-[10px] font-normal px-1 py-px rounded bg-gray-200 text-gray-600 align-middle whitespace-nowrap ${className}`}>
+      競走中止
+    </span>
+  );
+}
+
 // 着順（表の外で使う四角）
 export function PositionMark({ position, finished, size = 'md' }: { position: number | null; finished: boolean; size?: 'sm' | 'md' | 'lg' }) {
-  if (!finished || position == null) {
+  if (position == null) {
     return <span className="text-xs font-bold text-gray-500">中止</span>;
   }
   const sizeClass = { sm: 'w-5 h-5 text-xs', md: 'w-7 h-7 text-sm', lg: 'w-9 h-9 text-lg' }[size];
-  return (
-    <span className={`inline-flex items-center justify-center font-bold tabular-nums text-gray-900 ${sizeClass} ${rankClass(position)}`}>
+  const mark = (
+    <span className={`inline-flex items-center justify-center font-bold tabular-nums ${finished ? 'text-gray-900' : 'text-gray-500'} ${sizeClass} ${rankClass(position)}`}>
       {position}
+    </span>
+  );
+  if (finished) return mark;
+  return (
+    <span className="inline-flex items-center gap-1">
+      {mark}
+      <DnfTag />
     </span>
   );
 }

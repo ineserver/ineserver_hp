@@ -16,6 +16,9 @@ export type RaceStatus = 'ENTRY' | 'BETTING' | 'GATE' | 'RUNNING' | 'FINISHED' |
 export type Gender = 'STALLION' | 'MARE';
 export type Direction = 'LEFT' | 'RIGHT' | 'STRAIGHT';
 export type Point = [number, number, number];
+export type Selection = 'FIRST' | 'PRIZE';
+export type SelectionBasis = 'BONUS' | 'TOTAL';
+export type Approval = 'AUTO' | 'MANUAL';
 
 export interface Owner {
   uuid: string | null;
@@ -28,6 +31,19 @@ export interface RaceCourse {
   surface: Surface | null;
   distance: number | null;
   distanceOfficial: number | null;
+}
+
+// 申請の条件（条件を書き出す前の版のプラグインのレースは null）
+export interface EntryRules {
+  maxRunners: number | null;
+  // 定員を超えたときの選び方（承認が MANUAL なら運営が選ぶ）
+  selection: Selection | null;
+  // 賞金順で比べる額（BONUS 通算追加賞金 / TOTAL 通算獲得賞金）
+  selectionBasis?: SelectionBasis | null;
+  approval: Approval | null;
+  upperChallenge: boolean | null;
+  eligibleClasses: RaceClass[];
+  entryFee: number | null;
 }
 
 export interface Race {
@@ -44,6 +60,7 @@ export interface Race {
   bonusTotal: number | null;
   racedAt: string | null;
   lapTimes: number[] | null;
+  entryRules?: EntryRules | null;
 }
 
 export interface RaceWinner {
@@ -55,6 +72,9 @@ export interface RaceWinner {
 
 export interface RaceSummary extends Race {
   winners: RaceWinner[];
+  // 受付中のレースの申請頭数（承認待ちも含む）と、そのうち承認待ち。受付中でなければ null
+  applicantCount?: number | null;
+  pendingCount?: number | null;
 }
 
 export interface Entry {
@@ -100,7 +120,27 @@ export interface Payout {
   popularity: number | null;
 }
 
+// 受付中のレースに申請している馬（申請順）
+export interface Applicant {
+  // 申請順（取消があっても詰めない）
+  order: number;
+  horseUuid: string;
+  horseName: string;
+  gender: Gender | null;
+  sire: string | null;
+  dam: string | null;
+  owner: Owner;
+  horseClass: RaceClass | null;
+  // 運営の承認待ち
+  pending: boolean;
+  totalPrize: number | null;
+  totalBonus: number | null;
+  record: RaceRecord;
+}
+
 export interface RaceDetail extends Race {
+  // 受付中だけ。古い API では無い
+  applicants?: Applicant[];
   entries: Entry[];
   results: Result[];
   payouts: Payout[];
@@ -156,10 +196,9 @@ export interface Run {
   winOdds: number | null;
   weight: number | null;
   weightChange: number | null;
-  // 追加賞金を含んだ賞金
+  // 追加賞金を含んだ賞金と、そのうちの追加賞金
   prize: number | null;
-  // 追加賞金（API が返すようになったら内訳に出す）
-  bonusPrize?: number | null;
+  bonusPrize: number | null;
 }
 
 // コースレコードなどの1走
@@ -326,7 +365,7 @@ export const CLASS_LABEL: Record<RaceClass, string> = {
 export const STATUS_LABEL: Record<RaceStatus, string> = {
   ENTRY: '出走馬募集中',
   BETTING: '発売中',
-  GATE: '締切',
+  GATE: 'ゲートイン',
   RUNNING: '競走中',
   FINISHED: '確定',
   CANCELLED: '中止',
@@ -337,7 +376,27 @@ export const LIVE_STATUSES: RaceStatus[] = ['ENTRY', 'BETTING', 'GATE', 'RUNNING
 
 export const isLive = (status: RaceStatus | null) => status != null && LIVE_STATUSES.includes(status);
 
+// 馬券を発売中のレース（ゲートに入っても発走までは買える）
+export const SELLING_STATUSES: RaceStatus[] = ['BETTING', 'GATE'];
+
+export const isSelling = (status: RaceStatus | null) => status != null && SELLING_STATUSES.includes(status);
+
 export const GENDER_LABEL: Record<Gender, string> = { STALLION: '牡', MARE: '牝' };
+
+export const APPROVAL_LABEL: Record<Approval, string> = { AUTO: '自動', MANUAL: '運営承認' };
+
+export const SELECTION_BASIS_LABEL: Record<SelectionBasis, string> = { BONUS: '通算追加賞金', TOTAL: '通算獲得賞金' };
+
+// 頭数。締切後は出走頭数、受付中は申請頭数（定員があれば添える）
+export function formatHeadcount(
+  race: Pick<Race, 'status' | 'fieldSize' | 'entryRules'>,
+  applicantCount: number | null | undefined,
+): string {
+  if (race.fieldSize) return `${race.fieldSize}頭`;
+  if (race.status !== 'ENTRY' || applicantCount == null) return '';
+  const max = race.entryRules?.maxRunners;
+  return `申請${applicantCount}頭${max != null ? `（定員${max}頭）` : ''}`;
+}
 
 export const DIRECTION_LABEL: Record<Direction, string> = { LEFT: '左', RIGHT: '右', STRAIGHT: '直線' };
 
@@ -563,11 +622,11 @@ export function courseRecordRaceIds(races: RaceSummary[]): Set<string> {
   return records;
 }
 
-// 着順の並び（確定した馬が先、競走中止は馬番順で後ろ）
+// 着順の並び。競走中止の馬にもプラグインが着順（ゴールした馬の後ろに、進んだ距離の順）を付けている
 export function sortResults(results: Result[]): Result[] {
   return [...results].sort((a, b) => {
-    const pa = a.finished && a.position != null ? a.position : Infinity;
-    const pb = b.finished && b.position != null ? b.position : Infinity;
+    const pa = a.position ?? Infinity;
+    const pb = b.position ?? Infinity;
     return pa - pb || a.gate - b.gate;
   });
 }
