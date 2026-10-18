@@ -7,6 +7,7 @@ import {
   type Odds,
   type RaceDetail,
 } from '@/lib/keiba';
+import EntryOpenPanel from './EntryOpenPanel';
 import { EmptyState, FrameBox, HorseLink, OwnerLabel, rankClass } from './KeibaParts';
 import { ExcludedMark, MarkPicker, type Mark, type MarkMap } from './Marks';
 import SelectedOdds, { pairKey } from './SelectedOdds';
@@ -39,6 +40,10 @@ export default function EntryTable({
   marks: MarkMap;
   onMark: (gate: number, mark: Mark | null) => void;
 }) {
+  // 受付中は出走条件と申請中の馬（申請馬を返さない古い API なら、下の案内のまま）
+  if (race.status === 'ENTRY' && (race.applicants || race.entryRules)) {
+    return <EntryOpenPanel race={race} />;
+  }
   if (race.entries.length === 0) {
     // 以前のレースは結果だけが記録されていて、出馬表が無い
     if (race.status === 'FINISHED') {

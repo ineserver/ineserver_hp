@@ -7,6 +7,7 @@ import {
   formatCourse,
   formatDateLong,
   formatDateShort,
+  formatHeadcount,
   formatTime,
   isLive,
   isWeekend,
@@ -28,6 +29,7 @@ const byRaceOrder = (a: RaceSummary, b: RaceSummary) =>
 
 function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direction | null }) {
   const href = `/keiba/race/${race.raceId}`;
+  const headcount = formatHeadcount(race, race.applicantCount);
   return (
     <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
       <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-2 bg-[#1f3d2a] text-white text-sm">
@@ -47,7 +49,7 @@ function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direc
               {race.postTime && ' / '}
               {formatCourse(race.course, direction)}
               {' / '}{courseName(race.course)}
-              {race.fieldSize ? ` / ${race.fieldSize}頭` : ''}
+              {headcount && ` / ${headcount}`}
             </p>
             <PostCountdown race={race} className="block mt-2 text-[#e0262d] text-lg" />
           </div>
@@ -67,7 +69,7 @@ function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direc
           </Link>
         </div>
         {race.status === 'ENTRY' && (
-          <p className="text-xs text-gray-500 mt-3">出馬表とオッズは馬券の発売が始まると公開されます。</p>
+          <p className="text-xs text-gray-500 mt-3">出走条件と申請中の馬は「出馬表」で見られます。馬番とオッズは締切後に公開されます。</p>
         )}
       </div>
     </div>
@@ -76,6 +78,7 @@ function NextRaceCard({ race, direction }: { race: RaceSummary; direction: Direc
 
 function RaceRow({ race, direction }: { race: RaceSummary; direction: Direction | null }) {
   const finished = race.status === 'FINISHED';
+  const headcount = formatHeadcount(race, race.applicantCount);
   return (
     <Link
       href={`/keiba/race/${race.raceId}`}
@@ -93,7 +96,7 @@ function RaceRow({ race, direction }: { race: RaceSummary; direction: Direction 
         <div className="text-xs text-gray-500 mt-0.5">
           <span className="sm:hidden">{race.postTime ? `${race.postTime}発走 / ` : ''}</span>
           {formatCourse(race.course, direction)}
-          {race.fieldSize ? ` / ${race.fieldSize}頭` : ''}
+          {headcount && ` / ${headcount}`}
         </div>
       </div>
       <div className="text-right shrink-0">

@@ -6,6 +6,7 @@ import {
   fetchKeiba,
   formatCourse,
   formatDateLong,
+  formatHeadcount,
   formatIne,
   gateCountOf,
   isLive,
@@ -63,6 +64,7 @@ export default function RaceDetailClient({
   const raceId = race.raceId;
   const status = race.status;
   const gateCount = gateCountOf(race);
+  const headcount = formatHeadcount(race, race.applicants?.length);
   const { marks, setMark } = useMarks(raceId);
 
   // ?tab= で開くタブを選べるようにする
@@ -139,7 +141,7 @@ export default function RaceDetailClient({
               {race.postTime && <span className="font-bold">{race.postTime}発走 / </span>}
               {formatCourse(race.course, direction)}
               {' / '}{courseName(race.course)}
-              {race.fieldSize ? ` / ${race.fieldSize}頭` : ''}
+              {headcount && ` / ${headcount}`}
             </p>
             <p className="text-xs text-white/65 mt-1 flex gap-x-3 flex-wrap">
               {race.totalSales != null && race.totalSales > 0 && <span>売上 {formatIne(race.totalSales)}</span>}

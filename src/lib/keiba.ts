@@ -16,6 +16,9 @@ export type RaceStatus = 'ENTRY' | 'BETTING' | 'GATE' | 'RUNNING' | 'FINISHED' |
 export type Gender = 'STALLION' | 'MARE';
 export type Direction = 'LEFT' | 'RIGHT' | 'STRAIGHT';
 export type Point = [number, number, number];
+export type Selection = 'FIRST' | 'PRIZE';
+export type SelectionBasis = 'BONUS' | 'TOTAL';
+export type Approval = 'AUTO' | 'MANUAL';
 
 export interface Owner {
   uuid: string | null;
@@ -28,6 +31,19 @@ export interface RaceCourse {
   surface: Surface | null;
   distance: number | null;
   distanceOfficial: number | null;
+}
+
+// 申請の条件（条件を書き出す前の版のプラグインのレースは null）
+export interface EntryRules {
+  maxRunners: number | null;
+  // 定員を超えたときの選び方（承認が MANUAL なら運営が選ぶ）
+  selection: Selection | null;
+  // 賞金順で比べる額（BONUS 通算追加賞金 / TOTAL 通算獲得賞金）
+  selectionBasis?: SelectionBasis | null;
+  approval: Approval | null;
+  upperChallenge: boolean | null;
+  eligibleClasses: RaceClass[];
+  entryFee: number | null;
 }
 
 export interface Race {
@@ -44,6 +60,7 @@ export interface Race {
   bonusTotal: number | null;
   racedAt: string | null;
   lapTimes: number[] | null;
+  entryRules?: EntryRules | null;
 }
 
 export interface RaceWinner {
@@ -55,6 +72,9 @@ export interface RaceWinner {
 
 export interface RaceSummary extends Race {
   winners: RaceWinner[];
+  // 受付中のレースの申請頭数（承認待ちも含む）と、そのうち承認待ち。受付中でなければ null
+  applicantCount?: number | null;
+  pendingCount?: number | null;
 }
 
 export interface Entry {
@@ -100,7 +120,27 @@ export interface Payout {
   popularity: number | null;
 }
 
+// 受付中のレースに申請している馬（申請順）
+export interface Applicant {
+  // 申請順（取消があっても詰めない）
+  order: number;
+  horseUuid: string;
+  horseName: string;
+  gender: Gender | null;
+  sire: string | null;
+  dam: string | null;
+  owner: Owner;
+  horseClass: RaceClass | null;
+  // 運営の承認待ち
+  pending: boolean;
+  totalPrize: number | null;
+  totalBonus: number | null;
+  record: RaceRecord;
+}
+
 export interface RaceDetail extends Race {
+  // 受付中だけ。古い API では無い
+  applicants?: Applicant[];
   entries: Entry[];
   results: Result[];
   payouts: Payout[];
@@ -342,6 +382,21 @@ export const SELLING_STATUSES: RaceStatus[] = ['BETTING', 'GATE'];
 export const isSelling = (status: RaceStatus | null) => status != null && SELLING_STATUSES.includes(status);
 
 export const GENDER_LABEL: Record<Gender, string> = { STALLION: '牡', MARE: '牝' };
+
+export const APPROVAL_LABEL: Record<Approval, string> = { AUTO: '自動', MANUAL: '運営承認' };
+
+export const SELECTION_BASIS_LABEL: Record<SelectionBasis, string> = { BONUS: '通算追加賞金', TOTAL: '通算獲得賞金' };
+
+// 頭数。締切後は出走頭数、受付中は申請頭数（定員があれば添える）
+export function formatHeadcount(
+  race: Pick<Race, 'status' | 'fieldSize' | 'entryRules'>,
+  applicantCount: number | null | undefined,
+): string {
+  if (race.fieldSize) return `${race.fieldSize}頭`;
+  if (race.status !== 'ENTRY' || applicantCount == null) return '';
+  const max = race.entryRules?.maxRunners;
+  return `申請${applicantCount}頭${max != null ? `（定員${max}頭）` : ''}`;
+}
 
 export const DIRECTION_LABEL: Record<Direction, string> = { LEFT: '左', RIGHT: '右', STRAIGHT: '直線' };
 
