@@ -134,7 +134,7 @@ function LiveOdds({ race, odds }: { race: RaceDetail; odds: Odds | null }) {
 
 function LastResult({ race }: { race: RaceDetail }) {
   const gateCount = gateCountOf(race);
-  const top = sortResults(race.results).filter(r => r.finished && r.position != null).slice(0, 3);
+  const top = sortResults(race.results).filter(r => r.position != null).slice(0, 3);
   const win = race.payouts.filter(p => p.betType === 'WIN');
   const quinella = race.payouts.filter(p => p.betType === 'QUINELLA');
   return (

@@ -12,7 +12,7 @@ import {
   type Payout,
   type RaceDetail,
 } from '@/lib/keiba';
-import { EmptyState, FrameBox, GateBox, HorseLink, OwnerLabel, PrizeTotal, SectionTitle, rankClass } from './KeibaParts';
+import { DnfTag, EmptyState, FrameBox, GateBox, HorseLink, OwnerLabel, PrizeTotal, SectionTitle, rankClass } from './KeibaParts';
 import { WeightCell } from './EntryTable';
 import { MarkText, type MarkMap } from './Marks';
 
@@ -74,30 +74,27 @@ function PayoutTable({ payouts, gateCount }: { payouts: Payout[]; gateCount: num
 function LapTable({ laps, distance }: { laps: number[]; distance: number | null }) {
   let total = 0;
   const cumulative = laps.map(l => (total += l));
-  // 最後の区間が100mに足りないときは、最速の比較から外す
-  const fullLaps = distance != null ? laps.filter((_, i) => (i + 1) * 100 <= distance) : laps;
-  const fastest = fullLaps.length ? Math.min(...fullLaps) : null;
+  // プラグインはコースを約100mの区間に等分している（1区間は 距離 ÷ ラップ数）
+  const segment = distance != null && laps.length > 0 ? distance / laps.length : 100;
+  const fastest = laps.length ? Math.min(...laps) : null;
   return (
     <div className="bg-white border border-gray-200 rounded-lg overflow-x-auto">
       <table className="text-sm border-collapse">
         <thead>
           <tr className="bg-[#e6eee8] text-xs text-gray-700">
             <th className="sticky left-0 bg-[#e6eee8] py-1.5 px-3 text-left font-bold whitespace-nowrap border-r border-gray-200">距離</th>
-            {laps.map((_, i) => {
-              const at = distance != null ? Math.min((i + 1) * 100, distance) : (i + 1) * 100;
-              return (
-                <th key={i} className="py-1.5 px-2 font-bold tabular-nums min-w-[3.25rem]">
-                  {at}
-                </th>
-              );
-            })}
+            {laps.map((_, i) => (
+              <th key={i} className="py-1.5 px-2 font-bold tabular-nums min-w-[3.25rem]">
+                {Math.round(segment * (i + 1))}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           <tr className="border-t border-gray-200">
             <th className="sticky left-0 bg-white py-1.5 px-3 text-left text-xs font-bold text-gray-700 whitespace-nowrap border-r border-gray-200">ラップ</th>
             {laps.map((lap, i) => (
-              <td key={i} className={`py-1.5 px-2 text-center tabular-nums ${lap === fastest && (distance == null || (i + 1) * 100 <= distance) ? rankClass(1) : ''}`}>
+              <td key={i} className={`py-1.5 px-2 text-center tabular-nums ${lap === fastest ? rankClass(1) : ''}`}>
                 {lap.toFixed(1)}
               </td>
             ))}
@@ -185,14 +182,15 @@ export default function ResultPanel({
                 const gender = genderOf.get(r.gate);
                 return (
                   <tr key={r.gate} className={`border-t border-gray-200 ${!r.finished ? 'text-gray-500' : ''}`}>
-                    <td className={`py-2 px-2 text-center font-bold tabular-nums ${r.finished ? rankClass(r.position) : ''}`}>
-                      {r.finished && r.position != null ? r.position : <span className="text-xs">中止</span>}
+                    <td className={`py-2 px-2 text-center font-bold tabular-nums ${rankClass(r.position)}`}>
+                      {r.position ?? <span className="text-xs">中止</span>}
                     </td>
                     <td className="py-2 px-1 text-center"><FrameBox frame={frameOf(r.gate, gateCount)} /></td>
                     <td className="py-2 px-1 text-center font-bold tabular-nums">{r.gate}</td>
                     {showMarks && <td className="py-2 px-1 text-center"><MarkText mark={marks[r.gate]} /></td>}
                     <td className="py-2 px-3">
                       <HorseLink uuid={r.horseUuid} name={r.horseName} className="font-bold text-gray-900" />
+                      {!r.finished && <DnfTag className="ml-1.5" />}
                       {r.lateStart && (
                         <span className="ml-1.5 text-[10px] px-1 py-px rounded bg-gray-200 text-gray-600 align-middle">出遅れ</span>
                       )}
@@ -231,6 +229,7 @@ export default function ResultPanel({
         </div>
         <ul className="text-xs text-gray-500 mt-2 space-y-0.5 list-disc pl-4">
           <li>着差：1つ前の馬とのタイム差を馬身に直した目安。1馬身は2.4mで計算</li>
+          <li>競走中止：ゴールしなかった馬。着順はゴールした馬の後ろに、進んだ距離の順</li>
           <li>上り：ゴールまでの300mのタイム</li>
           <li>通過：1/4・1/2・3/4地点の順位</li>
           <li>黒地のタイム：その時点のコースレコード</li>
@@ -247,7 +246,7 @@ export default function ResultPanel({
 
       {race.lapTimes && race.lapTimes.length > 0 && (
         <section>
-          <SectionTitle aside="先頭の馬の100mごと">ラップタイム</SectionTitle>
+          <SectionTitle aside="先頭の馬・コースを約100mずつに等分">ラップタイム</SectionTitle>
           <LapTable laps={race.lapTimes} distance={race.course.distance ?? displayDistance(race.course)} />
         </section>
       )}

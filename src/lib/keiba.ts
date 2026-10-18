@@ -156,10 +156,9 @@ export interface Run {
   winOdds: number | null;
   weight: number | null;
   weightChange: number | null;
-  // 追加賞金を含んだ賞金
+  // 追加賞金を含んだ賞金と、そのうちの追加賞金
   prize: number | null;
-  // 追加賞金（API が返すようになったら内訳に出す）
-  bonusPrize?: number | null;
+  bonusPrize: number | null;
 }
 
 // コースレコードなどの1走
@@ -568,11 +567,11 @@ export function courseRecordRaceIds(races: RaceSummary[]): Set<string> {
   return records;
 }
 
-// 着順の並び（確定した馬が先、競走中止は馬番順で後ろ）
+// 着順の並び。競走中止の馬にもプラグインが着順（ゴールした馬の後ろに、進んだ距離の順）を付けている
 export function sortResults(results: Result[]): Result[] {
   return [...results].sort((a, b) => {
-    const pa = a.finished && a.position != null ? a.position : Infinity;
-    const pb = b.finished && b.position != null ? b.position : Infinity;
+    const pa = a.position ?? Infinity;
+    const pb = b.position ?? Infinity;
     return pa - pb || a.gate - b.gate;
   });
 }
