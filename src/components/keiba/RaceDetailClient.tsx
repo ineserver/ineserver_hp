@@ -6,9 +6,11 @@ import {
   fetchKeiba,
   formatCourse,
   formatDateLong,
+  formatHeadcount,
   formatIne,
   gateCountOf,
   isLive,
+  isSelling,
   raceApiPath,
   type CourseDetail,
   type Odds,
@@ -62,6 +64,7 @@ export default function RaceDetailClient({
   const raceId = race.raceId;
   const status = race.status;
   const gateCount = gateCountOf(race);
+  const headcount = formatHeadcount(race, race.applicants?.length);
   const { marks, setMark } = useMarks(raceId);
 
   // ?tab= で開くタブを選べるようにする
@@ -95,14 +98,14 @@ export default function RaceDetailClient({
 
   // 発売中はオッズを取り直す
   useEffect(() => {
-    if (status !== 'BETTING') return;
+    if (!isSelling(status)) return;
     const timer = setInterval(() => {
       if (!document.hidden) refreshOdds();
     }, ODDS_REFRESH_MS);
     return () => clearInterval(timer);
   }, [status, refreshOdds]);
 
-  // 状態が変わったら、オッズ（締切後は最終の値）と馬柱を取り直す
+  // 状態が変わったら、オッズ（発走後は最終の値）と馬柱を取り直す
   const prevStatus = useRef(status);
   useEffect(() => {
     if (prevStatus.current === status) return;
@@ -138,7 +141,7 @@ export default function RaceDetailClient({
               {race.postTime && <span className="font-bold">{race.postTime}発走 / </span>}
               {formatCourse(race.course, direction)}
               {' / '}{courseName(race.course)}
-              {race.fieldSize ? ` / ${race.fieldSize}頭` : ''}
+              {headcount && ` / ${headcount}`}
             </p>
             <p className="text-xs text-white/65 mt-1 flex gap-x-3 flex-wrap">
               {race.totalSales != null && race.totalSales > 0 && <span>売上 {formatIne(race.totalSales)}</span>}

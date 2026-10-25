@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { postDateTime, type Race } from '@/lib/keiba';
+import { isSelling, postDateTime, type Race } from '@/lib/keiba';
 
 // 発走までの残り時間（サーバーとブラウザで時刻がずれるので、表示はマウント後だけ）
 export default function PostCountdown({
@@ -19,7 +19,7 @@ export default function PostCountdown({
   }, []);
 
   const post = postDateTime(race);
-  if (now == null || !post || (race.status !== 'ENTRY' && race.status !== 'BETTING')) return null;
+  if (now == null || !post || (race.status !== 'ENTRY' && !isSelling(race.status))) return null;
 
   const diff = Math.floor((post.getTime() - now) / 1000);
   if (diff <= 0) {

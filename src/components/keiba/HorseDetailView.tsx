@@ -21,6 +21,7 @@ import {
 } from '@/lib/keiba';
 import {
   ClassBadge,
+  DnfTag,
   EmptyState,
   HorseLink,
   KeibaPageHeader,
@@ -238,8 +239,9 @@ export default function HorseDetailView({ horse, recordRaceIds }: { horse: Horse
                           <td className={`py-2 px-2 text-center tabular-nums ${rankClass(run.popularity)}`}>
                             {run.popularity ?? ''}
                           </td>
-                          <td className={`py-2 px-2 text-center font-bold tabular-nums ${run.finished ? rankClass(run.position) : ''}`}>
-                            {run.finished && run.position != null ? run.position : <span className="text-xs text-gray-500">中止</span>}
+                          <td className={`py-2 px-2 text-center font-bold tabular-nums whitespace-nowrap ${rankClass(run.position)}`}>
+                            {run.position ?? <span className="text-xs text-gray-500">中止</span>}
+                            {!run.finished && run.position != null && <DnfTag className="ml-1" />}
                           </td>
                           <td className="py-2 px-2 text-center tabular-nums font-medium">
                             {run.finished && run.position === 1 && records.has(run.raceId) ? (
