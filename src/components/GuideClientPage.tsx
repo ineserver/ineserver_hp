@@ -7,17 +7,76 @@ import Image from 'next/image';
 import { ContentData } from '../../lib/content';
 import { trackGuideCardClick, trackGuideCtaClick, trackExternalLink } from '@/lib/analytics';
 
+type CategoryKey = 'life' | 'economy' | 'adventure' | 'transport';
+
+// 記事の added（追加した日）・updated（内容を更新した日）がこの日数以内なら NEW・更新の印を付ける
+const RECENT_DAYS = 30;
+
+interface Freshness {
+    kind: 'new' | 'updated';
+    date: string;
+}
+
+// date・today はどちらも YYYY-MM-DD
+const isRecent = (date: unknown, today: string): date is string => {
+    if (typeof date !== 'string') return false;
+    const days = (Date.parse(today) - Date.parse(date)) / 86_400_000;
+    return days >= 0 && days <= RECENT_DAYS;
+};
+
+function getFreshness(item: ContentData, today: string): Freshness | null {
+    // 追加した後に更新しても、追加から日が浅いうちは NEW のまま
+    if (isRecent(item.added, today)) return { kind: 'new', date: item.added };
+    if (isRecent(item.updated, today)) return { kind: 'updated', date: item.updated };
+    return null;
+}
+
+interface LastChange {
+    label: '追加' | '更新';
+    date: string;
+}
+
+// added・updated のうち新しいほう
+function getLastChange(item: ContentData): LastChange | null {
+    const added = typeof item.added === 'string' ? item.added : null;
+    const updated = typeof item.updated === 'string' ? item.updated : null;
+    if (updated && (!added || updated >= added)) return { label: '更新', date: updated };
+    return added ? { label: '追加', date: added } : null;
+}
+
+const formatDate = (date: string) => {
+    const [year, month, day] = date.split('-').map(Number);
+    return `${year}年${month}月${day}日`;
+};
+
+const formatShortDate = (date: string) => {
+    const [, month, day] = date.split('-').map(Number);
+    return `${month}/${day}`;
+};
+
+// withDate を付けると「10/6更新」「11/2追加」のように日付入りで出す
+const FreshBadge = ({ freshness: { kind, date }, withDate = false }: { freshness: Freshness; withDate?: boolean }) => (
+    <span className={`inline-block flex-shrink-0 min-w-[2.5rem] text-center text-[10px] font-bold leading-none whitespace-nowrap rounded px-1.5 py-1 ${kind === 'new' ? 'bg-[#5b8064] text-white' : 'bg-amber-100 text-amber-700'}`}>
+        {withDate
+            ? `${formatShortDate(date)}${kind === 'new' ? '追加' : '更新'}`
+            : kind === 'new' ? 'NEW' : '更新'}
+    </span>
+);
+
 interface GuideSectionProps {
     title: string;
     icon: React.ReactElement;
     items: ContentData[];
     basePath: string;
+    today: string;
 }
 
 // 個別のカードコンポーネント
-function GuideCard({ item, basePath }: { item: ContentData; basePath: string }) {
+function GuideCard({ item, basePath, today }: { item: ContentData; basePath: string; today: string }) {
     const imageUrl = typeof item.image === 'string' ? item.image : null;
     const category = basePath.replace('/', '');
+    const freshness = getFreshness(item, today);
+    const lastChange = getLastChange(item);
 
     return (
         <Link
@@ -38,17 +97,25 @@ function GuideCard({ item, basePath }: { item: ContentData; basePath: string }) 
                     </div>
                 )}
                 <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#5b8064] transition-colors">
-                        {item.title}
-                    </h3>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#5b8064] transition-colors">
+                            {item.title}
+                        </h3>
+                        {freshness && <span className="mt-1"><FreshBadge freshness={freshness} /></span>}
+                    </div>
                     <p className="text-sm text-gray-600 leading-relaxed flex-grow line-clamp-3">
                         {item.description}
                     </p>
-                    <div className="mt-4 flex items-center text-[#5b8064] text-xs font-medium opacity-0 transform translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                        読む
-                        <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
+                    <div className="mt-4 flex items-center justify-between gap-2 text-xs">
+                        <span className="text-gray-400">
+                            {lastChange && `${formatDate(lastChange.date)} ${lastChange.label}`}
+                        </span>
+                        <span className="flex items-center text-[#5b8064] font-medium opacity-0 transform translate-x-[-10px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+                            読む
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -56,7 +123,7 @@ function GuideCard({ item, basePath }: { item: ContentData; basePath: string }) 
     );
 }
 
-const GuideSection = ({ title, icon, items, basePath }: GuideSectionProps) => (
+const GuideSection = ({ title, icon, items, basePath, today }: GuideSectionProps) => items.length === 0 ? null : (
     <div className="mb-12">
         <div className="flex items-center space-x-3 mb-6">
             <div className="p-2 rounded-lg bg-[#5b8064]/10 text-[#5b8064]">
@@ -66,9 +133,118 @@ const GuideSection = ({ title, icon, items, basePath }: GuideSectionProps) => (
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {items.map((item) => (
-                <GuideCard key={item.id} item={item} basePath={basePath} />
+                <GuideCard key={item.id} item={item} basePath={basePath} today={today} />
             ))}
         </div>
+    </div>
+);
+
+interface ResolvedArticle {
+    item: ContentData;
+    href: string;
+    freshness: Freshness | null;
+}
+
+const outlineIcon = (...paths: string[]) => (
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        {paths.map(d => <path key={d} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d} />)}
+    </svg>
+);
+
+// 「やりたいことから探す」の項目（カテゴリ/記事ID）。image は見出しの背景
+const PURPOSES: { icon: React.ReactElement; image: string; title: string; refs: string[] }[] = [
+    {
+        icon: outlineIcon('M13 7h8m0 0v8m0-8l-8 8-4-4-6 6'),
+        image: 'https://img.1necat.net/839b6d5d9584120e81c4fb874ad780d8.jpg',
+        title: 'お金を稼ぎたい', refs: ['life/jobs', 'economy/market', 'economy/shop', 'economy/marker'],
+    },
+    {
+        icon: outlineIcon('M13 10V3L4 14h7v7l9-11h-7z'),
+        image: 'https://img.1necat.net/2025-12-07_15.49.58.png',
+        title: '強くなりたい', refs: ['life/mcmmo', 'adventure/tessera', 'adventure/absolute'],
+    },
+    {
+        icon: outlineIcon('M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z'),
+        image: 'https://img.1necat.net/2026-07-31_20.33.47.png',
+        title: '遊びたい', refs: ['adventure/horse-racing', 'adventure/arena'],
+    },
+    {
+        icon: outlineIcon('M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z'),
+        image: 'https://img.1necat.net/2025-11-29_01.41.15.png',
+        title: '集めたい', refs: ['adventure/additems', 'adventure/hide-item', 'adventure/achivements'],
+    },
+    {
+        icon: outlineIcon('M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z'),
+        image: 'https://img.1necat.net/2025-11-25_03.28.38.png',
+        title: '家を建てたい', refs: ['economy/land-purchase', 'life/land-protection', 'life/block-protection', 'life/imageflame'],
+    },
+    {
+        icon: outlineIcon('M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'),
+        image: 'https://img.1necat.net/2025-11-29_15.24.15.png',
+        title: '街づくりをしたい', refs: ['life/address', 'transport/road', 'transport/rail'],
+    },
+    {
+        icon: outlineIcon('M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z'),
+        image: 'https://img.1necat.net/2025-11-29_15.50.03.png',
+        title: '人と交流したい', refs: ['life/chat', 'life/mail', 'life/status'],
+    },
+    {
+        icon: outlineIcon(
+            'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z',
+            'M15 12a3 3 0 11-6 0 3 3 0 016 0z',
+        ),
+        image: 'https://img.1necat.net/2025-12-07_16.25.56.png',
+        title: 'もっと便利にしたい', refs: ['life/sort', 'life/exp', 'economy/buycommand'],
+    },
+];
+
+function PurposeTile({ icon, image, title, articles }: { icon: React.ReactElement; image: string; title: string; articles: ResolvedArticle[] }) {
+    return (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
+            <div className="relative h-28 bg-gray-100">
+                <Image
+                    src={image}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                    className="object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute inset-x-4 bottom-3 flex items-center gap-2 text-white">
+                    <div className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm">
+                        {React.cloneElement(icon as React.ReactElement<{ className?: string }>, { className: "w-5 h-5" })}
+                    </div>
+                    <h3 className="text-lg font-bold">{title}</h3>
+                </div>
+            </div>
+            <ul className="p-5 pt-3 space-y-1">
+                {articles.map(({ item, href, freshness }) => (
+                    <li key={href}>
+                        <Link
+                            href={href}
+                            onClick={() => trackGuideCardClick(item.title || '', 'purpose', href)}
+                            className="group flex items-center justify-between gap-2 px-2 py-2 -mx-2 rounded-lg text-sm text-gray-700 hover:bg-[#5b8064]/10 hover:text-[#5b8064] transition-colors"
+                        >
+                            <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                <span>{item.title}</span>
+                                {freshness && <FreshBadge freshness={freshness} withDate />}
+                            </span>
+                            <svg className="w-4 h-4 flex-shrink-0 text-gray-300 group-hover:text-[#5b8064] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+const DividerLabel = ({ label }: { label: string }) => (
+    <div className="flex items-center gap-4 mb-8">
+        <div className="h-px flex-1 bg-gray-200" />
+        <h2 className="text-sm font-bold text-gray-500 tracking-wider">{label}</h2>
+        <div className="h-px flex-1 bg-gray-200" />
     </div>
 );
 
@@ -77,9 +253,25 @@ interface GuideClientPageProps {
     economyFiles: ContentData[];
     adventureFiles: ContentData[];
     transportFiles: ContentData[];
+    // 日本時間の今日（YYYY-MM-DD）
+    today: string;
 }
 
-export default function GuideClientPage({ lifeFiles, economyFiles, adventureFiles, transportFiles }: GuideClientPageProps) {
+export default function GuideClientPage({ lifeFiles, economyFiles, adventureFiles, transportFiles, today }: GuideClientPageProps) {
+    const filesByCategory: Record<CategoryKey, ContentData[]> = {
+        life: lifeFiles,
+        economy: economyFiles,
+        adventure: adventureFiles,
+        transport: transportFiles,
+    };
+
+    // 記事が削除・非公開になっていたら表示しない
+    const resolve = (ref: string): ResolvedArticle | null => {
+        const [category, id] = ref.split('/') as [CategoryKey, string];
+        const item = filesByCategory[category]?.find(file => file.id === id);
+        return item ? { item, href: `/${ref}`, freshness: getFreshness(item, today) } : null;
+    };
+
     return (
         <div className="min-h-screen bg-[#f8f9fa] flex flex-col">
             <Header />
@@ -87,12 +279,30 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
             <main className="flex-grow container mx-auto px-4 pt-32 pb-16">
                 <div className="max-w-6xl mx-auto">
                     {/* ヘッダーセクション */}
-                    <div className="text-center mb-16">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">ガイド</h1>
+                    <div className="text-center mb-12">
+                        <h1 className="text-4xl font-bold text-gray-900 mb-4 tracking-tight">いねさばの歩き方</h1>
                         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                            いねさばでの主な追加要素の一覧です
+                            いねさばの独自機能や遊び方をまとめたガイドです
                         </p>
                     </div>
+
+                    {/* やりたいことから探す */}
+                    <section className="mb-16">
+                        <DividerLabel label="やりたいことから探す" />
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {PURPOSES.map(({ icon, image, title, refs }) => (
+                                <PurposeTile
+                                    key={title}
+                                    icon={icon}
+                                    image={image}
+                                    title={title}
+                                    articles={refs.flatMap(ref => resolve(ref) ?? [])}
+                                />
+                            ))}
+                        </div>
+                    </section>
+
+                    <DividerLabel label="カテゴリから探す" />
 
                     <GuideSection
                         title="くらし"
@@ -103,6 +313,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                         }
                         items={lifeFiles}
                         basePath="/life"
+                        today={today}
                     />
 
                     <GuideSection
@@ -114,6 +325,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                         }
                         items={economyFiles}
                         basePath="/economy"
+                        today={today}
                     />
 
                     <GuideSection
@@ -126,6 +338,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                         }
                         items={adventureFiles}
                         basePath="/adventure"
+                        today={today}
                     />
 
                     <GuideSection
@@ -137,6 +350,7 @@ export default function GuideClientPage({ lifeFiles, economyFiles, adventureFile
                         }
                         items={transportFiles}
                         basePath="/transport"
+                        today={today}
                     />
 
                     {/* フッターセクション */}

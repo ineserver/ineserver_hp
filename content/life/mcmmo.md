@@ -4,6 +4,7 @@ published: true
 type: utility
 number: 1
 image: https://img.1necat.net/2025-12-07_15.49.58.png
+updated: 2026-10-06
 ---
 # スキルシステム (mcMMO)
 

@@ -4,6 +4,7 @@ published: true
 type: utility
 number: 7
 image: https://img.1necat.net/2025-12-07_15.51.46.png
+updated: 2026-10-14
 ---
 
 インターネット上の画像をマインクラフト内の「地図」として貼り付けられる機能の使い方を解説します。

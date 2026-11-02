@@ -4,6 +4,7 @@ published: true
 type: protection
 number: 2
 image: https://img.1necat.net/2025-12-07_16.46.02.png
+updated: 2026-10-13
 ---
 
 チェストやドアなどを保護する方法と使い方を解説します。

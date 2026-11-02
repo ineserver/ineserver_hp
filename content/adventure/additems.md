@@ -4,6 +4,7 @@ published: true
 type: item
 number: 3
 image: https://img.1necat.net/2025-11-29_01.41.15.png
+updated: 2026-10-08
 ---
 
 いねさばには、作業台でクラフトするのではなく、**特定の行動**をすることでしか手に入らないレアなアイテムが存在します。

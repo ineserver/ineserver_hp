@@ -4,6 +4,7 @@ published: true
 type: utility
 number: 5
 image: https://img.1necat.net/2025-12-07_15.56.37.png
+updated: 2026-10-13
 ---
 
 経験値をボトルに詰めてアイテム化（保存）する機能について解説します。
