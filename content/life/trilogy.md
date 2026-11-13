@@ -201,7 +201,7 @@ added: 2026-11-13
 
 MOD の **Litematica** と **Syncmatica** をクライアントに入れている方は、Litematica の設計図をそのままサーバーで建てられます。
 
-<div style="position: relative; width: 100%; max-width: 720px; aspect-ratio: 16 / 9; margin: 1rem 0;"><iframe src="https://youtu.be/M3eRcncopoo?si=iYHfdmdVjd9A8Kav" title="Litematica との連携" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 8px;" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
+<div style="position: relative; width: 100%; max-width: 720px; aspect-ratio: 16 / 9; margin: 1rem 0;"><iframe src="https://www.youtube-nocookie.com/embed/M3eRcncopoo" title="Litematica との連携" style="position: absolute; inset: 0; width: 100%; height: 100%; border: 0; border-radius: 8px;" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
 
   * **Litematica → サーバー**：Litematica で置いた配置を Syncmatica で共有すると、チャットに **[ここに建てる]**・**[設計図として保存]**・**[捨てる]** のボタンが出ます。[ここに建てる] を押すと、投影と同じ位置・向きで工事の確認に進みます。
   * **サーバー → Litematica**：メニューの設計図で **「Litematica に書き出す」** を押すと、Syncmatica のメニューから設計図をダウンロードできます（10 分で取り下げられます）。
