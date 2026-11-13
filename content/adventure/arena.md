@@ -1,5 +1,5 @@
 ---
-title: アリーナ
+title: アリーナ（モンスター討伐バトル）
 published: true
 type: game
 number: 1

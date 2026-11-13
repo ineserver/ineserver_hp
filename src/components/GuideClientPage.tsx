@@ -176,12 +176,12 @@ const PURPOSES: { icon: React.ReactElement; image: string; title: string; refs: 
     {
         icon: outlineIcon('M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z'),
         image: 'https://img.1necat.net/2025-11-25_03.28.38.png',
-        title: '家を建てたい', refs: ['economy/land-purchase', 'life/land-protection', 'life/block-protection', 'life/imageflame'],
+        title: '家を建てたい', refs: ['economy/land-purchase', 'life/land-protection', 'life/block-protection', 'life/trilogy', 'life/imageflame'],
     },
     {
         icon: outlineIcon('M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4'),
         image: 'https://img.1necat.net/2025-11-29_15.24.15.png',
-        title: '街づくりをしたい', refs: ['life/address', 'transport/road', 'transport/rail'],
+        title: '街づくりをしたい', refs: ['life/address', 'transport/road', 'transport/rail', 'life/trilogy'],
     },
     {
         icon: outlineIcon('M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z'),

@@ -1,5 +1,5 @@
 ---
-title: アブソリュート
+title: アブソリュート（育つ道具）
 published: true
 type: system
 number: 6

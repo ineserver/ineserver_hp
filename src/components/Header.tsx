@@ -477,11 +477,12 @@ const Header = () => {
                         <li><Link href="/life/mcmmo" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />スキルシステム (mcMMO)</Link></li>
                         <li><Link href="/life/jobs" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業</Link></li>
                         <li><Link href="/life/imageflame" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />画像地図</Link></li>
-                        <li><Link href="/life/status" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />意思ステータス</Link></li>
+                        <li><Link href="/life/status" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />意思ステータス（今の状態の表示）</Link></li>
                         <li><Link href="/life/sort" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />自動整理機能</Link></li>
                         <li><Link href="/life/exp" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />経験値ボトルのアイテム化</Link></li>
                         <li><Link href="/life/mail" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />メール</Link></li>
                         <li><Link href="/life/chat" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />チャット（チャンネル・ローマ字・翻訳・ローカル等）</Link></li>
+                        <li><Link href="/life/trilogy" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />トリロジー（自動建築ツール）</Link></li>
                       </ul>
                     </div>
                     <div>
@@ -545,7 +546,7 @@ const Header = () => {
                         土地・ライセンス
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />コマンドの購入</Link></li>
+                        <li><Link href="/economy/buycommand" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />職業ポイント（便利コマンドの購入）</Link></li>
                         <li><Link href="/economy/land-purchase" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />土地の購入・管理</Link></li>
                       </ul>
                     </div>
@@ -594,7 +595,7 @@ const Header = () => {
                         ゲーム
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ</Link></li>
+                        <li><Link href="/adventure/arena" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アリーナ（モンスター討伐バトル）</Link></li>
                       </ul>
                       <ul className="space-y-1">
                         <li><Link href="/adventure/horse-racing" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />競馬</Link></li>
@@ -611,6 +612,7 @@ const Header = () => {
                         <li><Link href="/adventure/additems" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />いねさば独自の追加アイテム</Link></li>
                         <li><Link href="/adventure/hide-item" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />隠しアイテム・隠し部屋の一覧とヒント</Link></li>
                         <li><Link href="/adventure/tessera" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />テセラ（身体強化アイテム）</Link></li>
+                        <li><Link href="/adventure/absolute" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />アブソリュート（育つ道具）</Link></li>
                       </ul>
                     </div>
                     <div>
@@ -855,7 +857,7 @@ const Header = () => {
                             画像地図
                           </Link>
                           <Link href="/life/status" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            意思ステータス
+                            意思ステータス（今の状態の表示）
                           </Link>
                           <Link href="/life/sort" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             自動整理機能
@@ -868,6 +870,9 @@ const Header = () => {
                           </Link>
                           <Link href="/life/chat" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             チャット（チャンネル・ローマ字・翻訳・ローカル等）
+                          </Link>
+                          <Link href="/life/trilogy" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            トリロジー（自動建築ツール）
                           </Link>
                         </div>
                       </div>
@@ -954,7 +959,7 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/economy/buycommand" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            コマンドの購入
+                            職業ポイント（便利コマンドの購入）
                           </Link>
                           <Link href="/economy/land-purchase" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             土地の購入・管理
@@ -1026,7 +1031,7 @@ const Header = () => {
                         </h4>
                         <div className="pl-4 space-y-1">
                           <Link href="/adventure/arena" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            アリーナ
+                            アリーナ（モンスター討伐バトル）
                           </Link>
                         </div>
                         <div className="pl-4 space-y-1">
@@ -1051,6 +1056,9 @@ const Header = () => {
                           </Link>
                           <Link href="/adventure/tessera" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
                             テセラ（身体強化アイテム）
+                          </Link>
+                          <Link href="/adventure/absolute" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            アブソリュート（育つ道具）
                           </Link>
                         </div>
                       </div>

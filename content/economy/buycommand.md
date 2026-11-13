@@ -1,5 +1,5 @@
 ---
-title: コマンドの購入
+title: 職業ポイント（便利コマンドの購入）
 published: true
 type: license
 number: 1

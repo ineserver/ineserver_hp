@@ -1,5 +1,5 @@
 ---
-title: 意思ステータス
+title: 意思ステータス（今の状態の表示）
 published: true
 type: utility
 number: 3
