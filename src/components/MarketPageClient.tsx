@@ -63,7 +63,10 @@ interface PriceIndexEntry {
 
 interface PriceIndexData {
   baseValue: number;
+  // 基準改定をしていない間の基準日（記録の最初の日の始値が 100）
   baseDate: string | null;
+  // いまの基準期間（この期間の平均が 100）。基準改定をしていなければ null。古い API では項目自体がない
+  basePeriod?: { from: string; to: string; revisedDate: string } | null;
   indexes: PriceIndexEntry[];
 }
 
@@ -970,6 +973,7 @@ function IndexOverview({
   periodDays,
   breadth,
   baseDate,
+  basePeriod,
   showIndexNote,
   selectedCategory,
   onSelectCategory,
@@ -981,6 +985,7 @@ function IndexOverview({
   periodDays: number | null;
   breadth: { up: number; flat: number; down: number };
   baseDate: string | null;
+  basePeriod: { from: string; to: string } | null;
   showIndexNote: boolean;
   selectedCategory: string;
   onSelectCategory: (label: string) => void;
@@ -995,6 +1000,19 @@ function IndexOverview({
     const [year, month, day] = dateStr.split('-');
     return `${year}年${Number(month)}月${Number(day)}日`;
   };
+  // 何を 100 としているかの説明。基準改定後は「◯年◯月の平均」、改定前は記録の最初の日
+  const baseText = (() => {
+    if (basePeriod) {
+      const [fromYear, fromMonth, fromDay] = basePeriod.from.split('-').map(Number);
+      const [toYear, toMonth, toDay] = basePeriod.to.split('-').map(Number);
+      const lastDayOfMonth = new Date(toYear, toMonth, 0).getDate();
+      const isWholeMonth = fromYear === toYear && fromMonth === toMonth && fromDay === 1 && toDay === lastDayOfMonth;
+      return isWholeMonth
+        ? `${fromYear}年${fromMonth}月の平均を`
+        : `${formatBaseDate(basePeriod.from)}から${formatBaseDate(basePeriod.to)}までの平均を`;
+    }
+    return baseDate ? `${formatBaseDate(baseDate)}を` : '記録を始めた日を';
+  })();
 
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
@@ -1067,7 +1085,7 @@ function IndexOverview({
 
       {showIndexNote && (
         <p className="text-xs text-gray-500 mt-4 leading-relaxed">
-          物価指数は、{baseDate ? `${formatBaseDate(baseDate)}を` : '記録を始めた日を'}100とした市場全体の値段の水準です。
+          物価指数は、{baseText}100とした市場全体の値段の水準です。
           取引の規模が大きいアイテムほど重く数えるので、値段の高いアイテム1つの動きに引っ張られません。
           物価平均は、全アイテムの価格をそのまま足した値です。
         </p>
@@ -1348,6 +1366,7 @@ export default function MarketPageClient() {
             periodDays={periodInfo.days}
             breadth={breadth}
             baseDate={priceIndex?.baseDate ?? null}
+            basePeriod={priceIndex?.basePeriod ?? null}
             showIndexNote={hasPriceIndex}
             selectedCategory={categoryFilter}
             onSelectCategory={label => setCategoryFilter(label === 'all' || categories.includes(label) ? label : 'all')}
