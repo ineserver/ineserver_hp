@@ -4,7 +4,7 @@ import MarketPageClient from '@/components/MarketPageClient';
 
 export const metadata: Metadata = {
   title: 'いねさばアイテム市場',
-  description: 'いねさばの全アイテムの現在価格・前日比・30日間変動データを一覧で確認できます。',
+  description: 'いねさばの物価指数と、全アイテムの現在価格・前日比・期間ごとの値動きを一覧で確認できます。',
 };
 
 export default function MarketPage() {

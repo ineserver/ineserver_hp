@@ -42,6 +42,50 @@ interface CandleResponse {
   };
 }
 
+// 物価指数（/api/market/price-index）。MarketPlugin 2.2.0 以降で返る
+interface PriceIndexCandle {
+  date: string; // YYYY-MM-DD（日本時間）
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
+interface PriceIndexEntry {
+  code: string;            // 全体は 'ALL'、カテゴリ別は 'CAT:<カテゴリ>'
+  category: string | null; // プラグインの config の category
+  itemCount: number;
+  current: number;
+  todayOpen: number;
+  comparisonPreviousDay: ComparisonData;
+  candles: PriceIndexCandle[];
+}
+
+interface PriceIndexData {
+  baseValue: number;
+  baseDate: string | null;
+  indexes: PriceIndexEntry[];
+}
+
+// 各アイテムの日足の履歴（/api/market/history）
+interface HistoryData {
+  dates: string[]; // YYYY-MM-DD（古い順）
+  hasVolume: boolean;
+  items: Record<string, { close: (number | null)[]; turnover: (number | null)[] | null }>;
+}
+
+// チャートに渡す日足 1 本（物価指数・物価平均で共通）
+interface ChartPoint {
+  date: string; // YYYY-MM-DD（日本時間）
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  isCurrent: boolean; // 当日分（終値が現在値）
+}
+
+type DisplayPoint = ChartPoint & { index: number };
+
 // ============================================================
 // アイテム表示名・カテゴリ定義
 // ============================================================
@@ -82,6 +126,41 @@ const ITEM_META: Record<string, ItemMeta> = {
 
 const CATEGORY_ORDER = ['鉱石・宝石', '木材', '土・石材'];
 
+// プラグインの config の category（物価指数のカテゴリ）と、このページでの表示名の対応
+const CATEGORY_CODE_LABELS: Record<string, string> = {
+  ore: '鉱石・宝石',
+  wood: '木材',
+  stone: '土・石材',
+};
+
+function getCategoryLabel(category: string | null): string {
+  if (!category) return '全体';
+  return CATEGORY_CODE_LABELS[category] ?? category;
+}
+
+// ============================================================
+// 表示期間
+// ============================================================
+
+type PeriodKey = '30' | '90' | 'all';
+
+const PERIODS: { key: PeriodKey; label: string; days: number | null }[] = [
+  { key: '30', label: '30日', days: 30 },
+  { key: '90', label: '90日', days: 90 },
+  { key: 'all', label: '全期間', days: null },
+];
+
+function getPeriod(key: PeriodKey) {
+  return PERIODS.find(p => p.key === key) ?? PERIODS[0];
+}
+
+// 値動きの色（上昇 = 緑、下落 = 赤。ゲーム内の相場ボードと同じ）
+const UP_COLOR = '#22c55e';
+const DOWN_COLOR = '#ef4444';
+const FLAT_COLOR = '#9ca3af';
+// この割合（%）未満の変化は「変わらず」として扱う（表示が 0.00% になる範囲）
+const FLAT_THRESHOLD_PCT = 0.005;
+
 function getItemMeta(key: string): ItemMeta {
   return ITEM_META[key] ?? { label: key, category: 'その他' };
 }
@@ -94,48 +173,111 @@ function formatPrice(value: number): string {
   return value.toLocaleString('ja-JP', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 }
 
+// API の日付は日本時間基準の YYYY-MM-DD。今日・N 日前の日付を同じ形式で返す
+const JST_DATE_FORMAT = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' });
+
+function dateStrOf(date: Date): string {
+  return JST_DATE_FORMAT.format(date);
+}
+
+function dateStrDaysAgo(days: number): string {
+  return dateStrOf(new Date(Date.now() - days * 24 * 60 * 60 * 1000));
+}
+
+// 0.01 未満の小さな値は桁を増やして表示する（「-0」のように見えるのを防ぐ）
+function formatDiff(value: number): string {
+  const abs = Math.abs(value);
+  const digits = abs > 0 && abs < 0.01 ? 4 : 2;
+  return abs.toLocaleString('ja-JP', { minimumFractionDigits: 0, maximumFractionDigits: digits });
+}
+
+// 変化の向き。差額は API 側で丸められて 0 になることがあるので、変化率を優先して判定する
+function changeDirection(value: number, percentage: number): 1 | 0 | -1 {
+  if (Math.abs(percentage) >= FLAT_THRESHOLD_PCT) return percentage > 0 ? 1 : -1;
+  if (percentage === 0 && value !== 0) return value > 0 ? 1 : -1;
+  return 0;
+}
+
 function formatChange(value: number, percentage: number): {
   valueStr: string; pctStr: string; isPositive: boolean; isZero: boolean;
 } {
-  const isZero = value === 0 && percentage === 0;
-  const isPositive = value >= 0;
-  const prefix = !isZero ? (isPositive ? '+' : '') : '';
+  const direction = changeDirection(value, percentage);
+  const isZero = direction === 0;
+  const isPositive = direction >= 0;
+  const sign = isZero ? '' : (isPositive ? '+' : '-');
   return {
-    valueStr: `${prefix}${formatPrice(value)}`,
-    pctStr: `${prefix}${percentage.toFixed(2)}%`,
+    valueStr: `${sign}${formatDiff(value)}`,
+    pctStr: `${sign}${Math.abs(percentage).toFixed(2)}%`,
     isPositive,
     isZero,
   };
 }
 
+// 開始値と現在値から、差額と変化率を作る
+function comparisonOf(current: number, base: number | null): ComparisonData | null {
+  if (base === null || !(base > 0)) return null;
+  const value = current - base;
+  return { value, percentage: (value / base) * 100 };
+}
+
 // 変動バッジ
 function ChangeBadge({
-  value, percentage, size = 'md',
-}: { value: number; percentage: number; size?: 'sm' | 'md' }) {
+  value, percentage, size = 'md', hideValue = false,
+}: { value: number; percentage: number; size?: 'sm' | 'md'; hideValue?: boolean }) {
   const { valueStr, pctStr, isPositive, isZero } = formatChange(value, percentage);
 
   if (isZero) {
     return (
       <div className={`flex flex-col items-end ${size === 'sm' ? 'gap-0' : 'gap-0.5'}`}>
-        <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} text-gray-400 tabular-nums`}>±0</span>
+        {!hideValue && <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} text-gray-400 tabular-nums`}>±0</span>}
         <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} text-gray-400 tabular-nums`}>0.00%</span>
       </div>
     );
   }
 
-  // 上昇は赤、下落は緑で表示する
-  const colorClass = isPositive ? 'text-red-600' : 'text-green-600';
+  // 上昇は緑、下落は赤で表示する
+  const colorClass = isPositive ? 'text-green-600' : 'text-red-600';
   const arrow = isPositive ? '▲' : '▼';
 
   return (
     <div className={`flex flex-col items-end ${size === 'sm' ? 'gap-0' : 'gap-0.5'}`}>
-      <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} font-semibold tabular-nums ${colorClass}`}>
-        {arrow} {valueStr}
-      </span>
-      <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} font-semibold ${colorClass}`}>
-        {pctStr}
+      {!hideValue && (
+        <span className={`${size === 'sm' ? 'text-xs' : 'text-sm'} font-semibold tabular-nums ${colorClass}`}>
+          {arrow} {valueStr}
+        </span>
+      )}
+      <span className={`${size === 'sm' ? 'text-[10px]' : 'text-xs'} font-semibold tabular-nums ${colorClass}`}>
+        {hideValue ? `${arrow} ` : ''}{pctStr}
       </span>
     </div>
+  );
+}
+
+// 一覧やカードに置く小さな折れ線。期間の最初より上がっていれば緑、下がっていれば赤
+function Sparkline({
+  values, width = 96, height = 28,
+}: { values: number[]; width?: number; height?: number }) {
+  if (values.length < 2) {
+    return <svg width={width} height={height} aria-hidden="true" />;
+  }
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = max - min;
+  const pad = 2;
+  const toX = (i: number) => pad + (i / (values.length - 1)) * (width - pad * 2);
+  // 値が動いていない場合は中央に水平線を引く
+  const toY = (v: number) => range === 0
+    ? height / 2
+    : pad + (1 - (v - min) / range) * (height - pad * 2);
+  const first = values[0];
+  const last = values[values.length - 1];
+  const pct = first > 0 ? ((last - first) / first) * 100 : 0;
+  const color = Math.abs(pct) < FLAT_THRESHOLD_PCT ? FLAT_COLOR : pct > 0 ? UP_COLOR : DOWN_COLOR;
+  const pointsAttr = values.map((v, i) => `${toX(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true" className="inline-block">
+      <polyline points={pointsAttr} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+    </svg>
   );
 }
 
@@ -155,17 +297,21 @@ type CategoryFilter = 'all' | string;
 // ============================================================
 
 function MarketChart({
-  chartData,
-  currentIndex,
-  candles,
-  todayCandle,
+  title,
+  unit,
+  points,
+  periodDays,
+  baseline,
+  controls,
 }: {
-  chartData: { date: string; index: number }[];
-  currentIndex: number;
-  candles: CandleData[];
-  todayCandle: { open: number; high: number; low: number; close: number } | null;
+  title: string;
+  unit: string;               // 値の単位（物価平均は 'ine'、物価指数は単位なしの ''）
+  points: ChartPoint[];       // 記録がある全期間の日足（古い順、最後が当日）
+  periodDays: number | null;  // 表示する日数（null = 全期間）
+  baseline: number | null;    // 基準線を引く値（物価指数の 100）。引かないなら null
+  controls?: React.ReactNode; // タイトルの右に置く切替
 }) {
-  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: { date: string; index: number; isCurrent?: boolean; open: number; close: number; high: number; low: number } } | null>(null);
+  const [hoveredPoint, setHoveredPoint] = useState<{ x: number; y: number; point: DisplayPoint } | null>(null);
   const [chartType, setChartType] = useState<'line' | 'candlestick'>('line');
   const svgRef = React.useRef<SVGSVGElement>(null);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
@@ -177,81 +323,13 @@ function MarketChart({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 折れ線グラフ用: chartDataの最後に現在のインデックスを「現在」として追加する
-  // chartData30Days が空（データ蓄積前）の場合でも currentIndex のみで表示できるようにする
-  const lineDisplayData = useMemo(() => {
-    const baseData: Array<{ date: string; index: number; isCurrent?: boolean; open: number; close: number; high: number; low: number }> = (chartData ?? []).map(d => ({
-      ...d,
-      isCurrent: false,
-      open: d.index,
-      close: d.index,
-      high: d.index,
-      low: d.index,
-    }));
-    baseData.push({
-      date: new Date().toISOString(),
-      index: currentIndex,
-      isCurrent: true,
-      open: currentIndex,
-      close: currentIndex,
-      high: currentIndex,
-      low: currentIndex,
-    });
-    return baseData;
-  }, [chartData, currentIndex]);
-
-  // ローソク足グラフ用: APIから取得したキャンドルデータをチャート形式に変換し、当日分を末尾に追加
-  // candles が空（データ蓄積前）の場合でも currentIndex のみで当日分を表示できるようにする
-  const candleDisplayData = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // 今日の0時
-
-    const mapped = (candles ?? []).map(c => ({
-      date: new Date(c.time * 1000).toISOString(),
-      index: c.close,
-      isCurrent: false,
-      open: c.open,
-      close: c.close,
-      high: c.high,
-      low: c.low,
-    }));
-
-    // APIの最後のキャンドルが今日のものかチェック
-    const lastCandle = mapped.length > 0 ? mapped[mapped.length - 1] : null;
-    const lastCandleDate = lastCandle ? new Date(lastCandle.date) : null;
-    const lastCandleIsToday = lastCandleDate !== null && lastCandleDate >= today;
-
-    if (lastCandleIsToday && lastCandle) {
-      // 最新キャンドルが今日分なら、closeをcurrentIndexで上書き（high/lowも更新）
-      mapped[mapped.length - 1] = {
-        ...lastCandle,
-        close: currentIndex,
-        index: currentIndex,
-        isCurrent: true,
-        high: Math.max(lastCandle.high, currentIndex),
-        low: Math.min(lastCandle.low, currentIndex),
-      };
-    } else {
-      // 今日分がなければ新規追加: 前日終値を始値とし、currentIndex を終値とする
-      const prevClose = mapped.length > 0 ? mapped[mapped.length - 1].close : currentIndex;
-      mapped.push({
-        date: new Date().toISOString(),
-        index: currentIndex,
-        isCurrent: true,
-        open: prevClose,
-        close: currentIndex,
-        high: Math.max(prevClose, currentIndex),
-        low: Math.min(prevClose, currentIndex),
-      });
-    }
-
-    // APIは全期間のキャンドルを返すため、折れ線グラフと揃えて過去30日分（＋当日）に絞り込む
-    const cutoff = new Date(today);
-    cutoff.setDate(cutoff.getDate() - 30);
-    return mapped.filter(d => new Date(d.date) >= cutoff);
-  }, [candles, currentIndex]);
-
-  const displayData = chartType === 'candlestick' ? candleDisplayData : lineDisplayData;
+  // 表示期間に入る日足だけを取り出す。折れ線は終値（当日は現在値）を結ぶ
+  const displayData = useMemo<DisplayPoint[]>(() => {
+    const cutoff = periodDays === null ? null : dateStrDaysAgo(periodDays);
+    const visible = cutoff === null ? points : points.filter(p => p.date >= cutoff);
+    const source = visible.length > 0 ? visible : points.slice(-1);
+    return source.map(p => ({ ...p, index: p.close }));
+  }, [points, periodDays]);
 
   // データが1点のみ（蓄積前）かどうか
   const isSinglePoint = displayData.length === 1;
@@ -313,8 +391,8 @@ function MarketChart({
   const chartMarginRight = 10;
   const usableWidth = chartWidth - chartMarginRight;
 
-  // データが少ない場合でも左右に広がりすぎないように、最低30日分の幅を基準にする
-  const minPoints = 30;
+  // データが少ない場合でも左右に広がりすぎないように、表示期間の日数ぶんの幅を基準にする（全期間は最低30日分）
+  const minPoints = periodDays ?? 30;
   const xPoints = Math.max(minPoints, displayData.length - 1);
   const pointSpacing = usableWidth / (xPoints || 1);
 
@@ -355,12 +433,15 @@ function MarketChart({
     return ticks;
   }, [minVal, maxVal, range]);
 
-  const points = displayData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
+  const linePoints = displayData.map((d, i) => `${toX(i)},${toY(d.index)}`).join(' ');
   const lastPoint = displayData[displayData.length - 1];
-  // 配色は「当日の始値」との比較で決定する
-  const todayOpen = todayCandle?.open ?? lastPoint.index;
-  const isOverallPositive = lastPoint.index >= todayOpen;
-  const lineColor = isOverallPositive ? '#ef4444' : '#22c55e';
+  // 配色は「表示期間の最初」との比較で決定する（全期間は最初の日の始値、それ以外は開始日の終値）
+  const periodStart = periodDays === null ? displayData[0].open : displayData[0].index;
+  const isOverallPositive = lastPoint.index >= periodStart;
+  const lineColor = isOverallPositive ? UP_COLOR : DOWN_COLOR;
+  const todayPoint = lastPoint.isCurrent ? lastPoint : null;
+  const unitLabel = unit ? <span className="text-xs font-normal text-gray-400 ml-1">{unit}</span> : null;
+  const unitLabelSmall = unit ? <span className="text-[10px] font-normal text-gray-400 ml-0.5">{unit}</span> : null;
 
   const fillPath = isSinglePoint ? '' :
     `M ${toX(0)},${toY(displayData[0].index)} ` +
@@ -369,8 +450,9 @@ function MarketChart({
 
   const formatDate = (dateStr: string, isCurrent?: boolean) => {
     if (isCurrent) return '現在';
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' });
+    // YYYY-MM-DD をそのまま 月/日 にする（見る人のタイムゾーンで日付がずれないようにする）
+    const [, month, day] = dateStr.split('-');
+    return `${Number(month)}/${Number(day)}`;
   };
   const formatIndex = (value: number) => {
     return value.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -410,8 +492,11 @@ function MarketChart({
   return (
     <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
-        <h2 className="text-base sm:text-lg font-bold text-gray-800">いねさば物価平均 (過去30日間)</h2>
-        
+        <h2 className="text-base sm:text-lg font-bold text-gray-800">{title}</h2>
+
+        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+        {controls}
+
         {/* PC用: セグメントコントロール */}
         <div className="hidden sm:flex bg-gray-100 rounded-lg p-1">
           <button
@@ -428,8 +513,8 @@ function MarketChart({
           </button>
         </div>
 
-        {/* スマホ用: 2段目・右揃えのプルダウン */}
-        <div className="w-full sm:hidden flex justify-end">
+        {/* スマホ用: 右揃えのプルダウン */}
+        <div className="sm:hidden flex justify-end ml-auto">
           <select
             value={chartType}
             onChange={(e) => setChartType(e.target.value as 'line' | 'candlestick')}
@@ -438,6 +523,7 @@ function MarketChart({
             <option value="line">折れ線グラフ</option>
             <option value="candlestick">ローソク足（1日足）</option>
           </select>
+        </div>
         </div>
       </div>
       
@@ -461,8 +547,8 @@ function MarketChart({
           >
             <defs>
             <linearGradient id={`bigChartGrad-${isOverallPositive ? 'up' : 'down'}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={isOverallPositive ? '#ef4444' : '#22c55e'} stopOpacity="0.2" />
-              <stop offset="100%" stopColor={isOverallPositive ? '#ef4444' : '#22c55e'} stopOpacity="0" />
+              <stop offset="0%" stopColor={lineColor} stopOpacity="0.2" />
+              <stop offset="100%" stopColor={lineColor} stopOpacity="0" />
             </linearGradient>
             <clipPath id="chart-area-clip">
               <rect
@@ -502,6 +588,29 @@ function MarketChart({
             );
           })}
 
+          {/* 基準線（物価指数の 100）。表示範囲に入っているときだけ引く */}
+          {baseline !== null && baseline > minVal && baseline < maxVal && (
+            <g>
+              <line
+                x1={padding.left}
+                y1={toY(baseline)}
+                x2={width - padding.right}
+                y2={toY(baseline)}
+                stroke="#9ca3af"
+                strokeWidth={1}
+                strokeDasharray="2 4"
+              />
+              <text
+                x={padding.left + 4}
+                y={toY(baseline) - 5}
+                className="fill-gray-400 font-medium select-none"
+                fontSize="11"
+              >
+                基準 {baseline}
+              </text>
+            </g>
+          )}
+
           {/* Y軸の線 */}
           <line
             x1={width - padding.right}
@@ -520,7 +629,7 @@ function MarketChart({
 
               {!isSinglePoint && (
                 <polyline
-                  points={points}
+                  points={linePoints}
                   fill="none"
                   stroke={lineColor}
                   strokeWidth="3"
@@ -544,7 +653,7 @@ function MarketChart({
               {displayData.map((d, i) => {
                 const cx = toX(i);
                 const isUp = d.close >= d.open;
-                const color = isUp ? '#ef4444' : '#22c55e';
+                const color = isUp ? UP_COLOR : DOWN_COLOR;
 
                 return (
                   <g key={`candle-${i}`}>
@@ -592,7 +701,7 @@ function MarketChart({
               y={lastY - 10}
               width={76}
               height={20}
-              fill={isOverallPositive ? '#ef4444' : '#22c55e'}
+              fill={lineColor}
             />
             <text
               x={width - padding.right + 8}
@@ -658,14 +767,14 @@ function MarketChart({
             {chartType === 'line' ? (
               <div className="flex items-baseline font-bold text-xl">
                 <span className="tabular-nums">{formatIndex(hoveredPoint.point.index)}</span>
-                <span className="text-xs font-normal text-gray-400 ml-1">ine</span>
+                {unitLabel}
               </div>
             ) : (
               <div className="flex flex-col gap-y-2 text-sm sm:text-base">
-                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">始値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.open)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
-                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">高値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.high)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
-                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">終値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.close)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
-                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">安値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.low)}</span><span className="text-[10px] font-normal text-gray-400 ml-0.5">ine</span></div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">始値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.open)}</span>{unitLabelSmall}</div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">高値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.high)}</span>{unitLabelSmall}</div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">終値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.close)}</span>{unitLabelSmall}</div></div>
+                <div className="flex justify-between items-center gap-6"><span className="text-gray-400 font-medium">安値</span><div className="flex items-baseline"><span className="tabular-nums font-semibold">{formatIndex(hoveredPoint.point.low)}</span>{unitLabelSmall}</div></div>
               </div>
             )}
           </div>
@@ -674,24 +783,294 @@ function MarketChart({
       </div>
 
       {/* 本日のOHLバー */}
-      {todayCandle && (
+      {todayPoint && (
         <div className="mt-4 pt-3 border-t border-gray-100 flex flex-wrap items-baseline justify-center gap-x-6 gap-y-1 text-gray-700">
-          <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の始値</span>
-            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.open)}</span>
-            <span className="text-xs text-gray-400 ml-0.5">ine</span>
-          </div>
-          <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の高値</span>
-            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.high)}</span>
-            <span className="text-xs text-gray-400 ml-0.5">ine</span>
-          </div>
-          <div className="flex items-baseline">
-            <span className="text-xs text-gray-400 font-medium mr-1.5">本日の安値</span>
-            <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(todayCandle.low)}</span>
-            <span className="text-xs text-gray-400 ml-0.5">ine</span>
-          </div>
+          {([['本日の始値', todayPoint.open], ['本日の高値', todayPoint.high], ['本日の安値', todayPoint.low]] as const).map(([label, value]) => (
+            <div key={label} className="flex items-baseline">
+              <span className="text-xs text-gray-400 font-medium mr-1.5">{label}</span>
+              <span className="text-lg font-bold text-gray-900 tabular-nums">{formatIndex(value)}</span>
+              {unit && <span className="text-xs text-gray-400 ml-0.5">{unit}</span>}
+            </div>
+          ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+// ============================================================
+// データの取得と組み立て
+// ============================================================
+
+// 既定は本番の API。手元で確かめるときは NEXT_PUBLIC_MARKET_API_BASE で向き先を変えられる
+const MARKET_API_BASE = process.env.NEXT_PUBLIC_MARKET_API_BASE ?? 'https://api.1necat.net';
+
+// なくても表示を続けられるデータの取得。失敗したら null を返す（古い API・プラグインでも動くようにする）
+async function fetchOptional<T>(url: string): Promise<T | null> {
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.status === 'success' ? (json.data as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+// 当日分の日足を、現在値で締めた形にする。当日分がなければ前日の終値から作る
+function withToday(points: ChartPoint[], current: number): ChartPoint[] {
+  const todayStr = dateStrOf(new Date());
+  const result = points.map(p => ({ ...p, isCurrent: false }));
+  const last = result.length > 0 ? result[result.length - 1] : null;
+  if (last && last.date >= todayStr) {
+    result[result.length - 1] = {
+      ...last,
+      close: current,
+      high: Math.max(last.high, current),
+      low: Math.min(last.low, current),
+      isCurrent: true,
+    };
+  } else {
+    const prevClose = last ? last.close : current;
+    result.push({
+      date: todayStr,
+      open: prevClose,
+      close: current,
+      high: Math.max(prevClose, current),
+      low: Math.min(prevClose, current),
+      isCurrent: true,
+    });
+  }
+  return result;
+}
+
+// 物価平均（全アイテムの価格の合計）の日足
+function buildAveragePoints(candles: CandleData[], currentIndex: number): ChartPoint[] {
+  return withToday(candles.map(c => ({
+    date: dateStrOf(new Date(c.time * 1000)),
+    open: c.open,
+    high: c.high,
+    low: c.low,
+    close: c.close,
+    isCurrent: false,
+  })), currentIndex);
+}
+
+// 物価指数の日足
+function buildIndexPoints(entry: PriceIndexEntry): ChartPoint[] {
+  return withToday(entry.candles.map(c => ({ ...c, isCurrent: false })), entry.current);
+}
+
+// 期間の開始値。全期間は最初の日の始値、それ以外は開始日（今日から N 日前）の終値
+function periodBaseOfPoints(points: ChartPoint[], days: number | null): number | null {
+  if (points.length === 0) return null;
+  if (days === null) return points[0].open;
+  const cutoff = dateStrDaysAgo(days);
+  const first = points.find(p => p.date >= cutoff);
+  return first ? first.close : null;
+}
+
+// 期間に入る終値の並び（小さな折れ線用）
+function periodCloses(points: ChartPoint[], days: number | null): number[] {
+  if (days === null) return points.map(p => p.close);
+  const cutoff = dateStrDaysAgo(days);
+  return points.filter(p => p.date >= cutoff).map(p => p.close);
+}
+
+// アイテムの履歴のうち、期間の最初の位置
+function historyStart(history: HistoryData, days: number | null): number {
+  if (days === null) return 0;
+  const cutoff = dateStrDaysAgo(days);
+  const index = history.dates.findIndex(d => d >= cutoff);
+  return index < 0 ? history.dates.length : index;
+}
+
+// アイテムの期間の開始値（開始日の終値。その日にまだ市場になければ、最初に記録された終値）
+function periodBaseOfItem(history: HistoryData, itemKey: string, days: number | null): number | null {
+  const closes = history.items[itemKey]?.close;
+  if (!closes) return null;
+  for (let i = historyStart(history, days); i < closes.length; i++) {
+    const value = closes[i];
+    if (value !== null && value > 0) return value;
+  }
+  return null;
+}
+
+// アイテムの期間の終値の並び（最後は現在価格）
+function periodClosesOfItem(history: HistoryData, itemKey: string, days: number | null, currentPrice: number): number[] {
+  const closes = history.items[itemKey]?.close;
+  if (!closes) return [];
+  const todayStr = dateStrOf(new Date());
+  const values: number[] = [];
+  for (let i = historyStart(history, days); i < closes.length; i++) {
+    const value = closes[i];
+    if (value === null) continue;
+    values.push(history.dates[i] >= todayStr ? currentPrice : value);
+  }
+  if (history.dates.length === 0 || history.dates[history.dates.length - 1] < todayStr) {
+    values.push(currentPrice);
+  }
+  return values;
+}
+
+// 前日比の差額は API 側で小数 2 桁に丸められ、0 になることがある。そのときは変化率から差額を出し直す
+function repairComparison(comparison: ComparisonData, currentPrice: number): ComparisonData {
+  if (comparison.value !== 0 || comparison.percentage === 0) return comparison;
+  return {
+    value: (currentPrice * comparison.percentage) / (100 + comparison.percentage),
+    percentage: comparison.percentage,
+  };
+}
+
+interface ItemRow {
+  item: MarketItem;
+  meta: ItemMeta;
+  change1d: ComparisonData;
+  changePeriod: ComparisonData;
+  spark: number[];
+}
+
+// ============================================================
+// 切替ボタン（期間・指数の種類）
+// ============================================================
+
+function SegmentedControl<T extends string>({
+  options, value, onChange, ariaLabel,
+}: {
+  options: { key: T; label: string }[];
+  value: T;
+  onChange: (key: T) => void;
+  ariaLabel: string;
+}) {
+  return (
+    <div className="inline-flex bg-gray-100 rounded-lg p-1" role="group" aria-label={ariaLabel}>
+      {options.map(option => (
+        <button
+          key={option.key}
+          onClick={() => onChange(option.key)}
+          aria-pressed={value === option.key}
+          className={`px-3 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer ${value === option.key ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+        >
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// ============================================================
+// 指数のまとめ（期間ごとの変化・カテゴリ別・上げ下げの品目数）
+// ============================================================
+
+function IndexOverview({
+  seriesLabel,
+  points,
+  categoryIndexes,
+  periodLabel,
+  periodDays,
+  breadth,
+  baseDate,
+  showIndexNote,
+  selectedCategory,
+  onSelectCategory,
+}: {
+  seriesLabel: string;
+  points: ChartPoint[];
+  categoryIndexes: { entry: PriceIndexEntry; label: string; points: ChartPoint[] }[];
+  periodLabel: string;
+  periodDays: number | null;
+  breadth: { up: number; flat: number; down: number };
+  baseDate: string | null;
+  showIndexNote: boolean;
+  selectedCategory: string;
+  onSelectCategory: (label: string) => void;
+}) {
+  const current = points.length > 0 ? points[points.length - 1].close : 0;
+  const stats = ([['7日', 7], ['30日', 30], ['90日', 90], ['全期間', null]] as const).map(([label, days]) => ({
+    label,
+    comparison: comparisonOf(current, periodBaseOfPoints(points, days)),
+  }));
+  const total = breadth.up + breadth.flat + breadth.down;
+  const formatBaseDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split('-');
+    return `${year}年${Number(month)}月${Number(day)}日`;
+  };
+
+  return (
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4 sm:p-6 mb-6">
+      {/* 期間ごとの変化 */}
+      <div className="text-xs text-gray-500 mb-2">{seriesLabel}の変化</div>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {stats.map(stat => (
+          <div key={stat.label} className="bg-gray-50 rounded-lg px-3 py-2 flex items-center justify-between">
+            <span className="text-xs text-gray-500">{stat.label}</span>
+            {stat.comparison
+              ? <ChangeBadge value={stat.comparison.value} percentage={stat.comparison.percentage} size="md" hideValue />
+              : <span className="text-xs text-gray-400">---</span>}
+          </div>
+        ))}
+      </div>
+
+      {/* カテゴリ別の物価指数 */}
+      {categoryIndexes.length > 0 && (
+        <>
+          <div className="text-xs text-gray-500 mt-5 mb-2">カテゴリ別の物価指数（{periodLabel}）</div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {categoryIndexes.map(({ entry, label, points: categoryPoints }) => {
+              const comparison = comparisonOf(entry.current, periodBaseOfPoints(categoryPoints, periodDays));
+              const isSelected = selectedCategory === label;
+              return (
+                <button
+                  key={entry.code}
+                  onClick={() => onSelectCategory(isSelected ? 'all' : label)}
+                  aria-pressed={isSelected}
+                  title={`${label}のアイテムだけを一覧に表示`}
+                  className={`text-left rounded-lg px-4 py-3 border transition-colors cursor-pointer ${isSelected ? 'bg-[#5b8064]/10 border-[#5b8064]' : 'bg-gray-50 border-transparent hover:border-gray-300'}`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <div className="text-xs text-gray-500">{label}<span className="text-gray-400 ml-1">{entry.itemCount}品目</span></div>
+                      <div className="text-xl font-bold text-gray-900 tabular-nums">
+                        {entry.current.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <Sparkline values={periodCloses(categoryPoints, periodDays)} width={88} height={26} />
+                      {comparison
+                        ? <ChangeBadge value={comparison.value} percentage={comparison.percentage} size="sm" hideValue />
+                        : <span className="text-[10px] text-gray-400">---</span>}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* 上げ・下げの品目数 */}
+      {total > 0 && (
+        <>
+          <div className="flex items-center justify-between text-xs mt-5 mb-1.5">
+            <span className="text-green-600 font-semibold">上げ {breadth.up}</span>
+            <span className="text-gray-500">{periodLabel}の値動き（変わらず {breadth.flat}）</span>
+            <span className="text-red-600 font-semibold">下げ {breadth.down}</span>
+          </div>
+          <div className="flex h-2 rounded-full overflow-hidden bg-gray-100" role="img"
+            aria-label={`${periodLabel}の値動き: 上げ ${breadth.up} 品目、変わらず ${breadth.flat} 品目、下げ ${breadth.down} 品目`}>
+            <div style={{ width: `${(breadth.up / total) * 100}%`, backgroundColor: UP_COLOR }} />
+            <div style={{ width: `${(breadth.flat / total) * 100}%`, backgroundColor: '#d1d5db' }} />
+            <div style={{ width: `${(breadth.down / total) * 100}%`, backgroundColor: DOWN_COLOR }} />
+          </div>
+        </>
+      )}
+
+      {showIndexNote && (
+        <p className="text-xs text-gray-500 mt-4 leading-relaxed">
+          物価指数は、{baseDate ? `${formatBaseDate(baseDate)}を` : '記録を始めた日を'}100とした市場全体の値段の水準です。
+          取引の規模が大きいアイテムほど重く数えるので、値段の高いアイテム1つの動きに引っ張られません。
+          物価平均は、全アイテムの価格をそのまま足した値です。
+        </p>
       )}
     </div>
   );
@@ -705,6 +1084,8 @@ export default function MarketPageClient() {
   const [items, setItems] = useState<MarketItem[]>([]);
   const [indexData, setIndexData] = useState<MarketIndexData | null>(null);
   const [candles, setCandles] = useState<CandleData[]>([]);
+  const [priceIndex, setPriceIndex] = useState<PriceIndexData | null>(null);
+  const [history, setHistory] = useState<HistoryData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<SortKey>('price_desc');
@@ -712,15 +1093,23 @@ export default function MarketPageClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [autoRefresh, setAutoRefresh] = useState(true);
+  const [period, setPeriod] = useState<PeriodKey>('30');
+  const [series, setSeries] = useState<'index' | 'average'>('index');
+  // 履歴は 1 日 1 回変わるだけなので、最初と日付が変わったときだけ取り直す
+  const historyDateRef = React.useRef<string | null>(null);
 
   const fetchAll = useCallback(async (showLoading = false) => {
     if (showLoading) setIsLoading(true);
     setError(null);
     try {
-      const [blocksRes, indexRes, candlesRes] = await Promise.all([
-        fetch('https://api.1necat.net/api/market/blocks'),
-        fetch('https://api.1necat.net/api/market/index'),
-        fetch('https://api.1necat.net/api/market/index/candles?timeframe=1d'),
+      const todayStr = dateStrOf(new Date());
+      const needHistory = historyDateRef.current !== todayStr;
+      const [blocksRes, indexRes, candlesRes, priceIndexData, historyData] = await Promise.all([
+        fetch(`${MARKET_API_BASE}/api/market/blocks`),
+        fetch(`${MARKET_API_BASE}/api/market/index`),
+        fetch(`${MARKET_API_BASE}/api/market/index/candles?timeframe=1d`),
+        fetchOptional<PriceIndexData>(`${MARKET_API_BASE}/api/market/price-index`),
+        needHistory ? fetchOptional<HistoryData>(`${MARKET_API_BASE}/api/market/history?days=800`) : Promise.resolve(null),
       ]);
       if (!blocksRes.ok || !indexRes.ok) throw new Error('データの取得に失敗しました');
 
@@ -730,6 +1119,12 @@ export default function MarketPageClient() {
       if (blocksJson.status === 'success') setItems(blocksJson.data.items);
       if (indexJson.status === 'success') setIndexData(indexJson.data);
       if (candlesJson.status === 'success') setCandles(candlesJson.data.candles);
+      // 取れなかったときは前回の内容を残す
+      if (priceIndexData) setPriceIndex(priceIndexData);
+      if (historyData) {
+        setHistory(historyData);
+        historyDateRef.current = todayStr;
+      }
       setLastUpdated(new Date());
     } catch (err) {
       console.error(err);
@@ -754,73 +1149,113 @@ export default function MarketPageClient() {
     return () => clearInterval(interval);
   }, [autoRefresh, fetchAll]);
 
+  const periodInfo = getPeriod(period);
+  // アイテムの履歴が取れないとき（古い API）は、一覧の期間は API が返す 30 日比で固定する
+  const listPeriodDays = history ? periodInfo.days : 30;
+  const listPeriodLabel = history ? periodInfo.label : '30日';
+  const listChangeLabel = listPeriodDays === null ? '全期間' : `${listPeriodLabel}比`;
+
+  // 物価指数（全体とカテゴリ別）
+  const allIndex = useMemo(
+    () => priceIndex?.indexes.find(entry => entry.code === 'ALL' && entry.candles.length > 0) ?? null,
+    [priceIndex],
+  );
+  const indexPoints = useMemo(() => (allIndex ? buildIndexPoints(allIndex) : []), [allIndex]);
+  const averagePoints = useMemo(
+    () => (indexData ? buildAveragePoints(candles, indexData.currentIndex) : []),
+    [candles, indexData],
+  );
+  const categoryIndexes = useMemo(() => {
+    if (!priceIndex) return [];
+    const entries = priceIndex.indexes
+      .filter(entry => entry.code !== 'ALL' && entry.candles.length > 0)
+      .map(entry => ({ entry, label: getCategoryLabel(entry.category), points: buildIndexPoints(entry) }));
+    // このページのカテゴリの並びに合わせる
+    const order = (label: string) => {
+      const index = CATEGORY_ORDER.indexOf(label);
+      return index < 0 ? CATEGORY_ORDER.length : index;
+    };
+    return entries.sort((a, b) => order(a.label) - order(b.label));
+  }, [priceIndex]);
+
+  // 物価指数がまだない（古いプラグイン）ときは物価平均だけを表示する
+  const hasPriceIndex = allIndex !== null;
+  const activeSeries = hasPriceIndex ? series : 'average';
+  const activePoints = activeSeries === 'index' ? indexPoints : averagePoints;
+  const activeLabel = activeSeries === 'index' ? '物価指数' : '物価平均';
+  const activeUnit = activeSeries === 'index' ? '' : 'ine';
+
+  const rows = useMemo<ItemRow[]>(() => items.map(item => {
+    const base = history ? periodBaseOfItem(history, item.itemKey, listPeriodDays) : null;
+    return {
+      item,
+      meta: getItemMeta(item.itemKey),
+      change1d: repairComparison(item.comparisonPreviousDay, item.currentPrice),
+      changePeriod: comparisonOf(item.currentPrice, base) ?? repairComparison(item.comparison30Days, item.currentPrice),
+      spark: history ? periodClosesOfItem(history, item.itemKey, listPeriodDays, item.currentPrice) : [],
+    };
+  }), [items, history, listPeriodDays]);
+
+  const breadth = useMemo(() => {
+    const result = { up: 0, flat: 0, down: 0 };
+    for (const row of rows) {
+      const direction = changeDirection(row.changePeriod.value, row.changePeriod.percentage);
+      if (direction > 0) result.up++;
+      else if (direction < 0) result.down++;
+      else result.flat++;
+    }
+    return result;
+  }, [rows]);
+
   const categories = useMemo(() => {
     const cats = new Set<string>();
-    items.forEach(item => cats.add(getItemMeta(item.itemKey).category));
+    rows.forEach(row => cats.add(row.meta.category));
     return [
       'all',
       ...CATEGORY_ORDER.filter(c => cats.has(c)),
       ...Array.from(cats).filter(c => !CATEGORY_ORDER.includes(c)),
     ];
-  }, [items]);
+  }, [rows]);
 
   const filteredSorted = useMemo(() => {
-    let result = items.filter(item => {
-      const meta = getItemMeta(item.itemKey);
-      const matchCat = categoryFilter === 'all' || meta.category === categoryFilter;
+    let result = rows.filter(row => {
+      const matchCat = categoryFilter === 'all' || row.meta.category === categoryFilter;
       const q = searchQuery.toLowerCase();
       const matchSearch =
         q === '' ||
-        meta.label.toLowerCase().includes(q) ||
-        item.itemKey.toLowerCase().includes(q);
+        row.meta.label.toLowerCase().includes(q) ||
+        row.item.itemKey.toLowerCase().includes(q);
       return matchCat && matchSearch;
     });
 
     result = [...result].sort((a, b) => {
       switch (sortKey) {
-        case 'price_desc': return b.currentPrice - a.currentPrice;
-        case 'price_asc': return a.currentPrice - b.currentPrice;
-        case 'change1d_desc': return b.comparisonPreviousDay.percentage - a.comparisonPreviousDay.percentage;
-        case 'change1d_asc': return a.comparisonPreviousDay.percentage - b.comparisonPreviousDay.percentage;
-        case 'change30d_desc': return b.comparison30Days.percentage - a.comparison30Days.percentage;
-        case 'change30d_asc': return a.comparison30Days.percentage - b.comparison30Days.percentage;
-        case 'name': return getItemMeta(a.itemKey).label.localeCompare(getItemMeta(b.itemKey).label, 'ja');
+        case 'price_desc': return b.item.currentPrice - a.item.currentPrice;
+        case 'price_asc': return a.item.currentPrice - b.item.currentPrice;
+        case 'change1d_desc': return b.change1d.percentage - a.change1d.percentage;
+        case 'change1d_asc': return a.change1d.percentage - b.change1d.percentage;
+        case 'change30d_desc': return b.changePeriod.percentage - a.changePeriod.percentage;
+        case 'change30d_asc': return a.changePeriod.percentage - b.changePeriod.percentage;
+        case 'name': return a.meta.label.localeCompare(b.meta.label, 'ja');
         default: return 0;
       }
     });
 
     return result;
-  }, [items, categoryFilter, searchQuery, sortKey]);
+  }, [rows, categoryFilter, searchQuery, sortKey]);
 
-  // 当日の始値データを事前に計算
-  const todayCandle = useMemo(() => {
-    if (!indexData) return null;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayRaw = candles.length > 0
-      ? candles[candles.length - 1]
-      : null;
-    const todayIsToday = todayRaw ? new Date(todayRaw.time * 1000) >= today : false;
-    return todayIsToday && todayRaw
-      ? {
-          open: todayRaw.open,
-          high: Math.max(todayRaw.high, indexData.currentIndex),
-          low: Math.min(todayRaw.low, indexData.currentIndex),
-          close: indexData.currentIndex,
-        }
-      : {
-          open: indexData.currentIndex,
-          high: indexData.currentIndex,
-          low: indexData.currentIndex,
-          close: indexData.currentIndex,
-        };
-  }, [candles, indexData]);
+  // ページ上部の帯に出す値（当日の始値との比較）
+  const headline = useMemo(() => {
+    const today = activePoints.length > 0 ? activePoints[activePoints.length - 1] : null;
+    if (!today) return null;
+    return { label: activeLabel, unit: activeUnit, value: today.close, open: today.open };
+  }, [activePoints, activeLabel, activeUnit]);
 
   // ローディング
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} todayCandle={null} />
+        <PageHeader headline={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#5b8064]/10 mb-4">
@@ -837,7 +1272,7 @@ export default function MarketPageClient() {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <PageHeader indexData={null} todayCandle={null} />
+        <PageHeader headline={null} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
             <div className="text-2xl mb-2">⚠️</div>
@@ -850,36 +1285,72 @@ export default function MarketPageClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PageHeader indexData={indexData} todayCandle={todayCandle} />
+      <PageHeader headline={headline} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* 自動更新トグル＆30秒間隔） */}
-        <div className="flex items-center justify-end mb-3">
-          {lastUpdated && (
-            <span className="text-xs text-gray-400 mr-3">
-              最終更新: {lastUpdated.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-            </span>
-          )}
-          <button
-            onClick={() => setAutoRefresh(prev => !prev)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${autoRefresh
-              ? 'bg-[#5b8064] text-white border-[#5b8064] shadow-sm'
-              : 'bg-white text-gray-500 border-gray-200 hover:border-[#5b8064] hover:text-[#5b8064]'
-              }`}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${autoRefresh ? 'bg-white animate-pulse' : 'bg-gray-300'}`} />
-            自動更新 {autoRefresh ? 'ON' : 'OFF'}
-          </button>
+        {/* 表示期間の切替・自動更新トグル（30秒間隔） */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-gray-500">表示期間</span>
+            <SegmentedControl
+              options={PERIODS.map(p => ({ key: p.key, label: p.label }))}
+              value={period}
+              onChange={setPeriod}
+              ariaLabel="表示期間"
+            />
+          </div>
+          <div className="flex items-center">
+            {lastUpdated && (
+              <span className="text-xs text-gray-400 mr-3">
+                最終更新: {lastUpdated.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            )}
+            <button
+              onClick={() => setAutoRefresh(prev => !prev)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${autoRefresh
+                ? 'bg-[#5b8064] text-white border-[#5b8064] shadow-sm'
+                : 'bg-white text-gray-500 border-gray-200 hover:border-[#5b8064] hover:text-[#5b8064]'
+                }`}
+            >
+              <span className={`w-1.5 h-1.5 rounded-full ${autoRefresh ? 'bg-white animate-pulse' : 'bg-gray-300'}`} />
+              自動更新 {autoRefresh ? 'ON' : 'OFF'}
+            </button>
+          </div>
         </div>
 
         {/* グラフ */}
-        {indexData && indexData.chartData30Days && (
+        {activePoints.length > 0 && (
           <MarketChart
-            chartData={indexData.chartData30Days}
-            currentIndex={indexData.currentIndex}
-            candles={candles}
-            todayCandle={todayCandle}
+            title={`いねさば${activeLabel}（${periodInfo.days === null ? '全期間' : `過去${periodInfo.label}間`}）`}
+            unit={activeUnit}
+            points={activePoints}
+            periodDays={periodInfo.days}
+            baseline={activeSeries === 'index' ? (priceIndex?.baseValue ?? 100) : null}
+            controls={hasPriceIndex ? (
+              <SegmentedControl
+                options={[{ key: 'index', label: '物価指数' }, { key: 'average', label: '物価平均' }]}
+                value={series}
+                onChange={setSeries}
+                ariaLabel="表示する指数"
+              />
+            ) : undefined}
+          />
+        )}
+
+        {/* 指数のまとめ */}
+        {activePoints.length > 0 && (
+          <IndexOverview
+            seriesLabel={activeLabel}
+            points={activePoints}
+            categoryIndexes={categoryIndexes}
+            periodLabel={listPeriodLabel}
+            periodDays={periodInfo.days}
+            breadth={breadth}
+            baseDate={priceIndex?.baseDate ?? null}
+            showIndexNote={hasPriceIndex}
+            selectedCategory={categoryFilter}
+            onSelectCategory={label => setCategoryFilter(label === 'all' || categories.includes(label) ? label : 'all')}
           />
         )}
 
@@ -926,8 +1397,8 @@ export default function MarketPageClient() {
               <option value="price_asc">価格：低い順</option>
               <option value="change1d_desc">前日比：高い順</option>
               <option value="change1d_asc">前日比：低い順</option>
-              <option value="change30d_desc">30日比：高い順</option>
-              <option value="change30d_asc">30日比：低い順</option>
+              <option value="change30d_desc">{listChangeLabel}：高い順</option>
+              <option value="change30d_asc">{listChangeLabel}：低い順</option>
               <option value="name">名前順</option>
             </select>
           </div>
@@ -946,22 +1417,22 @@ export default function MarketPageClient() {
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider w-10">#</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">アイテム</th>
                 <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">現在価格</th>
+                {history && (
+                  <th className="text-center px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">{listPeriodLabel}の推移</th>
+                )}
                 <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">前日比</th>
-                <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">30日比</th>
+                <th className="text-right px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">{listChangeLabel}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredSorted.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan={history ? 6 : 5} className="px-6 py-12 text-center text-gray-400">
                     該当するアイテムが見つかりません
                   </td>
                 </tr>
               ) : (
-                filteredSorted.map((item, idx) => {
-                  const meta = getItemMeta(item.itemKey);
-                  const change1d = item.comparisonPreviousDay;
-                  const change30d = item.comparison30Days;
+                filteredSorted.map(({ item, meta, change1d, changePeriod, spark }, idx) => {
                   const rowBg = idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50';
 
                   return (
@@ -983,11 +1454,16 @@ export default function MarketPageClient() {
                         </span>
                         <span className="text-xs text-gray-400 ml-1">ine</span>
                       </td>
+                      {history && (
+                        <td className="px-5 py-3.5 text-center">
+                          <Sparkline values={spark} />
+                        </td>
+                      )}
                       <td className="px-5 py-3.5 text-right">
                         <ChangeBadge value={change1d.value} percentage={change1d.percentage} />
                       </td>
                       <td className="px-5 py-3.5 text-right">
-                        <ChangeBadge value={change30d.value} percentage={change30d.percentage} />
+                        <ChangeBadge value={changePeriod.value} percentage={changePeriod.percentage} />
                       </td>
                     </tr>
                   );
@@ -1004,11 +1480,7 @@ export default function MarketPageClient() {
               該当するアイテムが見つかりません
             </div>
           ) : (
-            filteredSorted.map((item, idx) => {
-              const meta = getItemMeta(item.itemKey);
-              const change1d = item.comparisonPreviousDay;
-              const change30d = item.comparison30Days;
-
+            filteredSorted.map(({ item, meta, change1d, changePeriod, spark }, idx) => {
               return (
                 <div key={item.itemKey} className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
                   <div className="flex items-start justify-between">
@@ -1030,15 +1502,21 @@ export default function MarketPageClient() {
                     </div>
                   </div>
 
-                  <div className="mt-3 pt-3 border-t border-gray-100 grid grid-cols-2 gap-4">
+                  <div className={`mt-3 pt-3 border-t border-gray-100 grid ${history ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}>
                     <div>
                       <div className="text-xs text-gray-500 mb-1">前日比</div>
                       <ChangeBadge value={change1d.value} percentage={change1d.percentage} size="sm" />
                     </div>
                     <div>
-                      <div className="text-xs text-gray-500 mb-1">30日比</div>
-                      <ChangeBadge value={change30d.value} percentage={change30d.percentage} size="sm" />
+                      <div className="text-xs text-gray-500 mb-1">{listChangeLabel}</div>
+                      <ChangeBadge value={changePeriod.value} percentage={changePeriod.percentage} size="sm" />
                     </div>
+                    {history && (
+                      <div className="flex flex-col items-end">
+                        <div className="text-xs text-gray-500 mb-1">推移</div>
+                        <Sparkline values={spark} width={80} height={26} />
+                      </div>
+                    )}
                   </div>
                 </div>
               );
@@ -1055,21 +1533,20 @@ export default function MarketPageClient() {
 // ============================================================
 
 function PageHeader({
-  indexData,
-  todayCandle,
+  headline,
 }: {
-  indexData: MarketIndexData | null;
-  todayCandle: { open: number; high: number; low: number; close: number } | null;
+  headline: { label: string; unit: string; value: number; open: number } | null;
 }) {
   // 当日の始値との比較を計算
-  const todayOpen = todayCandle?.open ?? indexData?.currentIndex ?? 0;
-  const changeValue = indexData ? indexData.currentIndex - todayOpen : 0;
-  const changePercentage = todayOpen > 0 ? (changeValue / todayOpen) * 100 : 0;
+  const changeValue = headline ? headline.value - headline.open : 0;
+  const changePercentage = headline && headline.open > 0 ? (changeValue / headline.open) * 100 : 0;
 
-  const isPositive = changeValue >= 0;
-  const changeColor = isPositive ? 'text-red-300' : 'text-emerald-300';
-  const changeSign = isPositive ? '+' : '';
-  const changeArrow = isPositive ? '▲' : '▼';
+  const direction = changeDirection(changeValue, changePercentage);
+  // 上昇は緑、下落は赤（帯の濃い緑の上で読める明るさにする）
+  const changeColor = direction > 0 ? 'text-lime-200' : direction < 0 ? 'text-red-200' : 'text-white/80';
+  const changeSign = direction > 0 ? '+' : direction < 0 ? '-' : '±';
+  const changeArrow = direction > 0 ? '▲ ' : direction < 0 ? '▼ ' : '';
+  const formatValue = (value: number) => value.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div className="bg-[#5b8064] text-white">
@@ -1103,26 +1580,24 @@ function PageHeader({
             </Link>
           </div>
 
-          {indexData && (
+          {headline && (
             <div className="bg-white/10 backdrop-blur-sm rounded-xl px-5 py-3 border border-white/20 self-start sm:self-auto">
               <div className="flex items-center gap-4">
                 <div>
-                  <div className="text-xs text-white/60 mb-0.5">現在値</div>
+                  <div className="text-xs text-white/60 mb-0.5">{headline.label}</div>
                   <div className="flex items-baseline">
-                    <span className="text-3xl font-bold tabular-nums">
-                      {indexData.currentIndex.toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </span>
-                    <span className="text-sm text-white/60 ml-1 font-normal">ine</span>
+                    <span className="text-3xl font-bold tabular-nums">{formatValue(headline.value)}</span>
+                    {headline.unit && <span className="text-sm text-white/60 ml-1 font-normal">{headline.unit}</span>}
                   </div>
                 </div>
                 <div className={`flex flex-col items-end ${changeColor}`}>
                   <div className="text-[10px] text-white/60 font-normal mb-0.5 leading-none">前日比</div>
                   <span className="text-sm font-bold flex items-baseline">
-                    <span className="tabular-nums">{changeArrow} {changeSign}{Math.abs(changeValue).toLocaleString('ja-JP', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                    <span className="text-[10px] opacity-80 font-normal ml-0.5">ine</span>
+                    <span className="tabular-nums">{changeArrow}{changeSign}{formatValue(Math.abs(changeValue))}</span>
+                    {headline.unit && <span className="text-[10px] opacity-80 font-normal ml-0.5">{headline.unit}</span>}
                   </span>
                   <span className="text-xs font-semibold tabular-nums">
-                    {changeSign}{changePercentage.toFixed(2)}%
+                    {changeSign}{Math.abs(changePercentage).toFixed(2)}%
                   </span>
                 </div>
               </div>

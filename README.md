@@ -40,6 +40,7 @@ npm start
 | `NEXT_PUBLIC_RECOMMENDED_VERSION` | 推奨Minecraftバージョン | `1.21.4` |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID` | Google Analytics 測定ID | `G-XXXXXXXXXX` |
 | `NEXT_PUBLIC_GSC_VERIFICATION` | Google Search Console サイト確認コード | `vYtPF7pb...` |
+| `NEXT_PUBLIC_MARKET_API_BASE` | アイテム市場ページが読む API の向き先（省略時は `https://api.1necat.net`。手元で確かめるとき用） | `http://localhost:4000` |
 
 ---
 
