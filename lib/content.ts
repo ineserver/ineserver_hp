@@ -76,6 +76,61 @@ export function getAnnouncementFilesLight(): ContentData[] {
   });
 }
 
+/**
+ * お知らせ本文の最初の一文を、装飾を外して返す
+ * トップのイベント表示で「何をするイベントか」を説明するのに使う
+ *
+ * - 最初の段落（見出し・画像・※の注意書き・「〜はこちら」だけの行は飛ばす）から取る
+ * - その段落の最初の「。」までを返す
+ * - 「。」がない段落は、最初の「！」「？」（続けて書いた「！！」も含む）まで。それもなければ段落ごと
+ */
+export function getAnnouncementExcerpt(id: string, maxLength = 120): string {
+  const fullPath = path.join(contentDirectory, 'announcements', `${id}.md`)
+  if (!fs.existsSync(fullPath)) return ''
+
+  const { content } = parseFrontMatter(fs.readFileSync(fullPath, 'utf8'))
+  let paragraph = ''
+
+  for (const raw of content.split(/\r?\n/)) {
+    const line = raw.trim()
+    if (line.startsWith('#')) {
+      if (paragraph) break
+      continue
+    }
+    if (!line) {
+      if (paragraph) break // 段落の終わり
+      continue
+    }
+    if (line.startsWith('![') || line.startsWith(':::') || line.startsWith('---') || line.startsWith('※')) continue
+
+    const text = line
+      .replace(/!\[[^\]]*\]\([^)]*\)/g, '')       // 画像
+      .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')     // リンク → 文字だけ
+      .replace(/:command\[([^\]]+)\]/g, '$1')       // :command[/jobs shop] → /jobs shop
+      .replace(/<[^>]+>/g, '')                     // HTMLタグ
+      .replace(/https?:\/\/\S+/g, '')               // むき出しのURL
+      .replace(/[*_`]/g, '')
+      .replace(/\s*→\s*$/, '')
+      .replace(/\s+/g, ' ')
+      .replace(/([^\x00-\x7F]) ([^\x00-\x7F])/g, '$1$2') // 日本語どうしの間の空白は詰める
+      .trim()
+    if (!text || text.endsWith('こちら')) continue // 「〜はこちら → URL」のような案内だけの行は除く
+    paragraph += text
+  }
+
+  const period = paragraph.indexOf('。')
+  const exclaim = paragraph.search(/[！？!?]+/)
+  let sentence = paragraph
+  if (period >= 0) {
+    sentence = paragraph.slice(0, period + 1)
+  } else if (exclaim >= 0) {
+    const run = paragraph.slice(exclaim).match(/^[！？!?]+/)![0]
+    sentence = paragraph.slice(0, exclaim + run.length)
+  }
+
+  return sentence.length > maxLength ? sentence.slice(0, maxLength).trimEnd() + '…' : sentence
+}
+
 export async function getAnnouncementFiles(): Promise<ContentData[]> {
   const announcementDir = path.join(contentDirectory, 'announcements')
 

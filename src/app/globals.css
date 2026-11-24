@@ -63,6 +63,22 @@ body {
     animation: progress-fill 0.8s ease-out;
 }
 
+/* トップのイベント表示：自動で切り替わるまでの残り時間（終わったら次へ進む） */
+@keyframes event-autoplay {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+.event-autoplay {
+    transform-origin: left;
+    animation: event-autoplay 8s linear forwards;
+}
+
 /* スクロールバーを隠す */
 .scrollbar-hide,
 .no-scrollbar {
