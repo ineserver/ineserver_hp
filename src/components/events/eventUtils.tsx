@@ -80,20 +80,31 @@ export function getStatus(event: ShowcaseEvent, now: number): EventStatus {
 }
 
 /**
- * 表示順
- * 1. featured: true のもの（なければ一番新しく告知したもの）を先頭に
- * 2. 残りは、開催中を終わるのが近い順 → 開催予定を始まるのが近い順
+ * 表示順：今日から一番近い日の順
+ * - イベントごとに、開始日と終了日のうち今日に近い方（過去でも未来でもよい）を「近い日」とする
+ * - 近い日までの日数が少ない順に並べる（日数は日本時間の日付で数える）
+ * - 近い日が同じ日付なら、終わるイベントを始まるイベントより先にする
+ * - それでも並ばなければ、時刻まで含めて近い方を先にする
+ * - frontmatter に featured: true を書いたものだけは、この順に関係なく先頭に固定する
  */
 export function orderEvents(events: ShowcaseEvent[], now: number): ShowcaseEvent[] {
-    if (events.length === 0) return [];
-    const first =
-        events.find((e) => e.featured) ??
-        [...events].sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""))[0];
-    const rest = events.filter((e) => e.id !== first.id);
-    const time = (iso: string) => new Date(iso).getTime();
-    const ongoing = rest.filter((e) => time(e.startDate) <= now).sort((a, b) => time(a.endDate) - time(b.endDate));
-    const upcoming = rest.filter((e) => time(e.startDate) > now).sort((a, b) => time(a.startDate) - time(b.startDate));
-    return [first, ...ongoing, ...upcoming];
+    const today = jstDayNumber(now);
+    const nearest = (e: ShowcaseEvent) => {
+        const candidates = [
+            { kind: "end" as const, ms: new Date(e.endDate).getTime() },
+            { kind: "start" as const, ms: new Date(e.startDate).getTime() },
+        ].map((c) => ({ ...c, day: jstDayNumber(c.ms), days: Math.abs(jstDayNumber(c.ms) - today), dist: Math.abs(c.ms - now) }));
+        // 開始日と終了日が今日から同じ日数なら終了日を使う（終了日を先に並べてあるので、安定ソートで終了日が残る）
+        return candidates.sort((x, y) => x.days - y.days)[0];
+    };
+    const keyed = events.map((e) => ({ e, n: nearest(e) }));
+    keyed.sort((a, b) => {
+        if (!!a.e.featured !== !!b.e.featured) return a.e.featured ? -1 : 1;
+        if (a.n.days !== b.n.days) return a.n.days - b.n.days;
+        if (a.n.day === b.n.day && a.n.kind !== b.n.kind) return a.n.kind === "end" ? -1 : 1;
+        return a.n.dist - b.n.dist;
+    });
+    return keyed.map((k) => k.e);
 }
 
 /**
