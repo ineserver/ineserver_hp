@@ -668,8 +668,7 @@ const Header = () => {
                         ガイドライン
                       </h3>
                       <ul className="space-y-1">
-                        <li><Link href="/transport/rail" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />鉄道に関してのガイドライン</Link></li>
-                        <li><Link href="/transport/road" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />道路に関してのガイドライン</Link></li>
+                        <li><Link href="/transport/registration" className="hover:text-[#5b8064] text-sm block py-1 flex items-center"><ChevronRightIcon className="w-3 h-3 mr-2 text-[#5b8064]" />交通の登録（道路・鉄道のガイドライン）</Link></li>
                       </ul>
                     </div>
                     <div>
@@ -1135,11 +1134,8 @@ const Header = () => {
                           ガイドライン
                         </h4>
                         <div className="pl-4 space-y-1">
-                          <Link href="/transport/rail" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            鉄道に関してのガイドライン
-                          </Link>
-                          <Link href="/transport/road" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
-                            道路に関してのガイドライン
+                          <Link href="/transport/registration" className="block py-2 px-3 text-sm hover:text-[#5b8064] hover:bg-white rounded-md transition-colors" onClick={closeMenu}>
+                            交通の登録（道路・鉄道のガイドライン）
                           </Link>
                         </div>
                       </div>
