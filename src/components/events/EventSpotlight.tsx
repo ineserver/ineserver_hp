@@ -29,6 +29,12 @@ interface Props {
 }
 
 const GREEN = "#5b8064";
+// イベント欄の幅：1440pxまでの画面では下のお知らせなどと同じ（最大1280px）。
+// それより大きい画面（4Kモニターなど）では、1440pxの画面で見たときと同じ割合（画面幅の88.9%）まで広げる。
+// 下のお知らせなどは1280pxのままなので、大きい画面ほどイベント欄が目立つ
+// （大きい画面用の切り替えは rem で書く。px で書くと lg より前に並び、lg に上書きされるため。
+//   90.0625rem＝1441px、120rem＝1920px、160rem＝2560px）
+const WIDE = "mx-auto max-w-[max(80rem,88.9vw)] px-3 sm:px-4 lg:px-6";
 
 function Chevron({ dir = "right", className = "h-4 w-4" }: { dir?: "left" | "right"; className?: string }) {
     return (
@@ -158,11 +164,11 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
 
             {/* 帯 */}
             <div className={`relative pt-4 lg:pt-6 ${n > 1 ? "pb-14 lg:pb-16" : "pb-6 lg:pb-8"}`}>
-                <div className="relative max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                <div className={`relative ${WIDE}`}>
                     {/* 見出しは画面には出さず、読み上げ・検索向けにだけ置く（帯そのものが見出しの役をするため） */}
                     <h2 className="sr-only">{hasEvents ? "開催中・開催予定のイベント" : "ご案内"}</h2>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-3 lg:gap-5">
+                    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] min-[90.0625rem]:grid-cols-[minmax(0,1fr)_29.2%] gap-3 lg:gap-5 min-[120rem]:gap-7">
                         {/* バナー：切らずに16:9のまま、上には何も重ねない。切り替えはフェード */}
                         <div className="relative">
                             <Link href={current.href} className="relative block aspect-video overflow-hidden rounded-lg border border-gray-200 bg-white">
@@ -181,18 +187,18 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
                         </div>
 
                         {/* 解説の欄 */}
-                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-5 py-5 lg:px-6 lg:py-6 text-[#333]">
+                        <div className="flex flex-col rounded-lg border border-gray-200 bg-white px-5 py-5 lg:px-6 lg:py-6 min-[120rem]:px-8 min-[120rem]:py-8 min-[160rem]:px-10 min-[160rem]:py-10 text-[#333]">
                             <div className="flex items-center gap-2.5">
                                 <StatusTag status={status} />
-                                {status && <span className="text-sm font-bold text-gray-900">{status.countdown}</span>}
+                                {status && <span className="text-sm min-[120rem]:text-base min-[160rem]:text-lg font-bold text-gray-900">{status.countdown}</span>}
                             </div>
 
-                            <h3 className="mt-3 text-[1.3rem] lg:text-[1.45rem] font-bold leading-[1.45] text-[#222]" style={{ fontFeatureSettings: '"palt"' }}>
+                            <h3 className="mt-3 text-[1.3rem] lg:text-[1.45rem] min-[120rem]:text-[1.8rem] min-[160rem]:text-[2.2rem] font-bold leading-[1.45] text-[#222]" style={{ fontFeatureSettings: '"palt"' }}>
                                 {current.title}
                             </h3>
 
                             {current.event && (
-                                <table className="mt-4 w-full border-collapse text-sm">
+                                <table className="mt-4 w-full border-collapse text-sm min-[120rem]:text-base min-[160rem]:text-lg">
                                     <tbody>
                                         <tr>
                                             <th scope="row" className="w-16 border-y border-gray-200 bg-gray-50 px-3 py-2 text-left font-medium text-gray-600">開始</th>
@@ -206,12 +212,12 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
                                 </table>
                             )}
 
-                            <p className="mt-4 text-sm leading-[1.85] text-[#444] line-clamp-4">{current.excerpt || current.description}</p>
+                            <p className="mt-4 text-sm min-[120rem]:text-base min-[160rem]:text-lg leading-[1.85] text-[#444] line-clamp-4">{current.excerpt || current.description}</p>
 
                             <div className="mt-auto pt-5">
                                 <Link
                                     href={current.href}
-                                    className="flex w-full items-center justify-center rounded-md bg-[#5b8064] px-6 py-3 text-sm font-medium text-white transition-colors duration-200 hover:bg-[#4a6b55]"
+                                    className="flex w-full items-center justify-center rounded-md bg-[#5b8064] px-6 py-3 min-[120rem]:py-4 text-sm min-[120rem]:text-base min-[160rem]:text-lg font-medium text-white transition-colors duration-200 hover:bg-[#4a6b55]"
                                 >
                                     {current.event ? "詳細を見る" : "いねさばについて"}
                                     <Chevron className="ml-2 h-4 w-4" />
@@ -226,7 +232,7 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
                 PCでは1段：［前・一時停止・次］［イベント…］［一覧］
                 スマホでは2段：1段目に［イベント…］、2段目に［前・一時停止・次］と［一覧］ */}
             {n > 1 && (
-                <div className="relative z-10 -mt-9 lg:-mt-10 max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+                <div className={`relative z-10 -mt-9 lg:-mt-10 ${WIDE}`}>
                     <div className="flex flex-wrap sm:flex-nowrap items-stretch overflow-hidden rounded-lg border border-gray-200 bg-white">
                         {/* 操作はここにまとめる：前へ・一時停止・次へ（音楽プレーヤーと同じ並び） */}
                         <div className="order-2 sm:order-1 flex shrink-0 divide-x divide-gray-200 border-r border-gray-200" style={{ color: GREEN }}>
@@ -271,7 +277,7 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
                                         type="button"
                                         onClick={() => setActive(i)}
                                         aria-current={isActive}
-                                        className={`relative flex min-w-[200px] flex-1 items-center gap-3 border-r border-gray-200 last:border-r-0 px-3 py-3 text-left cursor-pointer ${isActive ? "bg-gray-50" : "hover:bg-gray-50"}`}
+                                        className={`relative flex min-w-[200px] flex-1 items-center gap-3 border-r border-gray-200 last:border-r-0 px-3 py-3 min-[120rem]:px-4 min-[120rem]:py-4 text-left cursor-pointer ${isActive ? "bg-gray-50" : "hover:bg-gray-50"}`}
                                     >
                                         {/* 上端の線：選んでいるものは、次に切り替わるまでの残り時間を表す */}
                                         {isActive && (
@@ -284,11 +290,11 @@ export default function EventSpotlight({ events, renderedAt }: Props) {
                                                 />
                                             </span>
                                         )}
-                                        <span className="relative aspect-video w-16 lg:w-20 shrink-0 overflow-hidden bg-gray-100">
+                                        <span className="relative aspect-video w-16 lg:w-20 min-[120rem]:w-28 min-[160rem]:w-36 shrink-0 overflow-hidden bg-gray-100">
                                             <Image src={s.image} alt="" fill sizes="80px" className="object-cover" />
                                         </span>
                                         <span className="min-w-0">
-                                            <span className={`text-xs lg:text-[13px] leading-snug line-clamp-2 ${isActive ? "font-bold text-[#222]" : "font-medium text-gray-600"}`}>
+                                            <span className={`text-xs lg:text-[13px] min-[120rem]:text-sm min-[160rem]:text-base leading-snug line-clamp-2 ${isActive ? "font-bold text-[#222]" : "font-medium text-gray-600"}`}>
                                                 {s.title}
                                             </span>
                                             {st && (
