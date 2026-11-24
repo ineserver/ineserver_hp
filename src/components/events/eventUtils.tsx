@@ -60,7 +60,7 @@ const jstDayNumber = (ms: number) => Math.floor((ms + 9 * HOUR) / DAY);
 export const formatDateTime = (iso: string) =>
     `${jstDate(iso)} ${new Date(iso).toLocaleTimeString("ja-JP", { timeZone: "Asia/Tokyo", hour: "numeric", minute: "2-digit" })}`;
 
-/** 開催中なら「あと◯日」、始まる前（予告）なら「◯日後に開始」 */
+/** 開催中なら「あと◯日で終了」、始まる前（予告）なら「◯日後に開始」 */
 export function getStatus(event: ShowcaseEvent, now: number): EventStatus {
     const start = new Date(event.startDate).getTime();
     const end = new Date(event.endDate).getTime();
@@ -73,8 +73,8 @@ export function getStatus(event: ShowcaseEvent, now: number): EventStatus {
 
     const remaining = end - now;
     const countdown =
-        remaining >= DAY ? `あと${Math.floor(remaining / DAY)}日`
-            : remaining >= HOUR ? `あと${Math.ceil(remaining / HOUR)}時間`
+        remaining >= DAY ? `あと${Math.floor(remaining / DAY)}日で終了`
+            : remaining >= HOUR ? `あと${Math.ceil(remaining / HOUR)}時間で終了`
                 : "まもなく終了";
     return { kind: "ongoing", label: "開催中", countdown };
 }

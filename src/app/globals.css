@@ -79,6 +79,114 @@ body {
     animation: event-autoplay 8s linear forwards;
 }
 
+/* トップのイベント欄
+   ヘッダーとこの欄を合わせて画面の高さの80%に収め、下の20%に次の内容（お知らせなど）が見えるようにする。
+   画像は16:9のまま切らない。--hero-top（ヘッダーの高さ）は EventSpotlight.tsx が測って入れる。
+   画面の高さは svh（ツールバーが出ている状態で見えている高さ）で数える。
+   vh だと iPhone の Safari では下のツールバーに隠れる部分まで含めてしまい、80%が見えている範囲からはみ出すため。
+   svh が使えないブラウザでは vh を使う */
+.event-hero-group {
+    --vh80: 80vh;
+}
+
+@supports (height: 1svh) {
+    .event-hero-group {
+        --vh80: 80svh;
+    }
+}
+
+/* スマホ：上から画像・解説欄・点と線のナビゲーション。
+   この欄の高さを決めておき、画像の残りを解説欄で埋める。
+   画像の高さは「横幅いっぱいの16:9」と「解説欄とナビゲーションの分を残した高さ」の小さい方（狭い画面では画像を少し小さくする）。
+   254px＝上の余白16＋画像と解説欄の間12＋解説欄の最小184＋ナビゲーション30＋下の余白12。
+   ただし画像が小さくなりすぎないよう 150px は確保する（とても小さい画面では80%を少し超える）。
+   解説欄は「札・残り日数・題名・詳細を見る」が基本。説明文と開始・終了の表は、
+   最後まで入りきるときだけ出す（途中で切れるなら出さない。判定は EventSpotlight.tsx の fitDetails） */
+@media (width < 40rem) {
+    .event-hero-group {
+        --hb: max(150px, min(calc(100cqw * 9 / 16), calc(var(--vh80) - var(--hero-top, 64px) - 254px)));
+        display: flex;
+        flex-direction: column;
+        height: calc(var(--vh80) - var(--hero-top, 64px) - 16px - 12px);
+        min-height: calc(var(--hb) + 12px + 184px + 30px);
+    }
+
+    .event-hero-row {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        gap: 12px;
+    }
+
+    .event-hero-banner {
+        flex: none;
+        align-self: center;
+        height: var(--hb);
+        aspect-ratio: 16 / 9;
+        max-width: 100%;
+    }
+
+    .event-hero-panel {
+        flex: 1;
+        min-height: 184px;
+    }
+
+    /* 説明文と開始・終了の表は最初は隠しておき、最後まで入りきるときだけ EventSpotlight.tsx が出す */
+    .event-hero-excerpt,
+    .event-hero-dates {
+        display: none;
+    }
+}
+
+/* PC：左に画像、右に解説欄、下にナビゲーション。
+   画像の高さは「画面の高さの80% − ヘッダー − 上の余白 − ナビゲーションとの間 − ナビゲーション」、
+   ただし横幅が足りないときは横幅で決める。解説欄は 360px か、欄の幅の29.2% の大きい方 */
+@media (width >= 64rem) {
+    .event-hero-group {
+        --panel: max(360px, 29.2cqw);
+        --gap: 20px;
+        --strip: 88px;
+        --hb: min(calc(var(--vh80) - var(--hero-top, 108px) - 24px - 16px - var(--strip)), calc((100cqw - var(--panel) - var(--gap)) * 9 / 16));
+        width: calc(var(--hb) * 16 / 9 + var(--gap) + var(--panel));
+    }
+
+    .event-hero-row {
+        display: flex;
+        gap: var(--gap);
+        height: var(--hb);
+    }
+
+    .event-hero-banner {
+        flex: none;
+        height: 100%;
+        aspect-ratio: 16 / 9;
+    }
+
+    .event-hero-panel {
+        flex: none;
+        width: var(--panel);
+        overflow: hidden;
+    }
+
+    .event-hero-strip {
+        height: var(--strip);
+    }
+}
+
+@media (width >= 120rem) {
+    .event-hero-group {
+        --gap: 28px;
+        --strip: 100px;
+    }
+}
+
+@media (width >= 160rem) {
+    .event-hero-group {
+        --strip: 116px;
+    }
+}
+
 /* スクロールバーを隠す */
 .scrollbar-hide,
 .no-scrollbar {
